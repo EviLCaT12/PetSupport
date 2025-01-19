@@ -1,11 +1,9 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetHandle.ValueObjects;
+namespace PetFamily.Domain.PetContext.ValueObjects;
 
 public record SocialWeb
 {
-    public Guid Id { get; private set; }
-    
     public string Link { get; private set; } 
     
     public string Name { get; private set; }

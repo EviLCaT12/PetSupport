@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetHandle.ValueObjects;
+namespace PetFamily.Domain.PetContext.ValueObjects;
 
 public record PetClassification
 {

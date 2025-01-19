@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Domain.PetHandle.ValueObjects;
+using PetFamily.Domain.PetContext.ValueObjects;
 
-namespace PetFamily.Domain.PetHandle.Entities;
+namespace PetFamily.Domain.PetContext.Entities;
 
 public class Volunteer : Entity
 {
@@ -9,7 +9,9 @@ public class Volunteer : Entity
     
     public VolunteerFio FIO { get; private set; }
     
-    public VolunteerContact Contacts { get; private set; }
+    public Phone Phone { get; private set; }
+    
+    public Email Email { get; private set; }
     public string Description { get; private set; }
     
     public int YearsOfExperience { get; private set; }
@@ -30,7 +32,8 @@ public class Volunteer : Entity
     private Volunteer(
         VolunteerId id,
         VolunteerFio fio,
-        VolunteerContact contacts,
+        Phone phoneNumber,
+        Email email,
         string description,
         int yearsOfExperience,
         SocialWeb socialWeb,
@@ -40,7 +43,8 @@ public class Volunteer : Entity
     {
         Id = id;
         FIO = fio;
-        Contacts = contacts;
+        Phone = phoneNumber;
+        Email = email;
         Description = description;
         YearsOfExperience = yearsOfExperience;
         SumPetsWithHome = CountPetsWithHome();
@@ -54,7 +58,8 @@ public class Volunteer : Entity
     public static Result<Volunteer> Create(
         VolunteerId id,
         VolunteerFio fio,
-        VolunteerContact contacts,
+        Phone phoneNumber,
+        Email email,
         string description,
         int yearsOfExperience,
         SocialWeb socialWeb,
@@ -65,21 +70,34 @@ public class Volunteer : Entity
         if (fioCreateResult.IsFailure)
             return Result.Failure<Volunteer>(fioCreateResult.Error);
 
-        var contactsCreateResult = VolunteerContact.Create(contacts.Email, contacts.PhoneNumber);
-        if (contactsCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(contactsCreateResult.Error);
+        var phoneCreateResult = Phone.Create(phoneNumber.Number);
+        if (phoneCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(phoneCreateResult.Error);
+        
+        var emailCreateResult = Email.Create(email.Value);
+        if (emailCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(emailCreateResult.Error);
                 
         if (string.IsNullOrWhiteSpace(description))
             return Result.Failure<Volunteer>("Description cannot not be null or empty");
+        
+        var socialWebCreateResult = SocialWeb.Create(socialWeb.Name, socialWeb.Link);
+        if (socialWebCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(socialWebCreateResult.Error);
+
+        var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description);
+        if (transferDetailsCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(transferDetailsCreateResult.Error);
 
         var volunteer = new Volunteer(
             id,
             fioCreateResult.Value,
-            contactsCreateResult.Value,
+            phoneCreateResult.Value,
+            emailCreateResult.Value,
             description,
             yearsOfExperience,
-            socialWeb,
-            transferDetails, 
+            socialWebCreateResult.Value,
+            transferDetailsCreateResult.Value, 
             allOwnedPets);
         
         return Result.Success(volunteer);

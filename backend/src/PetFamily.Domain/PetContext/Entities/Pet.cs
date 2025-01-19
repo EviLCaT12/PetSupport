@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Domain.PetHandle.ValueObjects;
+using PetFamily.Domain.PetContext.ValueObjects;
 
-namespace PetFamily.Domain.PetHandle.Entities;
+namespace PetFamily.Domain.PetContext.Entities;
 
 public class Pet : Entity
 {
@@ -22,7 +22,7 @@ public class Pet : Entity
     
     public Dimensions Dimensions { get; private set; }
     
-    public OwnerPhoneNumber OwnerPhoneNumber { get; private set; }
+    public Phone OwnerPhoneNumber { get; private set; }
 
     public bool IsCastrate { get; private set; } = false;
     
@@ -44,7 +44,7 @@ public class Pet : Entity
         string healthInfo,
         string address,
         Dimensions dimensions,
-        OwnerPhoneNumber ownerPhoneNumber,
+        Phone ownerPhoneNumber,
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
@@ -74,7 +74,7 @@ public class Pet : Entity
         string address,
         float weight,
         float height,
-        string ownerPhoneNumber,
+        Phone ownerPhoneNumber,
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
@@ -102,11 +102,11 @@ public class Pet : Entity
         if (dimensionsResult.IsFailure)
             return Result.Failure<Pet>(dimensionsResult.Error);
         
-        var phoneNumberCreateResult = OwnerPhoneNumber.Create(ownerPhoneNumber);
+        var phoneNumberCreateResult = Phone.Create(ownerPhoneNumber.Number);
         if (phoneNumberCreateResult.IsFailure)
             return Result.Failure<Pet>(phoneNumberCreateResult.Error);
         
-        var transferDetailsCreateResult = TransferDetails.Create(transferDetails.IdValue, transferDetails.NameValue, transferDetails.DescriptionValue );
+        var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description );
         if (transferDetailsCreateResult.IsFailure)
             return Result.Failure<Pet>(transferDetailsCreateResult.Error);
         

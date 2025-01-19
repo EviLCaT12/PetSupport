@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetInfo;
+namespace PetFamily.Domain.SpeciesContext;
 
 public class Breed
 {
