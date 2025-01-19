@@ -1,15 +1,15 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.PetHandle.ValueObjects;
 
-namespace PetFamily.Domain.PetHandle;
+namespace PetFamily.Domain.PetHandle.Entities;
 
-public class Volunteer
+public class Volunteer : Entity
 {
-    public Guid Id { get; private set; }
+    public VolunteerId Id { get; private set; }
     
-    public string FIO { get; private set; }
+    public VolunteerFio FIO { get; private set; }
     
-    public string Email { get; private set; }
-    
+    public VolunteerContact Contacts { get; private set; }
     public string Description { get; private set; }
     
     public int YearsOfExperience { get; private set; }
@@ -20,8 +20,6 @@ public class Volunteer
     
     public int SumPetsUnderTreatment {get; private set;}
     
-    public string PhoneNumber { get; private set; }
-    
     public SocialWeb SocialWeb { get; private set; }
     
     public TransferDetails TransferDetails { get; private set; }
@@ -30,57 +28,56 @@ public class Volunteer
     public IReadOnlyList<Pet> AllOwnedPets => _allOwnedPets;
 
     private Volunteer(
-        string fio,
-        string email,
+        VolunteerId id,
+        VolunteerFio fio,
+        VolunteerContact contacts,
         string description,
         int yearsOfExperience,
-        string phoneNumber,
         SocialWeb socialWeb,
         TransferDetails transferDetails,
         List<Pet> allOwnedPets
     )
     {
+        Id = id;
         FIO = fio;
-        Email = email;
+        Contacts = contacts;
         Description = description;
         YearsOfExperience = yearsOfExperience;
         SumPetsWithHome = CountPetsWithHome();
         SumPetsTryFindHome = CountPetsTryFindHome();
         SumPetsUnderTreatment = CountPetsUnderTreatment();
-        PhoneNumber = phoneNumber;
         SocialWeb = socialWeb;
         TransferDetails = transferDetails;
         _allOwnedPets = allOwnedPets;
     }
 
     public static Result<Volunteer> Create(
-        string fio,
-        string email,
+        VolunteerId id,
+        VolunteerFio fio,
+        VolunteerContact contacts,
         string description,
         int yearsOfExperience,
-        string phoneNumber,
         SocialWeb socialWeb,
         TransferDetails transferDetails,
         List<Pet> allOwnedPets)
     {
-        if (string.IsNullOrWhiteSpace(fio))
-            return Result.Failure<Volunteer>("Fio cannot not be null or empty");
-        
-        if (string.IsNullOrWhiteSpace(email))
-            return Result.Failure<Volunteer>("Email cannot not be null or empty");
+        var fioCreateResult = VolunteerFio.Create(fio.FirstName, fio.LastName, fio.Surname);
+        if (fioCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(fioCreateResult.Error);
+
+        var contactsCreateResult = VolunteerContact.Create(contacts.Email, contacts.PhoneNumber);
+        if (contactsCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(contactsCreateResult.Error);
                 
         if (string.IsNullOrWhiteSpace(description))
             return Result.Failure<Volunteer>("Description cannot not be null or empty");
-        
-        if (string.IsNullOrWhiteSpace(phoneNumber))
-            return Result.Failure<Volunteer>("PhoneNumber cannot not be null or empty");
 
         var volunteer = new Volunteer(
-            fio,
-            email,
+            id,
+            fioCreateResult.Value,
+            contactsCreateResult.Value,
             description,
             yearsOfExperience,
-            phoneNumber,
             socialWeb,
             transferDetails, 
             allOwnedPets);
