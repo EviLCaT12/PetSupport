@@ -15,5 +15,6 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));
+        optionsBuilder.UseSnakeCaseNamingConvention();
     }
 }
