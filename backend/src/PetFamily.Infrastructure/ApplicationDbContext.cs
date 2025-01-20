@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.SpeciesContext;
 
@@ -16,5 +17,9 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));
         optionsBuilder.UseSnakeCaseNamingConvention();
+        optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
     }
+    
+    private ILoggerFactory CreateLoggerFactory() =>
+        LoggerFactory.Create(builder => builder.AddConsole());
 }
