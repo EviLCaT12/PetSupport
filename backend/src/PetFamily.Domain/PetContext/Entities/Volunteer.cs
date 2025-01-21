@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
-using PetFamily.Domain.SharedVO;
+using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
@@ -27,17 +27,7 @@ public class Volunteer : Entity<VolunteerId>
     
     public TransferDetails TransferDetails { get; private set; }
     
-    private readonly List<Pet> _allOwnedPets;
-
-    public AllOwnedPets AllOwnedPets
-    {
-        get
-        {
-            var petsCreatResult =  AllOwnedPets.Create(_allOwnedPets);
-            return petsCreatResult.Value;
-        }
-        private set {}
-    }
+    public AllOwnedPets AllOwnedPets {get; private set;}
 
     // ef core
     private Volunteer() {}
@@ -51,7 +41,7 @@ public class Volunteer : Entity<VolunteerId>
         YearsOfExperience yearsOfExperience,
         SocialWeb socialWeb,
         TransferDetails transferDetails,
-        List<Pet> allOwnedPets
+        AllOwnedPets allOwnedPets
     )
     {
         Id = id;
@@ -65,7 +55,7 @@ public class Volunteer : Entity<VolunteerId>
         SumPetsUnderTreatment = CountPetsUnderTreatment();
         SocialWeb = socialWeb;
         TransferDetails = transferDetails;
-        _allOwnedPets = allOwnedPets;
+        AllOwnedPets = allOwnedPets;
     }
 
     public static Result<Volunteer> Create(
@@ -107,6 +97,11 @@ public class Volunteer : Entity<VolunteerId>
         if (transferDetailsCreateResult.IsFailure)
             return Result.Failure<Volunteer>(transferDetailsCreateResult.Error);
 
+        var allOwnedPetsCreateResult = AllOwnedPets.Create(allOwnedPets);
+        if(allOwnedPetsCreateResult.IsFailure)
+            return Result.Failure<Volunteer>(allOwnedPetsCreateResult.Error);
+            
+
         var volunteer = new Volunteer(
             id,
             fioCreateResult.Value,
@@ -116,7 +111,7 @@ public class Volunteer : Entity<VolunteerId>
             yearsOfExperienceCreateResult.Value,
             socialWebCreateResult.Value,
             transferDetailsCreateResult.Value, 
-            allOwnedPets);
+            allOwnedPetsCreateResult.Value);
         
         return Result.Success(volunteer);
     }

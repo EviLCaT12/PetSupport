@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.SharedVO;
+namespace PetFamily.Domain.Shared.SharedVO;
 
 public record Phone
 {

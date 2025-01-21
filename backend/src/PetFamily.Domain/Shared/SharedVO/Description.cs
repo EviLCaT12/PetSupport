@@ -1,10 +1,11 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Constants;
 
-namespace PetFamily.Domain.SharedVO;
+namespace PetFamily.Domain.Shared.SharedVO;
 
 public record Description
 {
-    private const int MAX_LENGHT = 2000;
+    
     
     private Description(string description)
     {
@@ -18,8 +19,8 @@ public record Description
         if (string.IsNullOrWhiteSpace(description))
             return Result.Failure<Description>("Description cannot be empty");
         
-        if (description.Length > MAX_LENGHT)
-            return Result.Failure<Description>("Description cannot be longer than " + MAX_LENGHT + " symbols");
+        if (description.Length > VolunteerConstant.MAX_DESCRIPTION_LENGHT)
+            return Result.Failure<Description>("Description cannot be longer than " + VolunteerConstant.MAX_DESCRIPTION_LENGHT + " symbols");
 
         var validDescription = new Description(description);
         

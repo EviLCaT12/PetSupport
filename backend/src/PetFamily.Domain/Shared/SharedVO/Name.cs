@@ -1,10 +1,10 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Constants;
 
-namespace PetFamily.Domain.SharedVO;
+namespace PetFamily.Domain.Shared.SharedVO;
 
 public record Name
 {
-    private const int MAX_LENGTH = 200;
     private Name(string name)
     {
         Value = name;
@@ -16,8 +16,8 @@ public record Name
         if(string.IsNullOrWhiteSpace(name))
             return Result.Failure<Name>("Name cannot be empty");
         
-        if(name.Length > MAX_LENGTH)
-            return Result.Failure<Name>("Name cannot be longer than " + MAX_LENGTH + " characters");
+        if(name.Length > PetConstants.MAX_NAME_LENGTH)
+            return Result.Failure<Name>("Name cannot be longer than " + PetConstants.MAX_NAME_LENGTH + " characters");
         
         var validName = new Name(name);
         
