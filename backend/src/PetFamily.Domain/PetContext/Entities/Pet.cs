@@ -1,24 +1,25 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+using PetFamily.Domain.SharedVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
 
-public class Pet : Entity
+public class Pet : Entity<PetId>
 {
     public PetId Id { get; private set; }
     
-    public string Name { get; private set; }
+    public Name Name { get; private set; }
     
     public PetClassification Classification { get; private set; }
     
-    public string Description { get; private set; }
-    
+    public Description Description { get; private set; }
     
     public Color Color { get; private set; }
     
-    public string HealthInfo { get; private set; }
+    public Description HealthInfo { get; private set; }
     
-    public string Address { get; private set; }
+    public Address Address { get; private set; }
     
     public Dimensions Dimensions { get; private set; }
     
@@ -37,12 +38,13 @@ public class Pet : Entity
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
 
     private Pet(
-        string name,
+        PetId id,
+        Name name,
         PetClassification classification,
-        string description,
+        Description description,
         Color color,
-        string healthInfo,
-        string address,
+        Description healthInfo,
+        Address address,
         Dimensions dimensions,
         Phone ownerPhoneNumber,
         bool isCastrate,
@@ -51,6 +53,7 @@ public class Pet : Entity
         TransferDetails transferDetails
     )
     {
+        Id = id;
         Name = name;
         Classification = classification;
         Description = description;
@@ -66,39 +69,45 @@ public class Pet : Entity
     }
 
     public static Result<Pet> Create(
-        string name,
+        PetId id,
+        Name name,
         PetClassification classification,
-        string description,
-        string color,
-        string healthInfo,
-        string address,
-        float weight,
-        float height,
+        Description description,
+        Color color,
+        Description healthInfo,
+        Address address,
+        Dimensions dimensions,
         Phone ownerPhoneNumber,
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
         TransferDetails transferDetails)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Pet>("Name cannot be null or empty.");
+        var nameCreateResult = Name.Create(name.Value);
+            if(nameCreateResult.IsFailure)
+                return Result.Failure<Pet>(nameCreateResult.Error);
 
         var petClassificationCreateResult = PetClassification.Create(classification.SpeciesId, classification.BreedId);
         if (petClassificationCreateResult.IsFailure)
             return Result.Failure<Pet>(petClassificationCreateResult.Error);
         
-        if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Pet>("Description cannot be null or empty.");
+        var descriptionCreateResult = Description.Create(description.Value);
+        if(descriptionCreateResult.IsFailure)
+            return Result.Failure<Pet>(descriptionCreateResult.Error);
         
-        
-        var colorCreateResult = Color.Create(color);
+        var healthInfoCreateResult = Description.Create(healthInfo.Value);
+        if(healthInfoCreateResult.IsFailure)
+            return Result.Failure<Pet>(healthInfoCreateResult.Error);
+
+        var colorCreateResult = Color.Create(color.Value);
         if (colorCreateResult.IsFailure)
             return Result.Failure<Pet>(colorCreateResult.Error);
         
-        if (string.IsNullOrWhiteSpace(address))
-            return Result.Failure<Pet>("Address cannot be null or empty.");
+        var addressCreateResult = Address.Create(address.City, address.Street, address.HouseNumber);
+        if (addressCreateResult.IsFailure)
+            return Result.Failure<Pet>(addressCreateResult.Error);
         
-        var dimensionsResult = Dimensions.Create(weight, height);
+        var dimensionsResult = Dimensions.Create(dimensions.Height, dimensions.Weight);
         if (dimensionsResult.IsFailure)
             return Result.Failure<Pet>(dimensionsResult.Error);
         
@@ -112,12 +121,13 @@ public class Pet : Entity
         
         
         var pet = new Pet(
-            name,
+            id,
+            nameCreateResult.Value,
             petClassificationCreateResult.Value,
-            description,
+            descriptionCreateResult.Value,
             colorCreateResult.Value, 
-            healthInfo,
-            address,
+            healthInfoCreateResult.Value,
+            addressCreateResult.Value,
             dimensionsResult.Value,
             phoneNumberCreateResult.Value,
             isCastrate,
