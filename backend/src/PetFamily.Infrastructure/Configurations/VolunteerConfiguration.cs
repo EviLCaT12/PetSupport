@@ -66,15 +66,6 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired()
                 .HasColumnName("years_of_experience");
         });
-        
-        builder.Property(v => v.SumPetsWithHome)
-            .HasColumnName("pets_with_home");
-        
-        builder.Property(v => v.SumPetsTryFindHome)
-            .HasColumnName("pets_without_home");
-                
-        builder.Property(v => v.SumPetsUnderTreatment)
-            .HasColumnName("pets_under_treatment");
 
         builder.ComplexProperty(v => v.SocialWeb, sb =>
         {

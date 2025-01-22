@@ -35,7 +35,7 @@ public class Pet : Entity<PetId>
     
     public TransferDetails TransferDetails { get; private set; }
 
-    public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     //ef core
     private Pet() {}

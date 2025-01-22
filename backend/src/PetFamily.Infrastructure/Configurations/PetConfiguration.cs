@@ -123,9 +123,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("transfer_details_description");
         });
 
-        builder.Property(p => p.CreatedOn)
+        builder.Property(p => p.CreatedAt)
             .HasDefaultValue(DateTime.MinValue)
-            .IsRequired(true)
+            .IsRequired()
             .HasColumnName("created_at");
     }
 }

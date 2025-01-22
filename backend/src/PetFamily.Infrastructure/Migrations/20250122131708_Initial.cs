@@ -28,9 +28,9 @@ namespace PetFamily.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    pets_with_home = table.Column<int>(type: "integer", nullable: false),
-                    pets_without_home = table.Column<int>(type: "integer", nullable: false),
-                    pets_under_treatment = table.Column<int>(type: "integer", nullable: false),
+                    sum_pets_with_home = table.Column<int>(type: "integer", nullable: false),
+                    sum_pets_try_find_home = table.Column<int>(type: "integer", nullable: false),
+                    sum_pets_under_treatment = table.Column<int>(type: "integer", nullable: false),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),

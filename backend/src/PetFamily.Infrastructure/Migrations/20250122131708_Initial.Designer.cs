@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250122073206_Initial")]
+    [Migration("20250122131708_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -32,7 +32,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<DateTime>("CreatedOn")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValue(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified))
@@ -192,15 +192,15 @@ namespace PetFamily.Infrastructure.Migrations
 
                     b.Property<int>("SumPetsTryFindHome")
                         .HasColumnType("integer")
-                        .HasColumnName("pets_without_home");
+                        .HasColumnName("sum_pets_try_find_home");
 
                     b.Property<int>("SumPetsUnderTreatment")
                         .HasColumnType("integer")
-                        .HasColumnName("pets_under_treatment");
+                        .HasColumnName("sum_pets_under_treatment");
 
                     b.Property<int>("SumPetsWithHome")
                         .HasColumnType("integer")
-                        .HasColumnName("pets_with_home");
+                        .HasColumnName("sum_pets_with_home");
 
                     b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Domain.PetContext.Entities.Volunteer.Description#Description", b1 =>
                         {
