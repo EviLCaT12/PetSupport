@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Constants;
 
-namespace PetFamily.Domain.PetContext.ValueObjects;
+namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public record VolunteerFio
 {
@@ -17,6 +18,9 @@ public record VolunteerFio
 
     public static Result<VolunteerFio> Create(string firstName, string lastName, string surname)
     {
+        if (firstName.Length > VolunteerConstant.MAX_NAME_LENGTH || lastName.Length > VolunteerConstant.MAX_NAME_LENGTH || surname.Length > VolunteerConstant.MAX_NAME_LENGTH )
+            return Result.Failure<VolunteerFio>("First name, second name and surname must be between 0 and 100 characters.");
+                   
         if (string.IsNullOrWhiteSpace(firstName))
             return Result.Failure<VolunteerFio>("First name cannot be null or empty.");
         

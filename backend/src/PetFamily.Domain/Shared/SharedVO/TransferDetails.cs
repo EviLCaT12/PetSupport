@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetContext.ValueObjects;
+namespace PetFamily.Domain.Shared.SharedVO;
 
 public record TransferDetails
 {

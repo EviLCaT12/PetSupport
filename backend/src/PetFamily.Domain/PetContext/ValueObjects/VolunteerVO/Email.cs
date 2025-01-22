@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetContext.ValueObjects;
+namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public record Email
 {

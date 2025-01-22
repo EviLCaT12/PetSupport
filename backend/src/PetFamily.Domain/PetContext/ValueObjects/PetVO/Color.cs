@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetContext.ValueObjects;
+namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 public record Color
 {

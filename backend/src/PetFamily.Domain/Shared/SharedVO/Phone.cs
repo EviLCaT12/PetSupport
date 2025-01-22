@@ -1,9 +1,9 @@
-using CSharpFunctionalExtensions;
 using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.PetContext.ValueObjects;
+namespace PetFamily.Domain.Shared.SharedVO;
 
-public partial record Phone
+public record Phone
 {
     public string Number { get; }
 
