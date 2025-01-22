@@ -8,9 +8,9 @@ namespace PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 public record BreedList
 {
-    private BreedList(List<Breed> breeds)
+    private BreedList(List<Breed> value)
     {
-        Value = breeds;
+        Value = value;
     }
 
     public IReadOnlyList<Breed> Value { get; }

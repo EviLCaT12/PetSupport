@@ -17,7 +17,7 @@ public class Pet : Entity<PetId>
     
     public Color Color { get; private set; }
     
-    public Description HealthInfo { get; private set; }
+    public HealthInfo HealthInfo { get; private set; }
     
     public Address Address { get; private set; }
     
@@ -37,13 +37,16 @@ public class Pet : Entity<PetId>
 
     public DateTime CreatedOn { get; private set; } = DateTime.UtcNow;
 
+    //ef core
+    private Pet() {}
+    
     private Pet(
         PetId id,
         Name name,
         PetClassification classification,
         Description description,
         Color color,
-        Description healthInfo,
+        HealthInfo healthInfo,
         Address address,
         Dimensions dimensions,
         Phone ownerPhoneNumber,
@@ -74,7 +77,7 @@ public class Pet : Entity<PetId>
         PetClassification classification,
         Description description,
         Color color,
-        Description healthInfo,
+        HealthInfo healthInfo,
         Address address,
         Dimensions dimensions,
         Phone ownerPhoneNumber,
@@ -95,7 +98,7 @@ public class Pet : Entity<PetId>
         if(descriptionCreateResult.IsFailure)
             return Result.Failure<Pet>(descriptionCreateResult.Error);
         
-        var healthInfoCreateResult = Description.Create(healthInfo.Value);
+        var healthInfoCreateResult = HealthInfo.Create(healthInfo.Value);
         if(healthInfoCreateResult.IsFailure)
             return Result.Failure<Pet>(healthInfoCreateResult.Error);
 

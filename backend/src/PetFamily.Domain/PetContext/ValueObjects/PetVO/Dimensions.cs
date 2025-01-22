@@ -7,10 +7,10 @@ public record Dimensions
     public float Height { get; }
     public float Weight { get; }
 
-    private Dimensions(float heightValue, float weightValue)
+    private Dimensions(float height, float weight)
     {
-        Height = heightValue;
-        Weight = weightValue;
+        Height = height;
+        Weight = weight;
     }
 
     public static Result<Dimensions> Create(float height, float weight)

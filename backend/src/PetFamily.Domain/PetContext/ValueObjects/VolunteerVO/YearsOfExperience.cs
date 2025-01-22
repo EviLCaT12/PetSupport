@@ -4,9 +4,9 @@ namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public record YearsOfExperience
 {
-    private YearsOfExperience(int years)
+    private YearsOfExperience(int value)
     {
-        Value = years;
+        Value = value;
     }
     
     public int Value { get;}

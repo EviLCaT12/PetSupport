@@ -3,17 +3,12 @@ using PetFamily.Domain.Shared.Constants;
 
 namespace PetFamily.Domain.Shared.SharedVO;
 
-public record Description
+public record Description 
 {
+    public string Value { get; }
     
+    private Description(string value) => Value = value;
     
-    private Description(string description)
-    {
-        Value = description;
-    }
-    
-    public string Value { get;}
-
     public static Result<Description> Create(string description)
     {
         if (string.IsNullOrWhiteSpace(description))

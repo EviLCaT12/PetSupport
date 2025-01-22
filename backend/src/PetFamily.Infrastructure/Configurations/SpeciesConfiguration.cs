@@ -26,12 +26,9 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
                 .HasMaxLength(SpeciesConstant.MAX_NAME_LENGTH)
                 .HasColumnName("name");
         });
-
-        builder.OwnsOne(s => s.Breeds, bd =>
-        {
-            bd.ToJson();
-
-            bd.OwnsMany(b => b.Value);
-        });
+        
+        builder.HasMany(s => s.Breeds)
+            .WithOne()
+            .HasForeignKey("species_id");
     }
 }

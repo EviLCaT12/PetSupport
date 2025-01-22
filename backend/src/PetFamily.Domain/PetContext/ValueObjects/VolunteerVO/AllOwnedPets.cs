@@ -5,9 +5,9 @@ namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public record AllOwnedPets
 {
-    private AllOwnedPets(List<Pet> pets)
+    private AllOwnedPets(List<Pet> value)
     {
-        Value = pets;
+        Value = value;
     }
     
     public IReadOnlyList<Pet> Value { get;}

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
@@ -10,17 +11,18 @@ public class Species : Entity<SpeciesId>
     
     public Name Name { get; private set; }
     
+    private readonly List<Breed> _breeds;
 
-    public BreedList Breeds {get; private set;}
+    public IReadOnlyList<Breed> Breeds => _breeds;
     
 
     //ef core
     private Species() {}
-    private Species(SpeciesId id, Name name, BreedList breeds)
+    private Species(SpeciesId id, Name name, List<Breed> breeds)
     {
         Id = id;
         Name = name;
-        Breeds = breeds;
+        _breeds = breeds;
     }
 
     public static Result<Species> Create(SpeciesId id, Name name, List<Breed> breeds)
@@ -29,11 +31,8 @@ public class Species : Entity<SpeciesId>
         if (nameCreateResult.IsFailure)
             return Result.Failure<Species>(nameCreateResult.Error);
         
-        var breedListCreateReult  = BreedList.Create(breeds);
-        if(breedListCreateReult.IsFailure)
-            return Result.Failure<Species>(breedListCreateReult.Error);
 
-        var species = new Species(id, nameCreateResult.Value, breedListCreateReult.Value);
+        var species = new Species(id, nameCreateResult.Value, breeds);
         
         return Result.Success(species); 
     }

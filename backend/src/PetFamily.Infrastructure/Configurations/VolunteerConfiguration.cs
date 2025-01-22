@@ -87,26 +87,22 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .IsRequired()
                 .HasColumnName("social_web_link");
         });
-        
+
         builder.ComplexProperty(v => v.TransferDetails, tb =>
         {
             tb.Property(t => t.Name)
                 .IsRequired()
                 .HasMaxLength(VolunteerConstant.MAX_NAME_LENGTH)
                 .HasColumnName("transfer_details_name");
-            
+
             tb.Property(t => t.Description)
                 .IsRequired()
                 .HasMaxLength(VolunteerConstant.MAX_DESCRIPTION_LENGHT)
                 .HasColumnName("transfer_details_description");
         });
-
-        builder.OwnsOne(v => v.AllOwnedPets, ia =>
-        {
-            ia.ToJson();
-
-            ia.OwnsMany(v => v.Value);
-            
-        });
+        
+        builder.HasMany(v => v.AllOwnedPets)
+            .WithOne()
+            .HasForeignKey("pet_id");
     }
 }

@@ -5,9 +5,9 @@ namespace PetFamily.Domain.Shared.SharedVO;
 
 public record Name
 {
-    private Name(string name)
+    private Name(string value)
     {
-        Value = name;
+        Value = value;
     }
     public string Value { get;}
 

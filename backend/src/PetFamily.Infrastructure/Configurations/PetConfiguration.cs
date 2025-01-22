@@ -124,6 +124,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         });
 
         builder.Property(p => p.CreatedOn)
-            .HasColumnType("created_on");
+            .HasDefaultValue(DateTime.MinValue)
+            .IsRequired(true)
+            .HasColumnName("created_at");
     }
 }

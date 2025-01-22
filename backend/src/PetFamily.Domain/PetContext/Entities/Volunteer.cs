@@ -27,7 +27,8 @@ public class Volunteer : Entity<VolunteerId>
     
     public TransferDetails TransferDetails { get; private set; }
     
-    public AllOwnedPets AllOwnedPets {get; private set;}
+    private readonly List<Pet> _pets;
+    public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
     // ef core
     private Volunteer() {}
@@ -41,7 +42,7 @@ public class Volunteer : Entity<VolunteerId>
         YearsOfExperience yearsOfExperience,
         SocialWeb socialWeb,
         TransferDetails transferDetails,
-        AllOwnedPets allOwnedPets
+        List<Pet> allOwnedPets
     )
     {
         Id = id;
@@ -55,7 +56,7 @@ public class Volunteer : Entity<VolunteerId>
         SumPetsUnderTreatment = CountPetsUnderTreatment();
         SocialWeb = socialWeb;
         TransferDetails = transferDetails;
-        AllOwnedPets = allOwnedPets;
+        _pets = allOwnedPets;
     }
 
     public static Result<Volunteer> Create(
@@ -96,10 +97,6 @@ public class Volunteer : Entity<VolunteerId>
         var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description);
         if (transferDetailsCreateResult.IsFailure)
             return Result.Failure<Volunteer>(transferDetailsCreateResult.Error);
-
-        var allOwnedPetsCreateResult = AllOwnedPets.Create(allOwnedPets);
-        if(allOwnedPetsCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(allOwnedPetsCreateResult.Error);
             
 
         var volunteer = new Volunteer(
@@ -111,14 +108,14 @@ public class Volunteer : Entity<VolunteerId>
             yearsOfExperienceCreateResult.Value,
             socialWebCreateResult.Value,
             transferDetailsCreateResult.Value, 
-            allOwnedPetsCreateResult.Value);
+            allOwnedPets);
         
         return Result.Success(volunteer);
     }
 
-    private int CountPetsWithHome() => AllOwnedPets.Value.Count(p => p.HelpStatus == HelpStatus.FindHome);
+    private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
-    private int CountPetsTryFindHome() => AllOwnedPets.Value.Count(p => p.HelpStatus == HelpStatus.SeekHome); 
+    private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 
     
-    private int CountPetsUnderTreatment() => AllOwnedPets.Value.Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
+    private int CountPetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
 }
