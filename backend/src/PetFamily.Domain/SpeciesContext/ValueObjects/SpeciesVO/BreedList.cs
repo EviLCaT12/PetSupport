@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
+using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.SpeciesContext.Entites;
 
 namespace PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
@@ -15,13 +16,13 @@ public record BreedList
 
     public IReadOnlyList<Breed> Value { get; }
 
-    public static Result<BreedList> Create(List<Breed>? breeds)
+    public static Result<BreedList, Error> Create(List<Breed>? breeds)
     {
         if (breeds == null)
-            return Result.Failure<BreedList>("Breed list cannot be null");
+            return ErrorList.General.ValueIsRequired(nameof(BreedList));
 
-        var allBreeds = new BreedList(breeds);
+        var validBreedList = new BreedList(breeds);
 
-        return Result.Success(allBreeds);
+        return validBreedList;
     }
 }

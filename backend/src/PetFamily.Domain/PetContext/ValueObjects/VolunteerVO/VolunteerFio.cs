@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
@@ -16,22 +18,23 @@ public record VolunteerFio
         Surname = surname;
     }
 
-    public static Result<VolunteerFio> Create(string firstName, string lastName, string surname)
+    public static Result<VolunteerFio, Error> Create(string firstName, string lastName, string surname)
     {
-        if (firstName.Length > VolunteerConstant.MAX_NAME_LENGTH || lastName.Length > VolunteerConstant.MAX_NAME_LENGTH || surname.Length > VolunteerConstant.MAX_NAME_LENGTH )
-            return Result.Failure<VolunteerFio>("First name, second name and surname must be between 0 and 100 characters.");
-                   
+        if (firstName.Length > VolunteerConstant.MAX_NAME_LENGTH ||
+            lastName.Length > VolunteerConstant.MAX_NAME_LENGTH || surname.Length > VolunteerConstant.MAX_NAME_LENGTH)
+            return ErrorList.General.LengthIsInvalid(VolunteerConstant.MAX_NAME_LENGTH);
+
         if (string.IsNullOrWhiteSpace(firstName))
-            return Result.Failure<VolunteerFio>("First name cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(FirstName));
         
         if (string.IsNullOrWhiteSpace(lastName))
-            return Result.Failure<VolunteerFio>("Last Name name cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(LastName));
         
         if (string.IsNullOrWhiteSpace(surname))
-            return Result.Failure<VolunteerFio>("Surname name cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(Surname));
         
-        var fio = new VolunteerFio(firstName, lastName, surname);
+        var validFio = new VolunteerFio(firstName, lastName, surname);
         
-        return Result.Success(fio);
+        return validFio;
     }
 }

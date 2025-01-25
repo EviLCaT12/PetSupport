@@ -1,6 +1,8 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
@@ -71,7 +73,7 @@ public class Pet : Entity<PetId>
         TransferDetails = transferDetails;
     }
 
-    public static Result<Pet> Create(
+    public static Result<Pet, Error> Create(
         PetId id,
         Name name,
         PetClassification classification,
@@ -88,39 +90,39 @@ public class Pet : Entity<PetId>
     {
         var nameCreateResult = Name.Create(name.Value);
             if(nameCreateResult.IsFailure)
-                return Result.Failure<Pet>(nameCreateResult.Error);
+                return Result.Failure<Pet, Error>(nameCreateResult.Error);
 
         var petClassificationCreateResult = PetClassification.Create(classification.SpeciesId, classification.BreedId);
         if (petClassificationCreateResult.IsFailure)
-            return Result.Failure<Pet>(petClassificationCreateResult.Error);
+            return petClassificationCreateResult.Error;
         
         var descriptionCreateResult = Description.Create(description.Value);
         if(descriptionCreateResult.IsFailure)
-            return Result.Failure<Pet>(descriptionCreateResult.Error);
+            return descriptionCreateResult.Error;
         
         var healthInfoCreateResult = HealthInfo.Create(healthInfo.Value);
         if(healthInfoCreateResult.IsFailure)
-            return Result.Failure<Pet>(healthInfoCreateResult.Error);
+            return healthInfoCreateResult.Error;
 
         var colorCreateResult = Color.Create(color.Value);
         if (colorCreateResult.IsFailure)
-            return Result.Failure<Pet>(colorCreateResult.Error);
+            return colorCreateResult.Error;
         
         var addressCreateResult = Address.Create(address.City, address.Street, address.HouseNumber);
         if (addressCreateResult.IsFailure)
-            return Result.Failure<Pet>(addressCreateResult.Error);
-        
+            return addressCreateResult.Error; 
+
         var dimensionsResult = Dimensions.Create(dimensions.Height, dimensions.Weight);
         if (dimensionsResult.IsFailure)
-            return Result.Failure<Pet>(dimensionsResult.Error);
+            return dimensionsResult.Error;
         
         var phoneNumberCreateResult = Phone.Create(ownerPhoneNumber.Number);
         if (phoneNumberCreateResult.IsFailure)
-            return Result.Failure<Pet>(phoneNumberCreateResult.Error);
+            return phoneNumberCreateResult.Error;
         
         var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description );
         if (transferDetailsCreateResult.IsFailure)
-            return Result.Failure<Pet>(transferDetailsCreateResult.Error);
+            return transferDetailsCreateResult.Error;
         
         
         var pet = new Pet(
@@ -138,7 +140,7 @@ public class Pet : Entity<PetId>
             isVaccinated,
             transferDetailsCreateResult.Value);
 
-        return Result.Success(pet);
+        return pet;
     }
 }
 

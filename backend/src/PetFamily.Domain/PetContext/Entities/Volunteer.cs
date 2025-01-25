@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
+using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Domain.PetContext.Entities;
@@ -59,7 +60,7 @@ public class Volunteer : Entity<VolunteerId>
         _pets = allOwnedPets;
     }
 
-    public static Result<Volunteer> Create(
+    public static Result<Volunteer, Error> Create(
         VolunteerId id,
         VolunteerFio fio,
         Phone phoneNumber,
@@ -72,31 +73,31 @@ public class Volunteer : Entity<VolunteerId>
     {
         var fioCreateResult = VolunteerFio.Create(fio.FirstName, fio.LastName, fio.Surname);
         if (fioCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(fioCreateResult.Error);
+            return fioCreateResult.Error;
 
         var phoneCreateResult = Phone.Create(phoneNumber.Number);
         if (phoneCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(phoneCreateResult.Error);
+            return phoneCreateResult.Error;
         
         var emailCreateResult = Email.Create(email.Value);
         if (emailCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(emailCreateResult.Error);
+            return emailCreateResult.Error;
                 
         var descriptionCreateResult = Description.Create(description.Value);
         if (descriptionCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(descriptionCreateResult.Error);
+            return descriptionCreateResult.Error;
         
         var yearsOfExperienceCreateResult = YearsOfExperience.Create(yearsOfExperience.Value);
         if (yearsOfExperienceCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(yearsOfExperienceCreateResult.Error);
+            return yearsOfExperienceCreateResult.Error;
         
         var socialWebCreateResult = SocialWeb.Create(socialWeb.Name, socialWeb.Link);
         if (socialWebCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(socialWebCreateResult.Error);
+            return socialWebCreateResult.Error;
 
         var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description);
         if (transferDetailsCreateResult.IsFailure)
-            return Result.Failure<Volunteer>(transferDetailsCreateResult.Error);
+            return transferDetailsCreateResult.Error;
             
 
         var volunteer = new Volunteer(
@@ -110,7 +111,7 @@ public class Volunteer : Entity<VolunteerId>
             transferDetailsCreateResult.Value, 
             allOwnedPets);
         
-        return Result.Success(volunteer);
+        return volunteer;
     }
 
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);

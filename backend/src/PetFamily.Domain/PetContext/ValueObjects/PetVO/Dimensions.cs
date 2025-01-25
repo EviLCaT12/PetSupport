@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
@@ -13,16 +15,16 @@ public record Dimensions
         Weight = weight;
     }
 
-    public static Result<Dimensions> Create(float height, float weight)
+    public static Result<Dimensions, Error> Create(float height, float weight)
     {
         if (height <= 0)
-            return Result.Failure<Dimensions>("Height value must be greater than 0");
+            return ErrorList.General.ValueIsInvalid(nameof(Height));
         
         if (weight <= 0)
-            return Result.Failure<Dimensions>("Weight value must be greater than 0");
+            return ErrorList.General.ValueIsInvalid(nameof(Weight));
         
-        var dimensions = new Dimensions(height, weight);
-        
-        return Result.Success(dimensions);
+        var validDimensions = new Dimensions(height, weight);
+
+        return validDimensions;
     }
 }

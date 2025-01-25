@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
@@ -12,20 +14,20 @@ public record Email
         Value = value;
     }
 
-    public static Result<Email> Create(string email)
+    public static Result<Email, Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return Result.Failure<Email>("Email cannot be empty");
+            return ErrorList.General.ValueIsRequired(nameof(Email));
 
         const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         var isCorrect  = Regex.IsMatch(email, emailPattern);
         
         if(!isCorrect)
-            return Result.Failure<Email>("Invalid email address");
+            return ErrorList.General.ValueIsInvalid(nameof(Email));
         
-        var correctEmail = new Email(email);
-        
-        return Result.Success(correctEmail);
-        
+        var validEmail = new Email(email);
+
+        return validEmail;
+
     }
 }

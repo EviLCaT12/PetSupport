@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.Shared.SharedVO;
 
@@ -9,16 +10,16 @@ public record Description
     
     private Description(string value) => Value = value;
     
-    public static Result<Description> Create(string description)
+    public static Result<Description, Error.Error> Create(string description)
     {
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Description>("Description cannot be empty");
+            return ErrorList.General.ValueIsRequired(nameof(Description));
         
         if (description.Length > VolunteerConstant.MAX_DESCRIPTION_LENGHT)
-            return Result.Failure<Description>("Description cannot be longer than " + VolunteerConstant.MAX_DESCRIPTION_LENGHT + " symbols");
+            return ErrorList.General.LengthIsInvalid(VolunteerConstant.MAX_DESCRIPTION_LENGHT,nameof(Description));
 
         var validDescription = new Description(description);
         
-        return Result.Success(validDescription);
+        return validDescription;
     }
 }

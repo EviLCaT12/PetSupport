@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
@@ -25,15 +26,15 @@ public class Species : Entity<SpeciesId>
         _breeds = breeds;
     }
 
-    public static Result<Species> Create(SpeciesId id, Name name, List<Breed> breeds)
+    public static Result<Species, Error> Create(SpeciesId id, Name name, List<Breed> breeds)
     {
         var nameCreateResult = Name.Create(name.Value);
         if (nameCreateResult.IsFailure)
-            return Result.Failure<Species>(nameCreateResult.Error);
+            return nameCreateResult.Error;
         
 
         var species = new Species(id, nameCreateResult.Value, breeds);
         
-        return Result.Success(species); 
+        return species; 
     }
 }

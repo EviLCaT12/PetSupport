@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
@@ -14,17 +16,17 @@ public record SocialWeb
         Name = name;
     }
 
-    public static Result<SocialWeb> Create(string link, string name)
+    public static Result<SocialWeb, Error> Create(string link, string name)
     {
         if (string.IsNullOrWhiteSpace(link))
-            return Result.Failure<SocialWeb>("Link cannot be null or empty");
+            return ErrorList.General.ValueIsRequired(nameof(Link));
         
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<SocialWeb>("Name cannot be null or empty");
+            return ErrorList.General.ValueIsRequired(nameof(Name));
         
-        var socialWeb = new SocialWeb(link, name);
-        
-        return Result.Success(socialWeb);
+        var validSocialWeb = new SocialWeb(link, name);
+
+        return validSocialWeb;
     }
     
 }

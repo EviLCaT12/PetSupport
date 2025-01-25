@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.Shared.SharedVO;
 
@@ -12,21 +13,21 @@ public record Phone
         Number = number;
     }
 
-    public static Result<Phone> Create(string number)
+    public static Result<Phone, Error.Error> Create(string number)
     {
         if(string.IsNullOrWhiteSpace(number))
-            return Result.Failure<Phone>("Phone number cannot be empty");
+            return ErrorList.General.ValueIsRequired(nameof(Number));
         
         const string phonePattern = @"^\+\d\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$";
         
         var isCorrect = Regex.IsMatch(number, phonePattern);
         
         if(!isCorrect)
-            return Result.Failure<Phone>("Phone number is not valid");
+            return ErrorList.General.ValueIsInvalid(nameof(Number));
         
-        var phoneNumber = new Phone(number);
+        var validPhoneNumber = new Phone(number);
         
-        return Result.Success(phoneNumber);
+        return validPhoneNumber;
     }
     
 }
