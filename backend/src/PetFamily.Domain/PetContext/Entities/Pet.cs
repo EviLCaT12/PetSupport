@@ -27,15 +27,15 @@ public class Pet : Entity<PetId>
     
     public Phone OwnerPhoneNumber { get; private set; }
 
-    public bool IsCastrate { get; private set; } = false;
+    public bool IsCastrate { get; private set; }
     
-    public DateTime DateOfBirth { get; private set; } = default!;
+    public DateTime DateOfBirth { get; private set; }
 
-    public bool IsVaccinated { get; private set; } = false;
+    public bool IsVaccinated { get; private set; }
     
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;
     
-    public TransferDetails TransferDetails { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
@@ -55,7 +55,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        TransferDetails transferDetails
+        TransferDetailsList transferDetails
     )
     {
         Id = id;
@@ -70,7 +70,7 @@ public class Pet : Entity<PetId>
         IsCastrate = isCastrate;
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
-        TransferDetails = transferDetails;
+        TransferDetailsList = transferDetails;
     }
 
     public static Result<Pet, Error> Create(
@@ -86,7 +86,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        TransferDetails transferDetails)
+        List<TransferDetails> transferDetails)
     {
         var nameCreateResult = Name.Create(name.Value);
             if(nameCreateResult.IsFailure)
@@ -120,9 +120,9 @@ public class Pet : Entity<PetId>
         if (phoneNumberCreateResult.IsFailure)
             return phoneNumberCreateResult.Error;
         
-        var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description );
-        if (transferDetailsCreateResult.IsFailure)
-            return transferDetailsCreateResult.Error;
+        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetails);
+        if(transferDetailsListCreateResult.IsFailure)
+            return transferDetailsListCreateResult.Error;
         
         
         var pet = new Pet(
@@ -138,7 +138,7 @@ public class Pet : Entity<PetId>
             isCastrate,
             dateOfBirth,
             isVaccinated,
-            transferDetailsCreateResult.Value);
+            transferDetailsListCreateResult.Value);
 
         return pet;
     }

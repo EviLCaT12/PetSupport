@@ -109,20 +109,21 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasConversion(
                 status => (int)status,
                 status => (HelpStatus)status);
-        
-        builder.ComplexProperty(p => p.TransferDetails, tb =>
-        {
-            tb.Property(t => t.Name)
-                .IsRequired()
-                .HasMaxLength(VolunteerConstant.MAX_NAME_LENGTH)
-                .HasColumnName("transfer_details_name");
-            
-            tb.Property(t => t.Description)
-                .IsRequired()
-                .HasMaxLength(VolunteerConstant.MAX_DESCRIPTION_LENGHT)
-                .HasColumnName("transfer_details_description");
-        });
 
+        builder.OwnsOne(p => p.TransferDetailsList, tb =>
+        {
+            tb.ToJson();
+
+            tb.OwnsMany(td => td.TransferDetails, tdb =>
+            {
+                tdb.Property(n => n.Name)
+                    .IsRequired();
+
+                tdb.Property(d => d.Description)
+                    .IsRequired();
+            });
+        });
+            
         builder.Property(p => p.CreatedAt)
             .HasDefaultValue(DateTime.MinValue)
             .IsRequired()

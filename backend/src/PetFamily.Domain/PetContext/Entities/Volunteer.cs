@@ -26,7 +26,7 @@ public class Volunteer : Entity<VolunteerId>
     
     public SocialWeb SocialWeb { get; private set; }
     
-    public TransferDetails TransferDetails { get; private set; }
+    public TransferDetailsList TransferDetailsList { get; private set; }
     
     private readonly List<Pet> _pets;
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
@@ -42,7 +42,7 @@ public class Volunteer : Entity<VolunteerId>
         Description description,
         YearsOfExperience yearsOfExperience,
         SocialWeb socialWeb,
-        TransferDetails transferDetails,
+        TransferDetailsList transferDetails,
         List<Pet> allOwnedPets
     )
     {
@@ -56,7 +56,7 @@ public class Volunteer : Entity<VolunteerId>
         SumPetsTryFindHome = CountPetsTryFindHome();
         SumPetsUnderTreatment = CountPetsUnderTreatment();
         SocialWeb = socialWeb;
-        TransferDetails = transferDetails;
+        TransferDetailsList = transferDetails;
         _pets = allOwnedPets;
     }
 
@@ -68,7 +68,7 @@ public class Volunteer : Entity<VolunteerId>
         Description description,
         YearsOfExperience yearsOfExperience,
         SocialWeb socialWeb,
-        TransferDetails transferDetails,
+        List<TransferDetails> transferDetails,
         List<Pet> allOwnedPets)
     {
         var fioCreateResult = VolunteerFio.Create(fio.FirstName, fio.LastName, fio.Surname);
@@ -95,9 +95,9 @@ public class Volunteer : Entity<VolunteerId>
         if (socialWebCreateResult.IsFailure)
             return socialWebCreateResult.Error;
 
-        var transferDetailsCreateResult = TransferDetails.Create(transferDetails.Name, transferDetails.Description);
-        if (transferDetailsCreateResult.IsFailure)
-            return transferDetailsCreateResult.Error;
+        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetails);
+        if(transferDetailsListCreateResult.IsFailure)
+            return transferDetailsListCreateResult.Error;
             
 
         var volunteer = new Volunteer(
@@ -108,7 +108,7 @@ public class Volunteer : Entity<VolunteerId>
             descriptionCreateResult.Value,
             yearsOfExperienceCreateResult.Value,
             socialWebCreateResult.Value,
-            transferDetailsCreateResult.Value, 
+            transferDetailsListCreateResult.Value, 
             allOwnedPets);
         
         return volunteer;
