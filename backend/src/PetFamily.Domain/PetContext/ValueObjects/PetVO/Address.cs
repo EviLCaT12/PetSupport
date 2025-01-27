@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
@@ -17,20 +19,20 @@ public record Address
     
     public string HouseNumber { get; }
 
-    public static Result<Address> Create(string city, string street, string houseNumber)
+    public static Result<Address, Error> Create(string city, string street, string houseNumber)
     {
         if (string.IsNullOrWhiteSpace(city))
-            return Result.Failure<Address>("City cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(City));
         
         if (string.IsNullOrWhiteSpace(street))
-            return Result.Failure<Address>("Street cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(Street));
         
         if (string.IsNullOrWhiteSpace(houseNumber))
-            return Result.Failure<Address>("HouseNumber cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(houseNumber));
         
         var validAddress = new Address(city,street, houseNumber);
-        
-        return Result.Success(validAddress);
+
+        return validAddress;
     }
     
 }

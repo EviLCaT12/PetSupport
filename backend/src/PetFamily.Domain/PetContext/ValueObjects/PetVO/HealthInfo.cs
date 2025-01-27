@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
@@ -12,16 +14,16 @@ public record HealthInfo
     
     public string Value { get;}
 
-    public static Result<HealthInfo> Create(string healthInfo)
+    public static Result<HealthInfo, Error> Create(string healthInfo)
     {
         if (string.IsNullOrWhiteSpace(healthInfo))
-            return Result.Failure<HealthInfo>("HealthInfo cannot be empty");
+            return ErrorList.General.ValueIsRequired(nameof(HealthInfo));
         
         if (healthInfo.Length > VolunteerConstant.MAX_DESCRIPTION_LENGHT)
-            return Result.Failure<HealthInfo>("HealthInfo cannot be longer than " + VolunteerConstant.MAX_DESCRIPTION_LENGHT + " symbols");
+            return ErrorList.General.LengthIsInvalid(VolunteerConstant.MAX_DESCRIPTION_LENGHT, nameof(HealthInfo));
 
-        var validDescription = new HealthInfo(healthInfo);
-        
-        return Result.Success(validDescription);
+        var validHealthInfo = new HealthInfo(healthInfo);
+
+        return validHealthInfo;
     }
 }

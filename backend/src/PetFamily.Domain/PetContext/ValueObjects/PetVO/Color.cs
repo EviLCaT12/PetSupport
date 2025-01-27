@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
@@ -8,13 +10,13 @@ public record Color
     
     private Color(string value) => Value = value;
 
-    public static Result<Color> Create(string color)
+    public static Result<Color, Error> Create(string color)
     {
         if (string.IsNullOrWhiteSpace(color))
-            return Result.Failure<Color>("Color cannot be null or empty.");
+            return ErrorList.General.ValueIsRequired(nameof(Color));
 
-        var perColor = new Color(color);
-        
-        return Result.Success(perColor);
+        var validColor = new Color(color);
+
+        return validColor;
     }
 }

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.Shared.SharedVO;
 
@@ -14,17 +15,17 @@ public record TransferDetails
         Description = description;
     }
 
-    public static Result<TransferDetails> Create(string name, string description)
+    public static Result<TransferDetails, Error.Error> Create(string name, string description)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<TransferDetails>("Name cannot be null or empty");
+            return ErrorList.General.ValueIsRequired(nameof(Name));
             
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<TransferDetails>("Description cannot be null or empty");
+            return ErrorList.General.ValueIsRequired(nameof(Description));
         
-        var transferDetails = new TransferDetails(name, description);
+        var validTransferDetails = new TransferDetails(name, description);
         
-        return Result.Success(transferDetails);
+        return validTransferDetails;
     }
     
 }

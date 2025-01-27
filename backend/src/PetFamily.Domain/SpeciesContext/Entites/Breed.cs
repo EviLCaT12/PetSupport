@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 
@@ -18,14 +19,14 @@ public class Breed : Entity<BreedId>
         Name = name;
     }
 
-    public static Result<Breed> Create(BreedId id, Name name)
+    public static Result<Breed, Error> Create(BreedId id, Name name)
     {
         var nameCreateResult = Name.Create(name.Value);
         if (nameCreateResult.IsFailure)
-            return Result.Failure<Breed>(nameCreateResult.Error);
+            return nameCreateResult.Error;
 
         var breed = new Breed(id, nameCreateResult.Value);
         
-        return Result.Success(breed);
+        return breed;
     }
 }

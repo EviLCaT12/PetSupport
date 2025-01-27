@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.Shared;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
@@ -12,14 +14,14 @@ public record AllOwnedPets
     
     public IReadOnlyList<Pet> Value { get;}
 
-    public static Result<AllOwnedPets> Create(List<Pet>? pets)
+    public static Result<AllOwnedPets, Error> Create(List<Pet>? pets)
     {
         if (pets == null)
-            return Result.Failure<AllOwnedPets>("pets cannot be null");
+            return ErrorList.General.ValueIsRequired(nameof(AllOwnedPets));
 
-        var allPets = new AllOwnedPets(pets);
+        var validPets = new AllOwnedPets(pets);
         
-        return Result.Success(allPets);
+        return validPets;
     }
     
 }
