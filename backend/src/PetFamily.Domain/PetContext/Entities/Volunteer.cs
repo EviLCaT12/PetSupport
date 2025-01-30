@@ -24,11 +24,11 @@ public class Volunteer : Entity<VolunteerId>
     
     public int SumPetsUnderTreatment {get; private set;}
     
-    public SocialWeb SocialWeb { get; private set; }
+    public SocialWebList SocialWeb { get; private set; }
     
     public TransferDetailsList TransferDetailsList { get; private set; }
     
-    private readonly List<Pet> _pets;
+    private readonly List<Pet> _pets = new List<Pet>(); //создатся отдельный метод Add, который и будет добавлять животных
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
     // ef core
@@ -41,9 +41,8 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        SocialWeb socialWeb,
-        TransferDetailsList transferDetails,
-        List<Pet> allOwnedPets
+        SocialWebList socialWebs,
+        TransferDetailsList transferDetails
     )
     {
         Id = id;
@@ -55,9 +54,8 @@ public class Volunteer : Entity<VolunteerId>
         SumPetsWithHome = CountPetsWithHome();
         SumPetsTryFindHome = CountPetsTryFindHome();
         SumPetsUnderTreatment = CountPetsUnderTreatment();
-        SocialWeb = socialWeb;
+        SocialWeb = socialWebs;
         TransferDetailsList = transferDetails;
-        _pets = allOwnedPets;
     }
 
     public static Result<Volunteer, Error> Create(
@@ -67,9 +65,8 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        SocialWeb socialWeb,
-        List<TransferDetails> transferDetails,
-        List<Pet> allOwnedPets)
+        List<SocialWeb> socialWebs,
+        List<TransferDetails> transferDetails)
     {
         var fioCreateResult = VolunteerFio.Create(fio.FirstName, fio.LastName, fio.Surname);
         if (fioCreateResult.IsFailure)
@@ -91,9 +88,9 @@ public class Volunteer : Entity<VolunteerId>
         if (yearsOfExperienceCreateResult.IsFailure)
             return yearsOfExperienceCreateResult.Error;
         
-        var socialWebCreateResult = SocialWeb.Create(socialWeb.Name, socialWeb.Link);
-        if (socialWebCreateResult.IsFailure)
-            return socialWebCreateResult.Error;
+        var socialWebListCreateResult = SocialWebList.Create(socialWebs);
+        if (socialWebListCreateResult.IsFailure)
+            return socialWebListCreateResult.Error;
 
         var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetails);
         if(transferDetailsListCreateResult.IsFailure)
@@ -107,9 +104,8 @@ public class Volunteer : Entity<VolunteerId>
             emailCreateResult.Value,
             descriptionCreateResult.Value,
             yearsOfExperienceCreateResult.Value,
-            socialWebCreateResult.Value,
-            transferDetailsListCreateResult.Value, 
-            allOwnedPets);
+            socialWebListCreateResult.Value,
+            transferDetailsListCreateResult.Value);
         
         return volunteer;
     }
