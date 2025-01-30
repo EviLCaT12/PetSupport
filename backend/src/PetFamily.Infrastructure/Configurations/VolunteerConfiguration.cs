@@ -94,9 +94,10 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                     .IsRequired();
             });
         });
-        
+
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne()
-            .HasForeignKey("pet_id");
+            .HasForeignKey("pet_id")
+            .IsRequired(false);
     }
 }
