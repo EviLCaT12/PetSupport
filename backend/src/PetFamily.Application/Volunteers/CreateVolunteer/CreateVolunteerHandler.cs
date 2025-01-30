@@ -1,4 +1,6 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Application.DTO.Shared;
+using PetFamily.Application.Dto.Volunteer;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
@@ -16,46 +18,52 @@ public class CreateVolunteerHandler
     }
     
     public async Task<Result<Guid, Error>> HandleAsync(
-        CreateVolunteerRequest request,
+        VolunteerDto volunteerDto,
+        List<SocialWebDto> socialWebDto,
+        List<TransferDetailDto> transferDetailDto,
         CancellationToken cancellationToken = default)
     {
         var volunteerId = VolunteerId.NewVolunteerId(); 
         
-        var fioCreateResult = VolunteerFio.Create(request.firstName, request.lastName, request.surName);
+        var fioCreateResult = VolunteerFio.Create(volunteerDto.FirstName, volunteerDto.LastName, volunteerDto.SurName);
         if (fioCreateResult.IsFailure)
             return fioCreateResult.Error;
 
-        var phoneNumberCreateResult = Phone.Create(request.phoneNumber);
+        var phoneNumberCreateResult = Phone.Create(volunteerDto.PhoneNumber);
         if (phoneNumberCreateResult.IsFailure)
             return phoneNumberCreateResult.Error;
         
-        var emailCreateResult = Email.Create(request.email);
+        var emailCreateResult = Email.Create(volunteerDto.Email);
         if (emailCreateResult.IsFailure)
             return emailCreateResult.Error;
         
-        var descriptionCreateResult = Description.Create(request.description);
+        var descriptionCreateResult = Description.Create(volunteerDto.Description);
         if (descriptionCreateResult.IsFailure)
             return descriptionCreateResult.Error;
         
-        var yOExpCreateResult = YearsOfExperience.Create(request.yearsOfExperience);
+        var yOExpCreateResult = YearsOfExperience.Create(volunteerDto.YearsOfExperience);
         if (yOExpCreateResult.IsFailure)
             return yOExpCreateResult.Error;
         
-        var socialWebCreateResult = SocialWeb.Create(request.link, request.socialWebName);
-        if (socialWebCreateResult.IsFailure)
-            return socialWebCreateResult.Error;
+        List<SocialWeb> socialWebs = [];
+        foreach (var socialWebCreateResult in socialWebDto
+                     .Select(socialWeb => SocialWeb.Create(socialWeb.Link, socialWeb.Name)))
+        {
+            if (socialWebCreateResult.IsFailure)
+                return socialWebCreateResult.Error;
+
+            socialWebs.Add(socialWebCreateResult.Value);
+        };
         
         List<TransferDetails> transferDetails = [];
-        foreach (var transferDetail in request.transferDetails)
+        foreach (var transferDetailCreateResult in transferDetailDto
+                     .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description)))
         {
-            var transferDetailCreateResult = TransferDetails.Create(transferDetail.Item1, transferDetail.Item2);
             if (transferDetailCreateResult.IsFailure)
                 return transferDetailCreateResult.Error;
 
-            transferDetails.Add(transferDetailCreateResult.Value); 
+            transferDetails.Add(transferDetailCreateResult.Value);
         }
-
-        var allOwnedPets = request.allOwnedPets;
         
         var validVolunteer = Volunteer.Create(
             volunteerId,
@@ -64,9 +72,9 @@ public class CreateVolunteerHandler
             emailCreateResult.Value,
             descriptionCreateResult.Value,
             yOExpCreateResult.Value,
-            socialWebCreateResult.Value,
-            transferDetails,
-            allOwnedPets);
+            socialWebs,
+            transferDetails
+            );
         
         await _volunteerRepository.AddAsync(validVolunteer.Value, cancellationToken);
         

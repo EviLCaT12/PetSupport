@@ -11,7 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Volunteer\CreateVolunteer\" />
+      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
+        <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\9.0.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      </Reference>
     </ItemGroup>
 
 </Project>

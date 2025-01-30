@@ -67,16 +67,18 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("years_of_experience");
         });
 
-        builder.ComplexProperty(v => v.SocialWeb, sb =>
+        builder.OwnsOne(v => v.SocialWeb, swb =>
         {
-            sb.Property(s => s.Name)
-                .IsRequired()
-                .HasMaxLength(VolunteerConstant.MAX_NAME_LENGTH)
-                .HasColumnName("social_web_name");
-            
-            sb.Property(s => s.Link)
-                .IsRequired()
-                .HasColumnName("social_web_link");
+            swb.ToJson();
+
+            swb.OwnsMany(sl => sl.SocialWebs, slb =>
+            {
+                slb.Property(l => l.Link)
+                    .IsRequired();
+
+                slb.Property(n => n.Name)
+                    .IsRequired();
+            });
         });
 
         builder.OwnsOne(v => v.TransferDetailsList, tb =>

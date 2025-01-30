@@ -1,7 +1,6 @@
-using PetFamily.Application.Volunteers;
-using PetFamily.Application.Volunteers.CreateVolunteer;
+using PetFamily.Application;
 using PetFamily.Infrastructure;
-using PetFamily.Infrastructure.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +9,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<ApplicationDbContext>();
-
-builder.Services.AddScoped<CreateVolunteerHandler>();
-builder.Services.AddScoped<IVolunteersRepository, VolunteerRepository>();
+builder.Services
+    .AddInfrastructure()
+    .AddApplication();
 
 var app = builder.Build();
 
@@ -26,6 +24,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
+app.MapControllers();
 
 
 app.Run();
