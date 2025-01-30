@@ -28,12 +28,8 @@ public class Species : Entity<SpeciesId>
 
     public static Result<Species, Error> Create(SpeciesId id, Name name, List<Breed> breeds)
     {
-        var nameCreateResult = Name.Create(name.Value);
-        if (nameCreateResult.IsFailure)
-            return nameCreateResult.Error;
-        
 
-        var species = new Species(id, nameCreateResult.Value, breeds);
+        var species = new Species(id, name, breeds);
         
         return species; 
     }
