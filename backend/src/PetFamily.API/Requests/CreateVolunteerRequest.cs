@@ -1,3 +1,4 @@
+using FluentValidation;
 using PetFamily.Application.DTO.Shared;
 using PetFamily.Application.Dto.Volunteer;
 
@@ -8,3 +9,4 @@ public record CreateVolunteerRequest(
     List<SocialWebDto> SocialWebDto,
     List<TransferDetailDto> TransferDetailDto
     );
+    
