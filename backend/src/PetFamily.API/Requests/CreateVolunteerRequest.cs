@@ -1,11 +1,11 @@
 using FluentValidation;
-using PetFamily.Application.DTO.Shared;
-using PetFamily.Application.Dto.Volunteer;
+using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Volunteers.CreateVolunteer;
 
 namespace PetFamily.API.Requests;
 
 public record CreateVolunteerRequest(
-    VolunteerDto VolunteerDto,
+    CreateVolunteerCommand CreateVolunteerCommand,
     List<SocialWebDto> SocialWebDto,
     List<TransferDetailDto> TransferDetailDto
     );

@@ -22,16 +22,16 @@ public record VolunteerFio
     {
         if (firstName.Length > VolunteerConstant.MAX_NAME_LENGTH ||
             lastName.Length > VolunteerConstant.MAX_NAME_LENGTH || surname.Length > VolunteerConstant.MAX_NAME_LENGTH)
-            return ErrorList.General.LengthIsInvalid(VolunteerConstant.MAX_NAME_LENGTH);
+            return Errors.General.LengthIsInvalid(VolunteerConstant.MAX_NAME_LENGTH);
 
         if (string.IsNullOrWhiteSpace(firstName))
-            return ErrorList.General.ValueIsRequired(nameof(FirstName));
+            return Errors.General.ValueIsRequired(nameof(FirstName));
         
         if (string.IsNullOrWhiteSpace(lastName))
-            return ErrorList.General.ValueIsRequired(nameof(LastName));
+            return Errors.General.ValueIsRequired(nameof(LastName));
         
         if (string.IsNullOrWhiteSpace(surname))
-            return ErrorList.General.ValueIsRequired(nameof(Surname));
+            return Errors.General.ValueIsRequired(nameof(Surname));
         
         var validFio = new VolunteerFio(firstName, lastName, surname);
         

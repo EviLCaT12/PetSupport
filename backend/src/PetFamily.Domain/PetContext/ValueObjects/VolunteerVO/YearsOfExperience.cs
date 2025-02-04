@@ -16,7 +16,7 @@ public record YearsOfExperience
     public static Result<YearsOfExperience, Error> Create(int years)
     {
         if (years < 0)
-            return ErrorList.General.ValueIsInvalid(nameof(YearsOfExperience));
+            return Errors.General.ValueIsInvalid(nameof(YearsOfExperience));
         
         var validYears = new YearsOfExperience(years);
         

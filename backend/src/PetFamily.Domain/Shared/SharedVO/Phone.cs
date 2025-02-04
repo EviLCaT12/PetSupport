@@ -16,14 +16,14 @@ public record Phone
     public static Result<Phone, Error.Error> Create(string number)
     {
         if(string.IsNullOrWhiteSpace(number))
-            return ErrorList.General.ValueIsRequired(nameof(Number));
+            return Errors.General.ValueIsRequired(nameof(Number));
         
         const string phonePattern = @"^\+\d\s\(\d{3}\)\s\d{3}-\d{2}-\d{2}$";
         
         var isCorrect = Regex.IsMatch(number, phonePattern);
         
         if(!isCorrect)
-            return ErrorList.General.ValueIsInvalid(nameof(Number));
+            return Errors.General.ValueIsInvalid(nameof(Number));
         
         var validPhoneNumber = new Phone(number);
         

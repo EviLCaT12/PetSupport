@@ -17,10 +17,10 @@ public record HealthInfo
     public static Result<HealthInfo, Error> Create(string healthInfo)
     {
         if (string.IsNullOrWhiteSpace(healthInfo))
-            return ErrorList.General.ValueIsRequired(nameof(HealthInfo));
+            return Errors.General.ValueIsRequired(nameof(HealthInfo));
         
         if (healthInfo.Length > VolunteerConstant.MAX_DESCRIPTION_LENGHT)
-            return ErrorList.General.LengthIsInvalid(VolunteerConstant.MAX_DESCRIPTION_LENGHT, nameof(HealthInfo));
+            return Errors.General.LengthIsInvalid(VolunteerConstant.MAX_DESCRIPTION_LENGHT, nameof(HealthInfo));
 
         var validHealthInfo = new HealthInfo(healthInfo);
 

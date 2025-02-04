@@ -18,10 +18,10 @@ public record Dimensions
     public static Result<Dimensions, Error> Create(float height, float weight)
     {
         if (height <= 0)
-            return ErrorList.General.ValueIsInvalid(nameof(Height));
+            return Errors.General.ValueIsInvalid(nameof(Height));
         
         if (weight <= 0)
-            return ErrorList.General.ValueIsInvalid(nameof(Weight));
+            return Errors.General.ValueIsInvalid(nameof(Weight));
         
         var validDimensions = new Dimensions(height, weight);
 

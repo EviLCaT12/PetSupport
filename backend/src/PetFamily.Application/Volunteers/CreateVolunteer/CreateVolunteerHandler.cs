@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.DTO.Shared;
-using PetFamily.Application.Dto.Volunteer;
+using FluentValidation;
+using PetFamily.Application.Dto.Shared;
+using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
@@ -8,77 +9,74 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
-public class CreateVolunteerHandler
+public class CreateVolunteerHandler(
+    IVolunteersRepository volunteersRepository,
+    IValidator<CreateVolunteerCommand> createVolunteerCommandValidator,
+    IValidator<IEnumerable<SocialWebDto>> socialWebDtoValidator,
+    IValidator<IEnumerable<TransferDetailDto>> transferDetailDtoValidator)
 {
-    private readonly IVolunteersRepository _volunteerRepository;
-
-    public CreateVolunteerHandler(IVolunteersRepository volunteersRepository)
-    {
-        _volunteerRepository = volunteersRepository;
-    }
-    
-    public async Task<Result<Guid, Error>> HandleAsync(
-        VolunteerDto volunteerDto,
+    public async Task<Result<Guid, ErrorList>> HandleAsync(
+        CreateVolunteerCommand createVolunteerCommand,
         List<SocialWebDto> socialWebDto,
         List<TransferDetailDto> transferDetailDto,
         CancellationToken cancellationToken = default)
     {
-        var volunteerId = VolunteerId.NewVolunteerId(); 
+        var createVolunteerValidationResult = await createVolunteerCommandValidator.ValidateAsync(
+            createVolunteerCommand,
+            cancellationToken);
+        if (createVolunteerValidationResult.IsValid == false)
+            return createVolunteerValidationResult.ToErrorList();
         
-        var fioCreateResult = VolunteerFio.Create(volunteerDto.FirstName, volunteerDto.LastName, volunteerDto.SurName);
-        if (fioCreateResult.IsFailure)
-            return fioCreateResult.Error;
+        var socialWebDtoValidatorResult = await socialWebDtoValidator.ValidateAsync(socialWebDto, cancellationToken);
+        if (socialWebDtoValidatorResult.IsValid == false)
+            return socialWebDtoValidatorResult.ToErrorList();
+        
+        var transferDetailDtoValidatorResult = await transferDetailDtoValidator.ValidateAsync(transferDetailDto, cancellationToken);
+        if (transferDetailDtoValidatorResult.IsValid == false)
+            return transferDetailDtoValidatorResult.ToErrorList();
+        
+        
+        var volunteerId = VolunteerId.NewVolunteerId();
 
-        var phoneNumberCreateResult = Phone.Create(volunteerDto.PhoneNumber);
-        if (phoneNumberCreateResult.IsFailure)
-            return phoneNumberCreateResult.Error;
+        var fioCreateResult = VolunteerFio
+            .Create(createVolunteerCommand.FirstName, createVolunteerCommand.LastName, createVolunteerCommand.SurName)
+            .Value;
         
-        var emailCreateResult = Email.Create(volunteerDto.Email);
-        if (emailCreateResult.IsFailure)
-            return emailCreateResult.Error;
+
+        var phoneNumberCreateResult = Phone.Create(createVolunteerCommand.PhoneNumber).Value;
+
+
+
+        var emailCreateResult = Email.Create(createVolunteerCommand.Email).Value;
+
+        var descriptionCreateResult = Description.Create(createVolunteerCommand.Description).Value;
         
-        var descriptionCreateResult = Description.Create(volunteerDto.Description);
-        if (descriptionCreateResult.IsFailure)
-            return descriptionCreateResult.Error;
-        
-        var yOExpCreateResult = YearsOfExperience.Create(volunteerDto.YearsOfExperience);
-        if (yOExpCreateResult.IsFailure)
-            return yOExpCreateResult.Error;
+        var yOExpCreateResult = YearsOfExperience.Create(createVolunteerCommand.YearsOfExperience).Value;
         
         List<SocialWeb> socialWebs = [];
-        foreach (var socialWebCreateResult in socialWebDto
-                     .Select(socialWeb => SocialWeb.Create(socialWeb.Link, socialWeb.Name)))
-        {
-            if (socialWebCreateResult.IsFailure)
-                return socialWebCreateResult.Error;
-
-            socialWebs.Add(socialWebCreateResult.Value);
-        };
+        socialWebs.AddRange(socialWebDto
+            .Select(socialWeb => SocialWeb.Create(socialWeb.Link, socialWeb.Name))
+            .Select(socialWebCreateResult => socialWebCreateResult.Value));
         var socialWebList = SocialWebList.Create(socialWebs);
         
         List<TransferDetails> transferDetails = [];
-        foreach (var transferDetailCreateResult in transferDetailDto
-                     .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description)))
-        {
-            if (transferDetailCreateResult.IsFailure)
-                return transferDetailCreateResult.Error;
-
-            transferDetails.Add(transferDetailCreateResult.Value);
-        }
+        transferDetails.AddRange(transferDetailDto
+            .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
+            .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
         var transferDetailsList = TransferDetailsList.Create(transferDetails);
         
         var validVolunteer = Volunteer.Create(
             volunteerId,
-            fioCreateResult.Value,
-            phoneNumberCreateResult.Value,
-            emailCreateResult.Value,
-            descriptionCreateResult.Value,
-            yOExpCreateResult.Value,
+            fioCreateResult,
+            phoneNumberCreateResult,
+            emailCreateResult,
+            descriptionCreateResult,
+            yOExpCreateResult,
             socialWebList.Value,
             transferDetailsList.Value
             );
         
-        await _volunteerRepository.AddAsync(validVolunteer.Value, cancellationToken);
+        await volunteersRepository.AddAsync(validVolunteer.Value, cancellationToken);
         
         return validVolunteer.Value.Id.Value;
     }

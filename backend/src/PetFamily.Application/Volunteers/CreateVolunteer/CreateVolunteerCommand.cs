@@ -1,6 +1,6 @@
-namespace PetFamily.Application.Dto.Volunteer;
+namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
-public record VolunteerDto(
+public record CreateVolunteerCommand(
     string FirstName,
     string LastName,
     string SurName,
