@@ -16,15 +16,15 @@ public class VolunteersController : ControllerBase
         CancellationToken cancellationToken)
     {
         var result = await handler.HandleAsync(
-            request.VolunteerDto,
+            request.CreateVolunteerCommand,
             request.SocialWebDto,
             request.TransferDetailDto,
             cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
         
-        if(result.IsFailure)
-            return BadRequest(result.Error.ToResponce());
-        
-        return Ok(result.Value);
+        return result.Value;
     }
     
 }

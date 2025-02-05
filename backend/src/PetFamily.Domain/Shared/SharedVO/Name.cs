@@ -15,10 +15,10 @@ public record Name
     public static Result<Name, Error.Error> Create(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return ErrorList.General.ValueIsRequired(nameof(Name));
+            return Errors.General.ValueIsRequired(nameof(Name));
 
         if (name.Length > PetConstants.MAX_NAME_LENGTH)
-            return ErrorList.General.LengthIsInvalid(PetConstants.MAX_NAME_LENGTH, nameof(Name)); 
+            return Errors.General.LengthIsInvalid(PetConstants.MAX_NAME_LENGTH, nameof(Name)); 
                 
         var validName = new Name(name);
         

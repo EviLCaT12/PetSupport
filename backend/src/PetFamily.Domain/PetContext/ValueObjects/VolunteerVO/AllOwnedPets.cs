@@ -17,7 +17,7 @@ public record AllOwnedPets
     public static Result<AllOwnedPets, Error> Create(List<Pet>? pets)
     {
         if (pets == null)
-            return ErrorList.General.ValueIsRequired(nameof(AllOwnedPets));
+            return Errors.General.ValueIsRequired(nameof(AllOwnedPets));
 
         var validPets = new AllOwnedPets(pets);
         

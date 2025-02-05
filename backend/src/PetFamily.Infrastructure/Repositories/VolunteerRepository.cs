@@ -25,7 +25,7 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
         if (volunteer == null)
-            return ErrorList.General.ValueNotFound(id.Value);
+            return Errors.General.ValueNotFound(id.Value);
 
         return volunteer;
     }

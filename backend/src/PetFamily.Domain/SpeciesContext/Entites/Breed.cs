@@ -21,11 +21,7 @@ public class Breed : Entity<BreedId>
 
     public static Result<Breed, Error> Create(BreedId id, Name name)
     {
-        var nameCreateResult = Name.Create(name.Value);
-        if (nameCreateResult.IsFailure)
-            return nameCreateResult.Error;
-
-        var breed = new Breed(id, nameCreateResult.Value);
+        var breed = new Breed(id, name);
         
         return breed;
     }

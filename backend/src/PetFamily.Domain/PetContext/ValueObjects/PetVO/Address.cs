@@ -22,13 +22,13 @@ public record Address
     public static Result<Address, Error> Create(string city, string street, string houseNumber)
     {
         if (string.IsNullOrWhiteSpace(city))
-            return ErrorList.General.ValueIsRequired(nameof(City));
+            return Errors.General.ValueIsRequired(nameof(City));
         
         if (string.IsNullOrWhiteSpace(street))
-            return ErrorList.General.ValueIsRequired(nameof(Street));
+            return Errors.General.ValueIsRequired(nameof(Street));
         
         if (string.IsNullOrWhiteSpace(houseNumber))
-            return ErrorList.General.ValueIsRequired(nameof(houseNumber));
+            return Errors.General.ValueIsRequired(nameof(houseNumber));
         
         var validAddress = new Address(city,street, houseNumber);
 

@@ -86,64 +86,26 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        List<TransferDetails> transferDetails)
+        TransferDetailsList transferDetailsList)
     {
-        var nameCreateResult = Name.Create(name.Value);
-            if(nameCreateResult.IsFailure)
-                return Result.Failure<Pet, Error>(nameCreateResult.Error);
-
-        var petClassificationCreateResult = PetClassification.Create(classification.SpeciesId, classification.BreedId);
-        if (petClassificationCreateResult.IsFailure)
-            return petClassificationCreateResult.Error;
-        
-        var descriptionCreateResult = Description.Create(description.Value);
-        if(descriptionCreateResult.IsFailure)
-            return descriptionCreateResult.Error;
-        
-        var healthInfoCreateResult = HealthInfo.Create(healthInfo.Value);
-        if(healthInfoCreateResult.IsFailure)
-            return healthInfoCreateResult.Error;
-
-        var colorCreateResult = Color.Create(color.Value);
-        if (colorCreateResult.IsFailure)
-            return colorCreateResult.Error;
-        
-        var addressCreateResult = Address.Create(address.City, address.Street, address.HouseNumber);
-        if (addressCreateResult.IsFailure)
-            return addressCreateResult.Error; 
-
-        var dimensionsResult = Dimensions.Create(dimensions.Height, dimensions.Weight);
-        if (dimensionsResult.IsFailure)
-            return dimensionsResult.Error;
-        
-        var phoneNumberCreateResult = Phone.Create(ownerPhoneNumber.Number);
-        if (phoneNumberCreateResult.IsFailure)
-            return phoneNumberCreateResult.Error;
-        
-        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetails);
-        if(transferDetailsListCreateResult.IsFailure)
-            return transferDetailsListCreateResult.Error;
-        
-        
         var pet = new Pet(
             id,
-            nameCreateResult.Value,
-            petClassificationCreateResult.Value,
-            descriptionCreateResult.Value,
-            colorCreateResult.Value, 
-            healthInfoCreateResult.Value,
-            addressCreateResult.Value,
-            dimensionsResult.Value,
-            phoneNumberCreateResult.Value,
+            name,
+            classification,
+            description,
+            color, 
+            healthInfo,
+            address,
+            dimensions,
+            ownerPhoneNumber,
             isCastrate,
             dateOfBirth,
             isVaccinated,
-            transferDetailsListCreateResult.Value);
+            transferDetailsList);
 
         return pet;
     }
 }
-
 
 
 public enum HelpStatus

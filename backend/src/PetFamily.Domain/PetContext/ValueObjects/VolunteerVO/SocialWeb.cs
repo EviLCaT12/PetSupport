@@ -19,10 +19,10 @@ public record SocialWeb
     public static Result<SocialWeb, Error> Create(string link, string name)
     {
         if (string.IsNullOrWhiteSpace(link))
-            return ErrorList.General.ValueIsRequired(nameof(Link));
+            return Errors.General.ValueIsRequired(nameof(Link));
         
         if (string.IsNullOrWhiteSpace(name))
-            return ErrorList.General.ValueIsRequired(nameof(Name));
+            return Errors.General.ValueIsRequired(nameof(Name));
         
         var validSocialWeb = new SocialWeb(link, name);
 

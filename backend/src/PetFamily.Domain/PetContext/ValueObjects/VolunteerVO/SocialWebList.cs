@@ -10,9 +10,9 @@ public record SocialWebList
     
     public IReadOnlyList<SocialWeb> SocialWebs => _socialWebs;
 
-    private SocialWebList(List<SocialWeb> socialWebs)
+    private SocialWebList(IEnumerable<SocialWeb> socialWebs)
     {
-        _socialWebs = socialWebs;
+        _socialWebs = socialWebs.ToList();
     }
 
     //ef core
