@@ -27,8 +27,8 @@ public class Volunteer : Entity<VolunteerId>
     public SocialWebList SocialWeb { get; private set; }
     
     public TransferDetailsList TransferDetailsList { get; private set; }
-    
-    private readonly List<Pet> _pets = new List<Pet>(); //создатся отдельный метод Add, который и будет добавлять животных
+
+    private readonly List<Pet> _pets = []; //создатся отдельный метод Add, который и будет добавлять животных
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
     // ef core
@@ -65,47 +65,18 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        List<SocialWeb> socialWebs,
-        List<TransferDetails> transferDetails)
+        SocialWebList socialWebsList,
+        TransferDetailsList transferDetailsList)
     {
-        var fioCreateResult = VolunteerFio.Create(fio.FirstName, fio.LastName, fio.Surname);
-        if (fioCreateResult.IsFailure)
-            return fioCreateResult.Error;
-
-        var phoneCreateResult = Phone.Create(phoneNumber.Number);
-        if (phoneCreateResult.IsFailure)
-            return phoneCreateResult.Error;
-        
-        var emailCreateResult = Email.Create(email.Value);
-        if (emailCreateResult.IsFailure)
-            return emailCreateResult.Error;
-                
-        var descriptionCreateResult = Description.Create(description.Value);
-        if (descriptionCreateResult.IsFailure)
-            return descriptionCreateResult.Error;
-        
-        var yearsOfExperienceCreateResult = YearsOfExperience.Create(yearsOfExperience.Value);
-        if (yearsOfExperienceCreateResult.IsFailure)
-            return yearsOfExperienceCreateResult.Error;
-        
-        var socialWebListCreateResult = SocialWebList.Create(socialWebs);
-        if (socialWebListCreateResult.IsFailure)
-            return socialWebListCreateResult.Error;
-
-        var transferDetailsListCreateResult = TransferDetailsList.Create(transferDetails);
-        if(transferDetailsListCreateResult.IsFailure)
-            return transferDetailsListCreateResult.Error;
-            
-
         var volunteer = new Volunteer(
             id,
-            fioCreateResult.Value,
-            phoneCreateResult.Value,
-            emailCreateResult.Value,
-            descriptionCreateResult.Value,
-            yearsOfExperienceCreateResult.Value,
-            socialWebListCreateResult.Value,
-            transferDetailsListCreateResult.Value);
+            fio,
+            phoneNumber,
+            email,
+            description,
+            yearsOfExperience,
+            socialWebsList,
+            transferDetailsList);
         
         return volunteer;
     }

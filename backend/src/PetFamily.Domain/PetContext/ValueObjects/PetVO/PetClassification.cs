@@ -19,10 +19,10 @@ public record PetClassification
     public static Result<PetClassification, Error> Create(Guid speciesId, Guid breedId)
     {
         if (speciesId == Guid.Empty)
-            return ErrorList.General.ValueIsRequired(nameof(SpeciesId));
+            return Errors.General.ValueIsRequired(nameof(SpeciesId));
         
         if (breedId == Guid.Empty)
-            return ErrorList.General.ValueIsRequired(nameof(BreedId));
+            return Errors.General.ValueIsRequired(nameof(BreedId));
         
         var validClassification = new PetClassification(speciesId, breedId);
 

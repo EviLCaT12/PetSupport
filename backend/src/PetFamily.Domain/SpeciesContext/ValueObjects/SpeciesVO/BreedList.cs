@@ -19,7 +19,7 @@ public record BreedList
     public static Result<BreedList, Error> Create(List<Breed>? breeds)
     {
         if (breeds == null)
-            return ErrorList.General.ValueIsRequired(nameof(BreedList));
+            return Errors.General.ValueIsRequired(nameof(BreedList));
 
         var validBreedList = new BreedList(breeds);
 

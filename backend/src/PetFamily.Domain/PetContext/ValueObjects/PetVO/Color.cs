@@ -13,7 +13,7 @@ public record Color
     public static Result<Color, Error> Create(string color)
     {
         if (string.IsNullOrWhiteSpace(color))
-            return ErrorList.General.ValueIsRequired(nameof(Color));
+            return Errors.General.ValueIsRequired(nameof(Color));
 
         var validColor = new Color(color);
 

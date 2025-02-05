@@ -8,9 +8,9 @@ public record TransferDetailsList
     
     public IReadOnlyList<TransferDetails> TransferDetails => _transferDetails;
 
-    private TransferDetailsList(List<TransferDetails> transferDetails)
+    private TransferDetailsList(IEnumerable<TransferDetails> transferDetails)
     {
-        _transferDetails = transferDetails;
+        _transferDetails = transferDetails.ToList();
     }
 
     //ef core

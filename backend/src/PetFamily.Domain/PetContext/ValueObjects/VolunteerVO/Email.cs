@@ -17,13 +17,13 @@ public record Email
     public static Result<Email, Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return ErrorList.General.ValueIsRequired(nameof(Email));
+            return Errors.General.ValueIsRequired(nameof(Email));
 
         const string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         var isCorrect  = Regex.IsMatch(email, emailPattern);
         
         if(!isCorrect)
-            return ErrorList.General.ValueIsInvalid(nameof(Email));
+            return Errors.General.ValueIsInvalid(nameof(Email));
         
         var validEmail = new Email(email);
 

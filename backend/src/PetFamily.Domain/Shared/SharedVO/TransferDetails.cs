@@ -18,10 +18,10 @@ public record TransferDetails
     public static Result<TransferDetails, Error.Error> Create(string name, string description)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return ErrorList.General.ValueIsRequired(nameof(Name));
+            return Errors.General.ValueIsRequired(nameof(Name));
             
         if (string.IsNullOrWhiteSpace(description))
-            return ErrorList.General.ValueIsRequired(nameof(Description));
+            return Errors.General.ValueIsRequired(nameof(Description));
         
         var validTransferDetails = new TransferDetails(name, description);
         
