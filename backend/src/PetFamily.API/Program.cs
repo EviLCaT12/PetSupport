@@ -1,4 +1,5 @@
 using FluentValidation.AspNetCore;
+using PetFamily.API.Extensions;
 using PetFamily.API.Validation;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
@@ -17,6 +18,8 @@ builder.Services
 
 var app = builder.Build();
 
+app.UseExceptionMiddleware();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -32,5 +35,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
+app.Use(async (context, next) =>
+{
+    Console.WriteLine(context.Request.Path);
+
+    await next.Invoke();
+});
+    
 
 app.Run();
