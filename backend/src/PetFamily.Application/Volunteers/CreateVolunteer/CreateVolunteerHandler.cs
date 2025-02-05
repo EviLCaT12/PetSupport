@@ -39,7 +39,7 @@ public class CreateVolunteerHandler(
         var volunteerId = VolunteerId.NewVolunteerId();
 
         var fioCreateResult = VolunteerFio
-            .Create(createVolunteerCommand.FirstName, createVolunteerCommand.LastName, createVolunteerCommand.SurName)
+            .Create(createVolunteerCommand.Fio.FirstName, createVolunteerCommand.Fio.LastName, createVolunteerCommand.Fio.SurName)
             .Value;
         
 

@@ -1,9 +1,9 @@
+using PetFamily.Application.Dto.VolunteerDto;
+
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public record CreateVolunteerCommand(
-    string FirstName,
-    string LastName,
-    string SurName,
+    FioDto Fio,
     string PhoneNumber, 
     string Email,
     string Description,

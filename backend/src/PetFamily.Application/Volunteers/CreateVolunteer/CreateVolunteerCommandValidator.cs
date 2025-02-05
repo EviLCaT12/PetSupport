@@ -9,7 +9,7 @@ public class CreateVolunteerCommandValidator : AbstractValidator<CreateVolunteer
 {
     public CreateVolunteerCommandValidator()
     {
-        RuleFor(v => new { v.FirstName, v.LastName, v.SurName })
+        RuleFor(v => v.Fio)
             .MustBeValueObject(x => VolunteerFio.Create(x.FirstName, x.LastName, x.SurName));
         RuleFor(v => v.PhoneNumber).MustBeValueObject(Phone.Create);
         RuleFor(v => v.Email).MustBeValueObject(Email.Create);
