@@ -12,7 +12,7 @@ public static class ResponseExtensions
         
         var statusCode = GetStatusCodeForErrorType(error.Type);
         
-        var envelope = Envelop.Error(new ErrorList([error]));  
+        var envelope = Envelope.Error(new ErrorList([error]));  
         
         return new ObjectResult(envelope)
         {
@@ -40,7 +40,7 @@ public static class ResponseExtensions
             : GetStatusCodeForErrorType(distinctErrorTypes.First());
         
         
-        var envelope = Envelop.Error(errors);
+        var envelope = Envelope.Error(errors);
         
         return new ObjectResult(envelope)
         {
