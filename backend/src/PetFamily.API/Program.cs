@@ -21,6 +21,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
     app.MapOpenApi();
+
+    await app.ApplyMigration();
 }
 
 app.UseHttpsRedirection();
