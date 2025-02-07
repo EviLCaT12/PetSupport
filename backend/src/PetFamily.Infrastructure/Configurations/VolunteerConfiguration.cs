@@ -14,10 +14,12 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         
         builder.HasKey(v => v.Id);
 
-        builder.Property(v => v.Id)
-            .HasConversion(
-                id => id.Value,
-                value => VolunteerId.Create(value));
+        builder.ComplexProperty(v => v.Id, ib =>
+        {
+            ib.Property(id => id.Value)
+                .IsRequired()
+                .HasColumnName("id");
+        });
 
         builder.ComplexProperty(v => v.Fio, fb =>
         {
