@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.Logging;
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.Entities;
@@ -10,6 +11,7 @@ using PetFamily.Domain.Shared.SharedVO;
 namespace PetFamily.Application.Volunteers.CreateVolunteer;
 
 public class CreateVolunteerHandler(
+    ILogger<CreateVolunteerHandler> logger,
     IVolunteersRepository volunteersRepository,
     IValidator<CreateVolunteerCommand> createVolunteerCommandValidator,
     IValidator<IEnumerable<SocialWebDto>> socialWebDtoValidator,
@@ -77,6 +79,8 @@ public class CreateVolunteerHandler(
             );
         
         await volunteersRepository.AddAsync(validVolunteer.Value, cancellationToken);
+        
+        logger.LogInformation("Created volunteer with ID: {volunteerId}", volunteerId);
         
         return validVolunteer.Value.Id.Value;
     }
