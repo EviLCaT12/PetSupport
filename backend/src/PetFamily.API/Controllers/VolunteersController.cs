@@ -30,7 +30,7 @@ public class VolunteersController : ControllerBase
     }
 
     [HttpPut("{id:guid}/main-info")]
-    public async Task<ActionResult> Update(
+    public async Task<ActionResult<Guid>> Update(
         [FromRoute] Guid id,
         [FromServices] UpdateMainInfoHandler handler,
         CancellationToken cancellationToken)
@@ -42,7 +42,7 @@ public class VolunteersController : ControllerBase
         if (result.IsFailure)
             return result.Error.ToResponse();
 
-        return 
+        return result.Value; 
     }
     
     

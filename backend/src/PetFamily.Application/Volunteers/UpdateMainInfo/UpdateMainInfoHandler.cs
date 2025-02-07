@@ -7,7 +7,7 @@ using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Application.Volunteers.UpdateMainInfo;
 
-public class UpdateMainInfoHandler()
+public class UpdateMainInfoHandler
 {
     private readonly IValidator<UpdateVolunteerCommand> _validator;
     private readonly IVolunteersRepository _repository;
@@ -35,6 +35,12 @@ public class UpdateMainInfoHandler()
         
         var existedVolunteer = await _repository.GetByIdAsync(volunteerId.Value, cancellationToken);
         if (existedVolunteer.IsFailure)
+        {
+            _logger.LogError("Volunteer with id = {id} not found", volunteerId.Value);
             return existedVolunteer.Error; 
+        }
+        
+        
+        return existedVolunteer.Value.Id.Value; 
     }
 }

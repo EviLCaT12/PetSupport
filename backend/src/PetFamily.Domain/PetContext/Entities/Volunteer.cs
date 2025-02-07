@@ -81,6 +81,21 @@ public class Volunteer : Entity<VolunteerId>
         return volunteer;
     }
 
+    public void UpdateMainInfo(
+        VolunteerFio newFio,
+        Phone newPhone,
+        Email newEmail,
+        Description newDescription,
+        YearsOfExperience newYearsOfExperience
+    )
+    {
+        Fio = newFio;
+        Phone = newPhone;
+        Email = newEmail;
+        Description = newDescription;
+        YearsOfExperience = newYearsOfExperience;
+    }
+
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
     private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 
