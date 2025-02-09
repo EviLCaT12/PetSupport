@@ -18,6 +18,13 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer.Id.Value;
     }
 
+    public async Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    {
+        context.Volunteers.Remove(volunteer);
+        await context.SaveChangesAsync(cancellationToken);
+        return volunteer.Id.Value;
+    }
+
     public async Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default)
     {
         var volunteer = await context.Volunteers
