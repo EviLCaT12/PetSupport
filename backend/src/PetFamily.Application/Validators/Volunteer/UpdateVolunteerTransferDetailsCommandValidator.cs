@@ -1,8 +1,9 @@
 using FluentValidation;
+using PetFamily.Application.Validators.Shared;
 using PetFamily.Application.Volunteers.UpdateTransferDetails;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
-namespace PetFamily.Application.Validators.Shared;
+namespace PetFamily.Application.Validators.Volunteer;
 
 public class UpdateVolunteerTransferDetailsCommandValidator : AbstractValidator<UpdateVolunteerTransferDetailsCommand>
 {

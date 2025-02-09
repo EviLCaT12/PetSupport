@@ -128,5 +128,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasDefaultValue(DateTime.MinValue)
             .IsRequired()
             .HasColumnName("created_at");
+        
+        builder.Property<bool>("_isDeleted")
+            .UsePropertyAccessMode(PropertyAccessMode.Field)
+            .HasColumnName("is_deleted");
     }
 }

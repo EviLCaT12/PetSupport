@@ -7,6 +7,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public class Volunteer : Entity<VolunteerId>
 {
+    private bool _isDeleted = false;
     public VolunteerId Id { get; private set; }
     
     public VolunteerFio Fio { get; private set; }
@@ -104,6 +105,24 @@ public class Volunteer : Entity<VolunteerId>
     public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
     {
         TransferDetailsList = TransferDetailsList.Create(newTransferDetails).Value;
+    }
+
+    public void Delete()
+    {
+        _isDeleted = true;
+        foreach (var pet in _pets)
+        {
+            pet.Delete();
+        }
+    }
+    
+    public void Restore()
+    {
+        _isDeleted = false;
+        foreach (var pet in _pets)
+        {
+            pet.Restore();
+        }
     }
 
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);

@@ -2,24 +2,21 @@ using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Validators.Volunteer;
-using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
-using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.Application.Volunteers.Delete;
+namespace PetFamily.Application.Volunteers.HardDelete;
 
-public class DeleteVolunteerHandler
+public class SoftDeleteVolunteerHandler
 {
     private readonly IValidator<DeleteVolunteerCommand> _validator;
     private readonly IVolunteersRepository _repository;
-    private readonly ILogger<DeleteVolunteerHandler> _logger;
+    private readonly ILogger<HardDeleteVolunteerHandler> _logger;
 
-    public DeleteVolunteerHandler(
+    public SoftDeleteVolunteerHandler(
         IValidator<DeleteVolunteerCommand> validator,
         IVolunteersRepository repository,
-        ILogger<DeleteVolunteerHandler> logger)
+        ILogger<HardDeleteVolunteerHandler> logger)
     {
         _validator = validator;
         _repository = repository;
@@ -43,9 +40,11 @@ public class DeleteVolunteerHandler
             return existedVolunteer.Error; 
         }
 
-        var deleteResult =  await _repository.DeleteAsync(existedVolunteer.Value, cancellationToken);
+        existedVolunteer.Value.Delete();
         
-        _logger.LogInformation("Volunteer with id = {volunteerId} deleted" ,volunteerId);
+        var deleteResult = await _repository.UpdateAsync(existedVolunteer.Value, cancellationToken);
+        
+        _logger.LogInformation("Volunteer with id = {volunteerId} soft deleted" ,volunteerId);
         
         return deleteResult; 
     }

@@ -5,7 +5,7 @@ using PetFamily.API.Requests;
 using PetFamily.API.Requests.CreateVolunteer;
 using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.Delete;
+using PetFamily.Application.Volunteers.HardDelete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialWeb;
 using PetFamily.Application.Volunteers.UpdateTransferDetails;
@@ -96,10 +96,25 @@ public class VolunteersController : ControllerBase
         return result.Value;
     }
     
-    [HttpDelete("{id:guid}")]
-    public async Task<ActionResult<Guid>> Delete(
+    [HttpDelete("{id:guid}/hard")]
+    public async Task<ActionResult<Guid>> HardDelete(
         [FromRoute] Guid id,
-        [FromServices] DeleteVolunteerHandler handler,
+        [FromServices] HardDeleteVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand(id);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return result.Value;
+    }
+    
+    [HttpDelete("{id:guid}/soft")]
+    public async Task<ActionResult<Guid>> SoftDelete(
+        [FromRoute] Guid id,
+        [FromServices] SoftDeleteVolunteerHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new DeleteVolunteerCommand(id);

@@ -1,3 +1,3 @@
-namespace PetFamily.Application.Volunteers.Delete;
+namespace PetFamily.Application.Volunteers.HardDelete;
 
 public record DeleteVolunteerCommand(Guid VolunteerId);
