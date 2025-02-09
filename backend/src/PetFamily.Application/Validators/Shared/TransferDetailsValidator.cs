@@ -4,9 +4,9 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Validators.Shared;
 
-public class CreateTransferDetailsValidator : AbstractValidator<TransferDetailDto>
+public class TransferDetailsValidator : AbstractValidator<TransferDetailDto>
 {
-    public CreateTransferDetailsValidator()
+    public TransferDetailsValidator()
     {
         RuleFor(transferDetails => new {transferDetails.Name, transferDetails.Description})
             .MustBeValueObject(dto => TransferDetails.Create(dto.Name, dto.Description));

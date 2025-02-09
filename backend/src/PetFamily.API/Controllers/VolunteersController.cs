@@ -7,6 +7,7 @@ using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialWeb;
+using PetFamily.Application.Volunteers.UpdateTransferDetails;
 
 namespace PetFamily.API.Controllers;
 
@@ -78,5 +79,20 @@ public class VolunteersController : ControllerBase
         return result.Value;
     }
     
+    [HttpPut("{id:guid}/transfer-detail")]
+    public async Task<ActionResult<Guid>> Update(
+        [FromRoute] Guid id,
+        [FromServices] UpdateVolunteerTransferDetailsHandler handler,
+        [FromBody] UpdateVolunteerTransferDetailsRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateVolunteerTransferDetailsCommand(id, request.NewTransferDetail);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return result.Value;
+    }
     
 }

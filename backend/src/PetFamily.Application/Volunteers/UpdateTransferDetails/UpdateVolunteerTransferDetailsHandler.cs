@@ -1,24 +1,23 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Validators;
-using PetFamily.Application.Validators.Volunteer;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
+using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.Application.Volunteers.UpdateSocialWeb;
+namespace PetFamily.Application.Volunteers.UpdateTransferDetails;
 
-public class UpdateVolunteerSocialWebHandler
+public class UpdateVolunteerTransferDetailsHandler
 {
-    private readonly ILogger<UpdateVolunteerSocialWebHandler> _logger;
-    private readonly IValidator<UpdateVolunteerSocialWebCommand> _validator;
+    private readonly ILogger<UpdateVolunteerTransferDetailsHandler> _logger;
+    private readonly IValidator<UpdateVolunteerTransferDetailsCommand> _validator;
     private readonly IVolunteersRepository _repository;
 
-    public UpdateVolunteerSocialWebHandler(
-        ILogger<UpdateVolunteerSocialWebHandler> logger,
-        IValidator<UpdateVolunteerSocialWebCommand> validator,
+
+    public UpdateVolunteerTransferDetailsHandler(
+        ILogger<UpdateVolunteerTransferDetailsHandler> logger,
+        IValidator<UpdateVolunteerTransferDetailsCommand> validator,
         IVolunteersRepository repository)
     {
         _logger = logger;
@@ -27,14 +26,12 @@ public class UpdateVolunteerSocialWebHandler
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        UpdateVolunteerSocialWebCommand command,
+        UpdateVolunteerTransferDetailsCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
-        {
             return validationResult.ToErrorList();
-        }
         
         var volunteerId = VolunteerId.Create(command.VolunteerId).Value;
         
@@ -46,15 +43,15 @@ public class UpdateVolunteerSocialWebHandler
             return existedVolunteer.Error; 
         }
         
-        var socialWebs = command.NewSocialWebs
-            .Select(d => new {d.Link, d.Name})
-            .Select(sw => SocialWeb.Create(sw.Link, sw.Name).Value);
+        var transferDetails = command.NewTransferDetails
+            .Select(d => new {d.Name, d.Description})
+            .Select(td => TransferDetails.Create(td.Name, td.Name).Value);
         
-        existedVolunteer.Value.UpdateSocialWebList(socialWebs); 
+        existedVolunteer.Value.UpdateTransferDetailsList(transferDetails); 
         
         var updateResult = await _repository.UpdateAsync(existedVolunteer.Value, cancellationToken);
         
-        _logger.LogInformation("Volunteer`s({id}) social web updated", volunteerId);
+        _logger.LogInformation("Volunteer`s({id}) transfer details updated", volunteerId);
 
         return updateResult; 
     }

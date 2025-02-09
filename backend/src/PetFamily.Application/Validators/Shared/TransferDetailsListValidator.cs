@@ -8,6 +8,6 @@ public class TransferDetailsListValidator : AbstractValidator<IEnumerable<Transf
     public TransferDetailsListValidator()
     {
         RuleForEach(transferDetails => transferDetails)
-            .SetValidator(new CreateTransferDetailsValidator());
+            .SetValidator(new TransferDetailsValidator());
     }
 }

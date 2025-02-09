@@ -100,6 +100,11 @@ public class Volunteer : Entity<VolunteerId>
     {
         SocialWeb = SocialWebList.Create(newSocialWebs).Value; 
     }
+    
+    public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
+    {
+        TransferDetailsList = TransferDetailsList.Create(newTransferDetails).Value;
+    }
 
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
