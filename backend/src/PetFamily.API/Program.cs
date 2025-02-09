@@ -1,6 +1,5 @@
 using FluentValidation.AspNetCore;
 using PetFamily.API.Extensions;
-using PetFamily.API.Validation;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
 using Serilog;

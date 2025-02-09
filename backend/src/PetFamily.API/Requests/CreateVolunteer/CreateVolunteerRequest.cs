@@ -1,8 +1,7 @@
-
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Dto.VolunteerDto;
 
-namespace PetFamily.API.Requests;
+namespace PetFamily.API.Requests.CreateVolunteer;
 
 public record CreateVolunteerRequest(
     FioDto Fio,

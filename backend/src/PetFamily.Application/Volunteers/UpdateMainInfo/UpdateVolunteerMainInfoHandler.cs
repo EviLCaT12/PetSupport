@@ -62,7 +62,7 @@ public class UpdateVolunteerMainInfoHandler
             description,
             exp);
 
-        var updateResult =  await _repository.Update(existedVolunteer.Value, cancellationToken); 
+        var updateResult =  await _repository.UpdateAsync(existedVolunteer.Value, cancellationToken); 
         
         return updateResult; 
     }

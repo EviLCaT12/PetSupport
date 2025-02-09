@@ -30,7 +30,7 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer;
     }
     
-    public async Task<Guid> Update(Volunteer volunteer, CancellationToken cancellationToken = default)
+    public async Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         context.Volunteers.Attach(volunteer);
         

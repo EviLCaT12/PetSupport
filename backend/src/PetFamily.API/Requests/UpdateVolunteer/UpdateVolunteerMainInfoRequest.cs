@@ -1,9 +1,8 @@
 using PetFamily.Application.Dto.VolunteerDto;
-using PetFamily.Application.Volunteers.UpdateMainInfo;
 
-namespace PetFamily.API.Requests;
+namespace PetFamily.API.Requests.UpdateVolunteer;
 
-public record UpdateVolunteerRequest(
+public record UpdateVolunteerMainInfoRequest(
     FioDto Fio, 
     string Phone,
     string Email,

@@ -18,6 +18,6 @@ public record SocialWebList
     //ef core
     private SocialWebList() { }
     
-    public static Result<SocialWebList, Error> Create(List<SocialWeb> socialWebs) =>
+    public static Result<SocialWebList, Error> Create(IEnumerable<SocialWeb> socialWebs) =>
         new SocialWebList(socialWebs);
 }

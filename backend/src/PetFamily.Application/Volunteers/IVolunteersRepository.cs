@@ -11,5 +11,5 @@ public interface IVolunteersRepository
 
     Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default);
 
-    Task<Guid> Update(Volunteer volunteer, CancellationToken cancellationToken = default);
+    Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
 }

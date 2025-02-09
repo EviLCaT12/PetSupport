@@ -96,6 +96,11 @@ public class Volunteer : Entity<VolunteerId>
         YearsOfExperience = newYearsOfExperience;
     }
 
+    public void UpdateSocialWebList(IEnumerable<SocialWeb> newSocialWebs)
+    {
+        SocialWeb = SocialWebList.Create(newSocialWebs).Value; 
+    }
+
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
     private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 

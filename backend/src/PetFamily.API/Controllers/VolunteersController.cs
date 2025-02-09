@@ -2,8 +2,11 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests;
+using PetFamily.API.Requests.CreateVolunteer;
+using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
+using PetFamily.Application.Volunteers.UpdateSocialWeb;
 
 namespace PetFamily.API.Controllers;
 
@@ -40,16 +43,16 @@ public class VolunteersController : ControllerBase
     public async Task<ActionResult<Guid>> Update(
         [FromRoute] Guid id,
         [FromServices] UpdateVolunteerMainInfoHandler handler,
-        [FromBody] UpdateVolunteerRequest request,
+        [FromBody] UpdateVolunteerMainInfoRequest mainInfoRequest,
         CancellationToken cancellationToken)
     {
         var command = new UpdateVolunteerMainInfoCommand(
             id,
-            request.Fio,
-            request.Phone,
-            request.Email,
-            request.Description, 
-            request.YearsOfExperience);
+            mainInfoRequest.Fio,
+            mainInfoRequest.Phone,
+            mainInfoRequest.Email,
+            mainInfoRequest.Description, 
+            mainInfoRequest.YearsOfExperience);
         
         var result = await handler.Handle(command, cancellationToken);
 
@@ -57,6 +60,22 @@ public class VolunteersController : ControllerBase
             return result.Error.ToResponse();
 
         return result.Value; 
+    }
+
+    [HttpPut("{id:guid}/social-web")]
+    public async Task<ActionResult<Guid>> Update(
+        [FromRoute] Guid id,
+        [FromServices] UpdateVolunteerSocialWebHandler handler,
+        [FromBody] UpdateVolunteerSocialWebRequest request,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateVolunteerSocialWebCommand(id, request.SocialWebs);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return result.Value;
     }
     
     
