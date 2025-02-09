@@ -2,7 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests;
-using PetFamily.Application.Volunteers.CreateVolunteer;
+using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 
 namespace PetFamily.API.Controllers;
@@ -17,8 +17,15 @@ public class VolunteersController : ControllerBase
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
+        var command = new CreateVolunteerCommand(
+            request.Fio, 
+            request.PhoneNumber, 
+            request.Email, 
+            request.Description,
+            request.YearsOfExperience);
+        
         var result = await handler.HandleAsync(
-            request.CreateVolunteerCommand,
+            command,
             request.SocialWebDto,
             request.TransferDetailDto,
             cancellationToken);
@@ -32,11 +39,18 @@ public class VolunteersController : ControllerBase
     [HttpPut("{id:guid}/main-info")]
     public async Task<ActionResult<Guid>> Update(
         [FromRoute] Guid id,
-        [FromServices] UpdateMainInfoHandler handler,
+        [FromServices] UpdateVolunteerMainInfoHandler handler,
+        [FromBody] UpdateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateVolunteerCommand(id);
-
+        var command = new UpdateVolunteerMainInfoCommand(
+            id,
+            request.Fio,
+            request.Phone,
+            request.Email,
+            request.Description, 
+            request.YearsOfExperience);
+        
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)

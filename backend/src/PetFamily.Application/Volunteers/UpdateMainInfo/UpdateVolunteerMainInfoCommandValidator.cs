@@ -5,12 +5,12 @@ using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Volunteers.UpdateMainInfo;
 
-public class UpdateVolunteerCommandValidator : AbstractValidator<UpdateVolunteerCommand>
+public class UpdateVolunteerMainInfoCommandValidator : AbstractValidator<UpdateVolunteerMainInfoCommand>
 {
-    public UpdateVolunteerCommandValidator()
+    public UpdateVolunteerMainInfoCommandValidator()
     {
         RuleFor(u => u.VolunteerId).MustBeValueObject(VolunteerId.Create);
-        RuleFor(u => new {u.FirstName, u.LastName, u.SurName})
+        RuleFor(u => u.Fio)
             .MustBeValueObject(fio => VolunteerFio.Create(fio.FirstName, fio.LastName, fio.SurName));
         RuleFor(u => u.Phone).MustBeValueObject(Phone.Create);
         RuleFor(u => u.Email).MustBeValueObject(Email.Create);

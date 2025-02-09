@@ -8,7 +8,7 @@ using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 
-namespace PetFamily.Application.Volunteers.CreateVolunteer;
+namespace PetFamily.Application.Volunteers.Create;
 
 public class CreateVolunteerHandler(
     ILogger<CreateVolunteerHandler> logger,

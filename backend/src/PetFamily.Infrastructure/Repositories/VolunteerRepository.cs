@@ -32,9 +32,7 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
     
     public async Task<Guid> Update(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
-        var entries = context.ChangeTracker.Entries<Volunteer>(); 
-        
-        context.Volunteers.Update(volunteer);
+        context.Volunteers.Attach(volunteer);
         
         await context.SaveChangesAsync(cancellationToken); 
         

@@ -1,10 +1,10 @@
+using PetFamily.Application.Dto.VolunteerDto;
+
 namespace PetFamily.Application.Volunteers.UpdateMainInfo;
 
-public record UpdateVolunteerCommand(
+public record UpdateVolunteerMainInfoCommand(
     Guid VolunteerId,
-    string FirstName,
-    string LastName,
-    string SurName,
+    FioDto Fio, 
     string Phone,
     string Email,
     string Description,
