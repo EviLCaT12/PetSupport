@@ -5,6 +5,7 @@ using PetFamily.API.Requests;
 using PetFamily.API.Requests.CreateVolunteer;
 using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Volunteers.Create;
+using PetFamily.Application.Volunteers.HardDelete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialWeb;
 using PetFamily.Application.Volunteers.UpdateTransferDetails;
@@ -41,7 +42,7 @@ public class VolunteersController : ControllerBase
     }
 
     [HttpPut("{id:guid}/main-info")]
-    public async Task<ActionResult<Guid>> Update(
+    public async Task<ActionResult<Guid>> UpdateMainInfo(
         [FromRoute] Guid id,
         [FromServices] UpdateVolunteerMainInfoHandler handler,
         [FromBody] UpdateVolunteerMainInfoRequest mainInfoRequest,
@@ -64,7 +65,7 @@ public class VolunteersController : ControllerBase
     }
 
     [HttpPut("{id:guid}/social-web")]
-    public async Task<ActionResult<Guid>> Update(
+    public async Task<ActionResult<Guid>> UpdateSocialWeb(
         [FromRoute] Guid id,
         [FromServices] UpdateVolunteerSocialWebHandler handler,
         [FromBody] UpdateVolunteerSocialWebRequest request,
@@ -80,13 +81,43 @@ public class VolunteersController : ControllerBase
     }
     
     [HttpPut("{id:guid}/transfer-detail")]
-    public async Task<ActionResult<Guid>> Update(
+    public async Task<ActionResult<Guid>> UpdateTransferDetail(
         [FromRoute] Guid id,
         [FromServices] UpdateVolunteerTransferDetailsHandler handler,
         [FromBody] UpdateVolunteerTransferDetailsRequest request,
         CancellationToken cancellationToken)
     {
         var command = new UpdateVolunteerTransferDetailsCommand(id, request.NewTransferDetail);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return result.Value;
+    }
+    
+    [HttpDelete("{id:guid}/hard")]
+    public async Task<ActionResult<Guid>> HardDelete(
+        [FromRoute] Guid id,
+        [FromServices] HardDeleteVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand(id);
+        
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return result.Value;
+    }
+    
+    [HttpDelete("{id:guid}/soft")]
+    public async Task<ActionResult<Guid>> SoftDelete(
+        [FromRoute] Guid id,
+        [FromServices] SoftDeleteVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeleteVolunteerCommand(id);
         
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)

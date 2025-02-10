@@ -9,6 +9,7 @@ namespace PetFamily.Domain.PetContext.Entities;
 
 public class Pet : Entity<PetId>
 {
+    private bool _isDeleted = false;
     public PetId Id { get; private set; }
     
     public Name Name { get; private set; }
@@ -104,6 +105,16 @@ public class Pet : Entity<PetId>
             transferDetailsList);
 
         return pet;
+    }
+    
+    public void Delete()
+    {
+        _isDeleted = true;
+    }
+    
+    public void Restore()
+    {
+        _isDeleted = false;
     }
 }
 
