@@ -14,6 +14,8 @@ public class Pet : Entity<PetId>
     
     public Name Name { get; private set; }
     
+    public SerialNumber SerialNumber { get; private set; }
+    
     public PetClassification Classification { get; private set; }
     
     public Description Description { get; private set; }
@@ -107,15 +109,14 @@ public class Pet : Entity<PetId>
         return pet;
     }
     
-    public void Delete()
-    {
-        _isDeleted = true;
-    }
+    public void Delete() 
+        => _isDeleted = true;
     
-    public void Restore()
-    {
-        _isDeleted = false;
-    }
+    public void Restore() 
+        => _isDeleted = false;
+
+    public void SetSerialNumber(SerialNumber serialNumber) 
+        => SerialNumber = serialNumber;
 }
 
 

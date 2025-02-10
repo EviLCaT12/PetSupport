@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
@@ -29,7 +30,7 @@ public class Volunteer : Entity<VolunteerId>
     
     public TransferDetailsList TransferDetailsList { get; private set; }
 
-    private readonly List<Pet> _pets = []; //создатся отдельный метод Add, который и будет добавлять животных
+    private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
 
     // ef core
@@ -123,6 +124,18 @@ public class Volunteer : Entity<VolunteerId>
         {
             pet.Restore();
         }
+    }
+
+    public UnitResult<Error> AddPet(Pet pet)
+    {
+        var serialNumber = SerialNumber.Create(_pets.Count + 1);
+        if (serialNumber.IsFailure)
+            return serialNumber.Error;
+        
+        pet.SetSerialNumber(serialNumber.Value);
+        _pets.Add(pet);
+
+        return Result.Success<Error>();
     }
 
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
