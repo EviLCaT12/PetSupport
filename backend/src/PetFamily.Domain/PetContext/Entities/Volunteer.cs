@@ -128,14 +128,126 @@ public class Volunteer : Entity<VolunteerId>
 
     public UnitResult<Error> AddPet(Pet pet)
     {
-        var serialNumber = SerialNumber.Create(_pets.Count + 1);
-        if (serialNumber.IsFailure)
-            return serialNumber.Error;
+        var position = Position.Create(_pets.Count + 1);
+        if (position.IsFailure)
+            return position.Error;
         
-        pet.SetSerialNumber(serialNumber.Value);
+        pet.SetPosition(position.Value);
         _pets.Add(pet);
 
         return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MovePetToSpecfiedPosition(PetId petId, Position newPosition)
+    {
+        var currentPosition = _pets
+            .FirstOrDefault(p => p.Id == petId)!.Position; //А должна ли тут быть проверка на null?
+
+        if (currentPosition == newPosition || _pets.Count == 1)
+            return Result.Success<Error>();
+
+        var adjustedPosition = AdjustNewPositionIfOutOfRange(newPosition);
+        
+        if (adjustedPosition.IsFailure)
+            return adjustedPosition.Error;
+        
+        newPosition = adjustedPosition.Value;
+
+        var moveResult = MovePetsBetweenPosition(newPosition, currentPosition);
+        if (moveResult.IsFailure)
+            return moveResult.Error;
+        
+        return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> MovePetToFirstPosition(PetId petId)
+    {
+        var currentPet = _pets.FirstOrDefault(p => p.Id == petId);
+        
+        var currentPosition = currentPet!.Position;
+        
+        if (currentPosition.Value == 1)
+            return Result.Success<Error>();
+        
+        var petsToMove = _pets.Where(p => p.Position.Value < currentPosition.Value);
+
+        foreach (var pet in petsToMove)
+        {
+            var result = pet.MoveForward();
+            if (result.IsFailure)
+                return result.Error;
+        }
+
+        var firstPosition = Position.Create(1).Value;
+        
+        currentPet.SetPosition(firstPosition);
+        
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MovePetToLastPosition(PetId petId)
+    {
+        var currentPet = _pets.FirstOrDefault(p => p.Id == petId);
+        
+        var currentPosition = currentPet!.Position;
+        
+        if (currentPosition.Value == _pets.Count)
+            return Result.Success<Error>();
+        
+        var petsToMove = _pets.Where(p => p.Position.Value > currentPosition.Value);
+
+        foreach (var pet in petsToMove)
+        {
+            var result = pet.MoveBackward();
+            if (result.IsFailure)
+                return result.Error;
+        }
+
+        var lastPosition = Position.Create(_pets.Count).Value;
+        
+        currentPet.SetPosition(lastPosition);
+        
+        return Result.Success<Error>();
+    }
+
+    private UnitResult<Error> MovePetsBetweenPosition(Position newPosition, Position currentPosition)
+    {
+        if (newPosition.Value < currentPosition.Value)
+        {
+            var petToMove = _pets.Where(p => p.Position.Value >= newPosition.Value
+                                             && p.Position.Value <= currentPosition.Value);
+
+            foreach (var pet in petToMove)
+            {
+                var result = pet.MoveForward();
+                if (result.IsFailure)
+                    return result.Error;
+            }
+        }
+        else if (newPosition.Value > currentPosition.Value)
+        {
+            var petToMove = _pets.Where(p => p.Position.Value > currentPosition.Value
+                                             && p.Position.Value <= newPosition.Value);
+
+            foreach (var pet in petToMove)
+            {
+                var result = pet.MoveBackward();
+                if (result.IsFailure)
+                    return result.Error;
+            }
+
+        }
+        return Result.Success<Error>();
+    }
+
+    private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
+    {
+        if (newPosition.Value <= _pets.Count)
+            return newPosition;
+        
+        var lastPosition = Position.Create(_pets.Count);
+        
+        return lastPosition.IsFailure ? lastPosition.Error : lastPosition.Value;
     }
 
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);

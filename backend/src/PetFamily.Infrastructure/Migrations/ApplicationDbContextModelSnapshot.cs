@@ -159,7 +159,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .HasColumnName("owner_phone");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("SerialNumber", "PetFamily.Domain.PetContext.Entities.Pet.SerialNumber#SerialNumber", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Position", "PetFamily.Domain.PetContext.Entities.Pet.Position#Position", b1 =>
                         {
                             b1.IsRequired();
 

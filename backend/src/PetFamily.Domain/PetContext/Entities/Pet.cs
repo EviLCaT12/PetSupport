@@ -14,7 +14,7 @@ public class Pet : Entity<PetId>
     
     public Name Name { get; private set; }
     
-    public SerialNumber SerialNumber { get; private set; }
+    public Position Position { get; private set; }
     
     public PetClassification Classification { get; private set; }
     
@@ -115,8 +115,30 @@ public class Pet : Entity<PetId>
     public void Restore() 
         => _isDeleted = false;
 
-    public void SetSerialNumber(SerialNumber serialNumber) 
-        => SerialNumber = serialNumber;
+    public void SetPosition(Position position) 
+        => Position = position;
+
+    public UnitResult<Error> MoveForward()
+    {
+        var newPosition = Position.Forward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MoveBackward()
+    {
+        var newPosition = Position.Backward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
+    }
 }
 
 
