@@ -9,5 +9,7 @@ public interface IVolunteersRepository
 {
     Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
 
-    Task<Result<Volunteer, Error>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default);
+    Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default);
+
+    Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
 }

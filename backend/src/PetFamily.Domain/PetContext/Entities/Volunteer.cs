@@ -81,6 +81,31 @@ public class Volunteer : Entity<VolunteerId>
         return volunteer;
     }
 
+    public void UpdateMainInfo(
+        VolunteerFio newFio,
+        Phone newPhone,
+        Email newEmail,
+        Description newDescription,
+        YearsOfExperience newYearsOfExperience
+    )
+    {
+        Fio = newFio;
+        Phone = newPhone;
+        Email = newEmail;
+        Description = newDescription;
+        YearsOfExperience = newYearsOfExperience;
+    }
+
+    public void UpdateSocialWebList(IEnumerable<SocialWeb> newSocialWebs)
+    {
+        SocialWeb = SocialWebList.Create(newSocialWebs).Value; 
+    }
+    
+    public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
+    {
+        TransferDetailsList = TransferDetailsList.Create(newTransferDetails).Value;
+    }
+
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
     private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 

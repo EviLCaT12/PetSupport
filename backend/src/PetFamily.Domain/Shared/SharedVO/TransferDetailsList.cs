@@ -16,6 +16,6 @@ public record TransferDetailsList
     //ef core
     private TransferDetailsList() { }
     
-    public static Result<TransferDetailsList, Error.Error> Create(List<TransferDetails> transferDetails) =>
+    public static Result<TransferDetailsList, Error.Error> Create(IEnumerable<TransferDetails> transferDetails) =>
         new TransferDetailsList(transferDetails);
 }

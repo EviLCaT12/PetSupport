@@ -18,15 +18,24 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer.Id.Value;
     }
 
-    public async Task<Result<Volunteer, Error>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default)
+    public async Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default)
     {
         var volunteer = await context.Volunteers
-            .Include(v => v.AllOwnedPets) //FIXME Узнать как правильно
+            .Include(v => v.AllOwnedPets)
             .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
 
         if (volunteer == null)
-            return Errors.General.ValueNotFound(id.Value);
+            return new ErrorList([Errors.General.ValueNotFound(id.Value)]);
 
         return volunteer;
+    }
+    
+    public async Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    {
+        context.Volunteers.Attach(volunteer);
+        
+        await context.SaveChangesAsync(cancellationToken); 
+        
+        return volunteer.Id.Value;
     }
 }
