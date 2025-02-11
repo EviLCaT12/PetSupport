@@ -7,11 +7,11 @@ namespace PetFamily.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class FIleController : ControllerBase
+public class FileController : ControllerBase
 {
     private readonly IMinioClient _minioOptions;
 
-    public FIleController(IMinioClient minioOptions)
+    public FileController(IMinioClient minioOptions)
     {
         _minioOptions = minioOptions;  
     }
