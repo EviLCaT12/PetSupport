@@ -14,6 +14,8 @@ public class Pet : Entity<PetId>
     
     public Name Name { get; private set; }
     
+    public Position Position { get; private set; }
+    
     public PetClassification Classification { get; private set; }
     
     public Description Description { get; private set; }
@@ -107,14 +109,35 @@ public class Pet : Entity<PetId>
         return pet;
     }
     
-    public void Delete()
+    public void Delete() 
+        => _isDeleted = true;
+    
+    public void Restore() 
+        => _isDeleted = false;
+
+    public void SetPosition(Position position) 
+        => Position = position;
+
+    public UnitResult<Error> MoveForward()
     {
-        _isDeleted = true;
+        var newPosition = Position.Forward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
     }
     
-    public void Restore()
+    public UnitResult<Error> MoveBackward()
     {
-        _isDeleted = false;
+        var newPosition = Position.Backward();
+        if (newPosition.IsFailure)
+            return newPosition.Error;
+        
+        Position = newPosition.Value;
+
+        return Result.Success<Error>();
     }
 }
 

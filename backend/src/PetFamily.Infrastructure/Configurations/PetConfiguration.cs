@@ -53,6 +53,13 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 .HasColumnName("color");
         });
         
+        builder.ComplexProperty(p => p.Position, sb =>
+        {
+            sb.Property(s => s.Value)
+                .IsRequired()
+                .HasColumnName("position");
+        });
+        
         builder.ComplexProperty(p => p.HealthInfo, hb =>
         {
             hb.Property(d => d.Value)
