@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.AspNetCore;
+using Minio.DataModel.Args;
 
 namespace PetFamily.API.Controllers;
 
@@ -9,16 +10,10 @@ namespace PetFamily.API.Controllers;
 [Route("[controller]")]
 public class FileController : ControllerBase
 {
-    private readonly IMinioClient _minioOptions;
-
-    public FileController(IMinioClient minioOptions)
-    {
-        _minioOptions = minioOptions;  
-    }
 
     [HttpPost]
-    public async Task<ActionResult<string>> UploadFile(IFormFile file)
+    public async Task<ActionResult> UploadFile(IFormFile file, CancellationToken cancellationToken)
     {
-        return File(file.OpenReadStream(), file.ContentType);
+        
     }
 }
