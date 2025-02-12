@@ -6,6 +6,6 @@ namespace PetFamily.Application.Providers;
 
 public interface IFileProvider
 {
-    Task<Result<string, Error>> UploadFile(
+    Task<UnitResult<ErrorList>> UploadFiles(
         FileData fileData, CancellationToken cancellationToken = default);
 }

@@ -46,8 +46,11 @@ public class UpdateVolunteerTransferDetailsHandler
         var transferDetails = command.NewTransferDetails
             .Select(d => new {d.Name, d.Description})
             .Select(td => TransferDetails.Create(td.Name, td.Name).Value);
+
+
+        var transferDetailsLit = new ValueObjectList<TransferDetails>(transferDetails);
         
-        existedVolunteer.Value.UpdateTransferDetailsList(transferDetails); 
+        existedVolunteer.Value.UpdateTransferDetailsList(transferDetailsLit); 
         
         var updateResult = await _repository.UpdateAsync(existedVolunteer.Value, cancellationToken);
         

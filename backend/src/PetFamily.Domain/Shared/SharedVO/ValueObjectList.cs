@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace PetFamily.Domain.Shared;
+namespace PetFamily.Domain.Shared.SharedVO;
 
 public class ValueObjectList<T> : IReadOnlyList<T>
 {

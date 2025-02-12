@@ -38,7 +38,7 @@ public class Pet : Entity<PetId>
     
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;
     
-    public TransferDetailsList TransferDetailsList { get; private set; }
+    public ValueObjectList<TransferDetails> TransferDetailsList { get; private set; }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
@@ -58,7 +58,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        TransferDetailsList transferDetails
+        ValueObjectList<TransferDetails> transferDetails
     )
     {
         Id = id;
@@ -89,7 +89,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        TransferDetailsList transferDetailsList)
+        ValueObjectList<TransferDetails> transferDetailsList)
     {
         var pet = new Pet(
             id,
