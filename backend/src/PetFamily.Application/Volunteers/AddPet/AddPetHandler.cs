@@ -21,11 +21,22 @@ public class AddPetHandler
         _logger = logger;
     }
 
-    public async Task<Result<FilePath, ErrorList>> Handle(
+    public async Task<Result<FilePath, ErrorList>> AddHandle(
         IEnumerable<FileData> fileData,
         CancellationToken cancellationToken)
     {
         var uploadResult = await _fileProvider.UploadFiles(fileData, cancellationToken);
+        if (uploadResult.IsFailure)
+            return uploadResult.Error;
+
+        return default;
+    }
+    
+    public async Task<Result<FilePath, ErrorList>> RemoveHandle(
+        IEnumerable<ExistFileData> fileData,
+        CancellationToken cancellationToken)
+    {
+        var uploadResult = await _fileProvider.RemoveFiles(fileData, cancellationToken);
         if (uploadResult.IsFailure)
             return uploadResult.Error;
 

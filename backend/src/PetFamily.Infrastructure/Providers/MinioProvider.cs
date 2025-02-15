@@ -55,6 +55,75 @@ public class MinioProvider : IFileProvider
         }
     }
 
+    public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFiles(
+        IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default)
+    {
+        var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);
+        var fileList = files.ToList();
+
+        try
+        {
+            await CheckBucketsForExistAsync(fileList, cancellationToken);
+            await CheckObjectsExisted(fileList, cancellationToken);
+
+            var tasks = fileList.Select(async file =>
+                await RemoveObject(file, semaphoreSlim, cancellationToken));
+            
+            var removeResult = await Task.WhenAll(tasks);
+            
+            if (removeResult.Any(r => r.IsFailure))
+                return removeResult.First().Error;
+
+            var removeFiles = removeResult.Select(p => p.Value).ToList();
+            
+            return removeFiles;
+            
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Fail to remove files in minio, files amount: {amount}", fileList.Count);
+            var error = Error.Failure("file.remove", "Fail to remove file in minio");
+            var errorList = new ErrorList([error]);
+            return errorList;
+        }
+
+    }
+
+
+    private async Task<Result<string, ErrorList>> RemoveObject(
+        ExistFileData existFileData,
+        SemaphoreSlim semaphoreSlim,
+        CancellationToken cancellationToken)
+    {
+        await semaphoreSlim.WaitAsync(cancellationToken);
+
+        var removeObjectArgs = new RemoveObjectArgs()
+            .WithBucket(existFileData.BucketName)
+            .WithObject(existFileData.FilePath.Path);
+
+        try
+        {
+            await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
+
+            return existFileData.FilePath.Path;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Fail to upload file with path {path} in minio bucket {bucket}",
+                existFileData.FilePath.Path,
+                existFileData.BucketName);
+
+            var error = Error.Failure("file.remove", "Fail to remove file in minio");
+            var errorList = new ErrorList([error]);
+            return errorList;
+        }
+        finally
+        {
+            semaphoreSlim.Release();
+        }
+    }
+    
+
     private async Task<Result<FilePath, ErrorList>> PutObject(
         FileData fileData,
         SemaphoreSlim semaphoreSlim,
@@ -90,6 +159,29 @@ public class MinioProvider : IFileProvider
         }
     }
 
+    private async Task<UnitResult<ErrorList>> CheckObjectsExisted(IEnumerable<ExistFileData> files, CancellationToken cancellationToken)
+    {
+        foreach (var file in files)
+        {
+            try
+            {
+                var stateObjectArgs = new StatObjectArgs()
+                    .WithBucket(file.BucketName)
+                    .WithObject(file.FilePath.Path);
+        
+                await _minioClient.StatObjectAsync(stateObjectArgs, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Cannot get file with path {path}", file.FilePath.Path);
+                var error = Error.Failure("file.exist", "Fail to get file`s metadata");
+                return new ErrorList([error]);
+            }
+        }
+
+        return Result.Success<ErrorList>();
+    }
+
     private async Task IfBucketsNotExistCreateBucket(
         IEnumerable<FileData> filesData,
         CancellationToken cancellationToken)
@@ -111,6 +203,28 @@ public class MinioProvider : IFileProvider
                 await _minioClient.MakeBucketAsync(makeBucketArgs, cancellationToken);
             }
         }
+    }
+
+    private async Task<UnitResult<ErrorList>> CheckBucketsForExistAsync(IEnumerable<ExistFileData> files, CancellationToken cancellationToken)
+    {
+        HashSet<string> bucketNames = [..files.Select(file => file.BucketName)];
+
+        foreach (var bucketName in bucketNames)
+        {
+            var bucketExistArgs = new BucketExistsArgs()
+                .WithBucket(bucketName);
+            
+            var bucketExist = await _minioClient.BucketExistsAsync(bucketExistArgs, cancellationToken);
+            if (bucketExist == false)
+            {
+                _logger.LogError("Bucket {bucketName} does not exist, cannot delete object", bucketName);
+                var error = Error.NotFound("file.remove", 
+                    "Bucket {bucketName} does not exist, cannot delete object");
+                return new ErrorList([error]);
+            }
+        }
+        
+        return Result.Success<ErrorList>();
     }
     
 }

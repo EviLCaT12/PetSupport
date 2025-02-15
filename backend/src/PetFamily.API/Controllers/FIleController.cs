@@ -16,7 +16,7 @@ public class FileController : ControllerBase
 { 
 
     [HttpPost("pet")]
-    public async Task<ActionResult> UploadFile(
+    public async Task<ActionResult> UploadFiles(
         IFormFile file,
         [FromServices] AddPetHandler handler, //знаю, что так делать нельзя, сугубо для теста
         CancellationToken cancellationToken)
@@ -25,12 +25,29 @@ public class FileController : ControllerBase
         var path = Guid.NewGuid();
         var fileData = new FileData(stream, FilePath.Create(path, "jpg").Value, "photos");
 
-        var result = await handler.Handle([fileData], cancellationToken);
+        var result = await handler.AddHandle([fileData], cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value); 
 
 
+    }
+    
+    [HttpPost("{id:guid}/pet")]
+    public async Task<ActionResult> RemoveFiles(
+        [FromRoute] Guid id,
+        [FromServices] AddPetHandler handler, //знаю, что так делать нельзя, сугубо для теста
+        CancellationToken cancellationToken)
+    {
+        var path = FilePath.Create(id, "jpg").Value;
+        var removeData = new ExistFileData(path, "photos");
+        
+        var result = await handler.RemoveHandle([removeData], cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value); 
     }
 }
