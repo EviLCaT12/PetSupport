@@ -89,6 +89,47 @@ public class MinioProvider : IFileProvider
 
     }
 
+    public async Task<Result<string, ErrorList>> GetFilePresignedUrl(
+        ExistFileData file, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await CheckBucketsForExistAsync([file], cancellationToken);
+
+            var presignedGetObjectArgs = new PresignedGetObjectArgs()
+                .WithBucket(file.BucketName)
+                .WithObject(file.FilePath.Path)
+                .WithExpiry(60 * 60 * 24);
+
+            var getUrlResult = await _minioClient.PresignedGetObjectAsync(presignedGetObjectArgs);
+            
+            // Если вернулась пустая стркоа, значит такого файла нет. А если файла нет, то логируем и кидаем соответствующею ошибку
+            if (string.IsNullOrEmpty(getUrlResult))
+            {
+                _logger.LogError("Can't get file presigned url with path {path} in bucket {bucketName}",
+                    file.FilePath.Path,
+                    file.BucketName);
+
+                var error = Error.Failure("file.get.presigned", "Fail to get file in minio");
+                var errorList = new ErrorList([error]);
+                return errorList;
+            }
+            
+            return getUrlResult;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Can't get file presigned url with path {path} in bucket {bucketName}",
+                file.FilePath.Path,
+                file.BucketName);
+
+            var error = Error.Failure("file.get.presigned", "Fail to get file in minio");
+            var errorList = new ErrorList([error]);
+            return errorList;
+        }
+    }
+    
+
 
     private async Task<Result<string, ErrorList>> RemoveObject(
         ExistFileData existFileData,

@@ -12,4 +12,7 @@ public interface IFileProvider
     
     Task<Result<IEnumerable<string>, ErrorList>> RemoveFiles(
         IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default);
+
+    Task<Result<string, ErrorList>> GetFilePresignedUrl(
+        ExistFileData file, CancellationToken cancellationToken);
 }

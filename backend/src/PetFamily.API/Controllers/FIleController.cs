@@ -50,4 +50,23 @@ public class FileController : ControllerBase
 
         return Ok(result.Value); 
     }
+    
+    [HttpGet("{id:guid}/pet")]
+    public async Task<ActionResult> GetFile(
+        [FromRoute] Guid id,
+        [FromServices] AddPetHandler handler, //знаю, что так делать нельзя, сугубо для теста
+        CancellationToken cancellationToken)
+    {
+        var path = FilePath.Create(id, "jpg").Value;
+        var getData = new ExistFileData(path, "photos");
+        
+        var result = await handler.GetHandle(getData, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+    
+        Console.WriteLine(result.Value);
+        return Ok(result.Value); 
+        
+    }
 }

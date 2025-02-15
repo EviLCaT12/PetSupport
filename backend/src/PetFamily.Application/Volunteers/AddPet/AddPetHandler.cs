@@ -42,4 +42,15 @@ public class AddPetHandler
 
         return default;
     }
+    
+    public async Task<Result<FilePath, ErrorList>> GetHandle(
+        ExistFileData fileData,
+        CancellationToken cancellationToken)
+    {
+        var uploadResult = await _fileProvider.GetFilePresignedUrl(fileData, cancellationToken);
+        if (uploadResult.IsFailure)
+            return uploadResult.Error;
+
+        return default;
+    }
 }
