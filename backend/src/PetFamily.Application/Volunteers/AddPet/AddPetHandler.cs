@@ -1,56 +1,83 @@
 using CSharpFunctionalExtensions;
+using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.Extensions;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
+using PetFamily.Application.Species;
+using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
+using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
+using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Application.Volunteers.AddPet;
 
-//Пока что тестовый, только для работоспособности minio
 public class AddPetHandler
 {
-    private readonly IFileProvider _fileProvider;
-    private readonly ILogger<AddPetHandler> _logger;
+    private readonly IVolunteersRepository _volunteersRepository;
+    private readonly ISpeciesRepository _speciesRepository;
+    private readonly IValidator<AddPetCommand> _validator;
 
     public AddPetHandler(
-        IFileProvider fileProvider,
-        ILogger<AddPetHandler> logger)
+        IVolunteersRepository volunteersRepository,
+        ISpeciesRepository speciesRepository,
+        IValidator<AddPetCommand> validator)
     {
-        _fileProvider = fileProvider;
-        _logger = logger;
+        _volunteersRepository = volunteersRepository;
+        _speciesRepository = speciesRepository;
+        _validator = validator;
     }
 
-    public async Task<Result<FilePath, ErrorList>> AddHandle(
-        IEnumerable<FileData> fileData,
-        CancellationToken cancellationToken)
+    public async Task<Result<Guid, ErrorList>> HandleAsync(AddPetCommand command, CancellationToken cancellationToken)
     {
-        var uploadResult = await _fileProvider.UploadFiles(fileData, cancellationToken);
-        if (uploadResult.IsFailure)
-            return uploadResult.Error;
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var getVolunteerResult = await _volunteersRepository
+            .GetByIdAsync(VolunteerId.Create(command.VolunteerId).Value, cancellationToken);
+        if (getVolunteerResult.IsFailure)
+            return getVolunteerResult.Error;
 
-        return default;
-    }
-    
-    public async Task<Result<FilePath, ErrorList>> RemoveHandle(
-        IEnumerable<ExistFileData> fileData,
-        CancellationToken cancellationToken)
-    {
-        var uploadResult = await _fileProvider.RemoveFiles(fileData, cancellationToken);
-        if (uploadResult.IsFailure)
-            return uploadResult.Error;
+        var speciesId = SpeciesId.Create(command.Classification.SpeciesId);
+        var breedId = BreedId.Create(command.Classification.BreedId);
+        var checkSpeciesAndBreedResult = await _speciesRepository.GetBreedByIdAsync(
+            speciesId,
+            breedId,
+            cancellationToken);
+        if (checkSpeciesAndBreedResult.IsFailure)
+            return checkSpeciesAndBreedResult.Error;
 
-        return default;
-    }
-    
-    public async Task<Result<FilePath, ErrorList>> GetHandle(
-        ExistFileData fileData,
-        CancellationToken cancellationToken)
-    {
-        var uploadResult = await _fileProvider.GetFilePresignedUrl(fileData, cancellationToken);
-        if (uploadResult.IsFailure)
-            return uploadResult.Error;
+        List<TransferDetails> transferDetails = [];
+        transferDetails.AddRange(command.TransferDetailDto
+            .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
+            .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
+        var transferDetailsList = new ValueObjectList<TransferDetails>(transferDetails);
 
-        return default;
+        var createPetResult = Pet.Create(
+            PetId.NewPetId(),
+            Name.Create(command.Name).Value,
+            PetClassification.Create(speciesId.Value, breedId.Value).Value,
+            Description.Create(command.Description).Value,
+            Color.Create(command.Color).Value,
+            HealthInfo.Create(command.HealthInfo).Value,
+            Address.Create(command.Address.City, command.Address.Street, command.Address.HouseNumber).Value,
+            Dimensions.Create(command.Dimensions.Height, command.Dimensions.Weight).Value,
+            Phone.Create(command.OwnerPhone).Value,
+            command.IsCastrate,
+            command.DateOfBirth,
+            command.IsVaccinated,
+            command.HelpStatus,
+            transferDetailsList);
+        
+        var volunteer = getVolunteerResult.Value;
+        volunteer.AddPet(createPetResult.Value);
+
+        await _volunteersRepository.UpdateAsync(volunteer, cancellationToken);
+        
+        return volunteer.Id.Value;
     }
 }

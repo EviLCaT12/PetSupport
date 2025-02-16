@@ -31,17 +31,16 @@ namespace PetFamily.Infrastructure.Migrations
                     sum_pets_with_home = table.Column<int>(type: "integer", nullable: false),
                     sum_pets_try_find_home = table.Column<int>(type: "integer", nullable: false),
                     sum_pets_under_treatment = table.Column<int>(type: "integer", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     second_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     surname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     phone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    social_web_link = table.Column<string>(type: "text", nullable: false),
-                    social_web_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    transfer_details_description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    transfer_details_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    years_of_experience = table.Column<int>(type: "integer", nullable: false)
+                    years_of_experience = table.Column<int>(type: "integer", nullable: false),
+                    SocialWeb = table.Column<string>(type: "jsonb", nullable: false),
+                    TransferDetailsList = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,6 +75,7 @@ namespace PetFamily.Infrastructure.Migrations
                     is_vaccinated = table.Column<bool>(type: "boolean", nullable: false),
                     help_status = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     pet_id = table.Column<Guid>(type: "uuid", nullable: true),
                     city = table.Column<string>(type: "text", nullable: false),
                     house_number = table.Column<string>(type: "text", nullable: false),
@@ -89,8 +89,9 @@ namespace PetFamily.Infrastructure.Migrations
                     health_info = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: false),
                     name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     owner_phone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    transfer_details_description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
-                    transfer_details_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    position = table.Column<int>(type: "integer", nullable: false),
+                    PhotoList = table.Column<string>(type: "jsonb", nullable: true),
+                    TransferDetailsList = table.Column<string>(type: "jsonb", nullable: false)
                 },
                 constraints: table =>
                 {

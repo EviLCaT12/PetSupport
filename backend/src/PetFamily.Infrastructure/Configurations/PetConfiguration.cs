@@ -17,7 +17,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.Id)
             .HasConversion(
                 id => id.Value,
-                value => PetId.Create(value));
+                value => PetId.Create(value).Value);
 
         builder.ComplexProperty(p => p.Name, nb =>
         {
@@ -139,5 +139,19 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
+
+        builder.OwnsOne(p => p.PhotoList, plb =>
+        {
+            plb.ToJson();
+
+            plb.OwnsMany(p => p.Values, pb =>
+            {
+                pb.OwnsOne(path => path.PathToStorage, pathBuilder =>
+                {
+                    pathBuilder.Property(p => p.Path)
+                        .IsRequired(false);
+                });
+            });
+        });
     }
 }
