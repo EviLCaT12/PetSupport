@@ -61,7 +61,8 @@ public class Pet : Entity<PetId>
         DateTime dateOfBirth,
         bool isVaccinated,
         HelpStatus helpStatus,
-        ValueObjectList<TransferDetails> transferDetails)
+        ValueObjectList<TransferDetails> transferDetails,
+        ValueObjectList<PetPhoto>? photoList)
     {
         Id = id;
         Name = name;
@@ -77,6 +78,7 @@ public class Pet : Entity<PetId>
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
         TransferDetailsList = transferDetails;
+        PhotoList = photoList;
     }
 
     public static Result<Pet, Error> Create(
@@ -93,7 +95,8 @@ public class Pet : Entity<PetId>
         DateTime dateOfBirth,
         bool isVaccinated,
         int helpStatus,
-        ValueObjectList<TransferDetails> transferDetailsList)
+        ValueObjectList<TransferDetails> transferDetailsList,
+        ValueObjectList<PetPhoto>? photoList)
     {
         var pet = new Pet(
             id,
@@ -109,9 +112,15 @@ public class Pet : Entity<PetId>
             dateOfBirth,
             isVaccinated,
             (HelpStatus)helpStatus,
-            transferDetailsList);
+            transferDetailsList,
+            photoList);
 
         return pet;
+    }
+
+    public void AddPhotos(ValueObjectList<PetPhoto> newPhotos)
+    {
+        PhotoList = newPhotos;
     }
     
     public void Delete() 
