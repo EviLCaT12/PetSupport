@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Volunteers;
 using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 
@@ -35,6 +36,22 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
             return new ErrorList([Errors.General.ValueNotFound(id.Value)]);
 
         return volunteer;
+    }
+
+    public async Task<Result<Pet, ErrorList>> GetPetByIdAsync(
+        VolunteerId id, 
+        PetId petId,
+        CancellationToken cancellationToken)
+    {
+        var getVolunteerResult = await GetByIdAsync(id, cancellationToken);
+        if (getVolunteerResult.IsFailure)
+            return getVolunteerResult.Error;
+        
+        var pet = getVolunteerResult.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
+        if (pet == null)
+            return new ErrorList([Errors.General.ValueNotFound(id.Value)]);
+        
+        return pet;
     }
     
     public async Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default)

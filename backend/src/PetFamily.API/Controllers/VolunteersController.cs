@@ -2,12 +2,15 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
+using PetFamily.API.Processors;
 using PetFamily.API.Requests;
 using PetFamily.API.Requests.AddPet;
+using PetFamily.API.Requests.AddPetPhotos;
 using PetFamily.API.Requests.CreateVolunteer;
 using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Dto.PetDto;
 using PetFamily.Application.Volunteers.AddPet;
+using PetFamily.Application.Volunteers.AddPetPhotos;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.HardDelete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
@@ -160,5 +163,29 @@ public class VolunteersController : ControllerBase
                 
         return Ok(addPetResult.Value);
     }
+
+    [HttpPut("{id:guid}/pet/photos")]
+    public async Task<ActionResult> AddPetPhotos(
+        [FromRoute] Guid id,
+        [FromForm] AddPetPhotosRequest request,
+        [FromServices] AddPetPhotosHandler handler,
+        CancellationToken cancellationToken)
+    {
+        await using var processor = new FormFileProcessor();
+        
+        var createPhotoDtos = processor.Process(request.Photos);
+
+        var command = new AddPetPhotosCommand(id, request.PetId, createPhotoDtos);
+
+        var resultHandle = await handler.HandleAsync(
+            command,
+            cancellationToken);
+        
+        if (resultHandle.IsFailure)
+            return resultHandle.Error.ToResponse();
+
+        return Ok();
+    }
+    
     
 }

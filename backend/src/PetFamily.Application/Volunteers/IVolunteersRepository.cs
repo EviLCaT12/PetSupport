@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 
@@ -14,4 +15,9 @@ public interface IVolunteersRepository
     Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default);
 
     Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
+
+    Task<Result<Pet, ErrorList>> GetPetByIdAsync(
+        VolunteerId id,
+        PetId petId,
+        CancellationToken cancellationToken);
 }
