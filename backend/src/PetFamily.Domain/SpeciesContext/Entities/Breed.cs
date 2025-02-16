@@ -3,7 +3,7 @@ using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 
-namespace PetFamily.Domain.SpeciesContext.Entites;
+namespace PetFamily.Domain.SpeciesContext.Entities;
 
 public class Breed : Entity<BreedId>
 {

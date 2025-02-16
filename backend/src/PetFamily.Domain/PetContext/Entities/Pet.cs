@@ -42,6 +42,8 @@ public class Pet : Entity<PetId>
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
+    public ValueObjectList<PetPhoto>? PhotoList { get; private set; }
+
     //ef core
     private Pet() {}
     
@@ -58,8 +60,8 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        ValueObjectList<TransferDetails> transferDetails
-    )
+        HelpStatus helpStatus,
+        ValueObjectList<TransferDetails> transferDetails)
     {
         Id = id;
         Name = name;
@@ -73,6 +75,7 @@ public class Pet : Entity<PetId>
         IsCastrate = isCastrate;
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
+        HelpStatus = helpStatus;
         TransferDetailsList = transferDetails;
     }
 
@@ -89,6 +92,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
+        int helpStatus,
         ValueObjectList<TransferDetails> transferDetailsList)
     {
         var pet = new Pet(
@@ -104,6 +108,7 @@ public class Pet : Entity<PetId>
             isCastrate,
             dateOfBirth,
             isVaccinated,
+            (HelpStatus)helpStatus,
             transferDetailsList);
 
         return pet;

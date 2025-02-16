@@ -1,9 +1,13 @@
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests;
+using PetFamily.API.Requests.AddPet;
 using PetFamily.API.Requests.CreateVolunteer;
 using PetFamily.API.Requests.UpdateVolunteer;
+using PetFamily.Application.Dto.PetDto;
+using PetFamily.Application.Volunteers.AddPet;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.HardDelete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
@@ -124,6 +128,37 @@ public class VolunteersController : ControllerBase
             return result.Error.ToResponse();
         
         return result.Value;
+    }
+
+    [HttpPost("{id:guid}/pet")]
+    public async Task<ActionResult> AddPet(
+        [FromRoute] Guid id,
+        [FromBody] AddPetRequest request,
+        [FromServices] AddPetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new AddPetCommand(
+            id,
+            request.Name,
+            request.Classification,
+            request.Description,
+            request.Color,
+            request.HealthInfo,
+            request.Address,
+            request.Dimensions,
+            request.OwnerPhone,
+            request.IsCastrate,
+            request.DateOfBirth,
+            request.IsVaccinated,
+            request.HelpStatus,
+            request.TransferDetailsDto);
+
+        var addPetResult = await handler.HandleAsync(command, cancellationToken);
+        if (addPetResult.IsFailure)
+            return addPetResult.Error.ToResponse();
+        
+                
+        return Ok(addPetResult.Value);
     }
     
 }
