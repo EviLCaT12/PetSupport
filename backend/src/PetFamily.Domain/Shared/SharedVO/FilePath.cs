@@ -22,6 +22,6 @@ public record FilePath
             return new FilePath(fullPath);
         }
         
-        return new FilePath(fullPath + "." + extension);
+        return new FilePath(fullPath + extension);
     }
 }

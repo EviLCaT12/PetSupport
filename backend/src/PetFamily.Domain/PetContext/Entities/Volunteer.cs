@@ -138,6 +138,14 @@ public class Volunteer : Entity<VolunteerId>
 
         return Result.Success<Error>();
     }
+
+    public UnitResult<ErrorList> AddPetPhotos(PetId petId, ValueObjectList<PetPhoto> photos)
+    {
+        var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId);
+        pet.AddPhotos(photos);
+        
+        return Result.Success<ErrorList>();
+    }
     
     public UnitResult<Error> MovePetToSpecfiedPosition(PetId petId, Position newPosition)
     {

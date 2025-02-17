@@ -117,11 +117,6 @@ public class Pet : Entity<PetId>
 
         return pet;
     }
-
-    public void AddPhotos(ValueObjectList<PetPhoto> newPhotos)
-    {
-        PhotoList = newPhotos;
-    }
     
     public void Delete() 
         => _isDeleted = true;
@@ -153,6 +148,9 @@ public class Pet : Entity<PetId>
 
         return Result.Success<Error>();
     }
+    
+    public void AddPhotos(ValueObjectList<PetPhoto> photos) 
+        => PhotoList = photos;    
 }
 
 

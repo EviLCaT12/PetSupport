@@ -24,7 +24,7 @@ public class MinioProvider : IFileProvider
         _logger = logger;
     }
     public async Task<UnitResult<ErrorList>> UploadFilesAsync(
-        IEnumerable<FileData> fileData, CancellationToken cancellationToken = default)
+        IEnumerable<FileData> fileData, CancellationToken cancellationToken)
     {
         
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);

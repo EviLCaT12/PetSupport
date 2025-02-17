@@ -71,7 +71,8 @@ public class AddPetHandler
             command.DateOfBirth,
             command.IsVaccinated,
             command.HelpStatus,
-            transferDetailsList);
+            transferDetailsList,
+            new List<PetPhoto>());
         
         var volunteer = getVolunteerResult.Value;
         volunteer.AddPet(createPetResult.Value);
