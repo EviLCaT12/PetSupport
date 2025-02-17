@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -113,23 +114,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.HelpStatus)
             .IsRequired()
-            .HasConversion(
-                status => (int)status,
-                status => (HelpStatus)status);
-
-        builder.OwnsOne(p => p.TransferDetailsList, tb =>
-        {
-            tb.ToJson();
-
-            tb.OwnsMany(td => td.Values, tdb =>
-            {
-                tdb.Property(n => n.Name)
-                    .IsRequired();
-
-                tdb.Property(d => d.Description)
-                    .IsRequired();
-            });
-        });
+            .HasConversion<string>();
+        
+        builder.Property(v => v.TransferDetailsList)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("transfer_details")
+            .HasField("_transferDetails");
             
         builder.Property(p => p.CreatedAt)
             .HasDefaultValue(DateTime.MinValue)
@@ -140,18 +130,23 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
 
-        builder.OwnsOne(p => p.PhotoList, plb =>
-        {
-            plb.ToJson();
-
-            plb.OwnsMany(p => p.Values, pb =>
-            {
-                pb.OwnsOne(path => path.PathToStorage, pathBuilder =>
-                {
-                    pathBuilder.Property(p => p.Path)
-                        .IsRequired(false);
-                });
-            });
-        });
+        // builder.OwnsOne(p => p.PhotoList, plb =>
+        // {
+        //     plb.ToJson();
+        //
+        //     plb.OwnsMany(p => p.Values, pb =>
+        //     {
+        //         pb.OwnsOne(path => path.PathToStorage, pathBuilder =>
+        //         {
+        //             pathBuilder.Property(p => p.Path)
+        //                 .IsRequired(false);
+        //         });
+        //     });
+        // });
+        
+        builder.Property(p => p.PhotoList!)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("photos")
+            .HasField("_photos");
     }
 }

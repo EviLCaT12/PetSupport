@@ -12,6 +12,8 @@ public class Pet : Entity<PetId>
     private bool _isDeleted = false;
     public PetId Id { get; private set; }
     
+    public Volunteer Volunteer { get; private set; } = null!; //Для 100% каскадного удаления
+    
     public Name Name { get; private set; }
     
     public Position Position { get; private set; }
@@ -37,12 +39,14 @@ public class Pet : Entity<PetId>
     public bool IsVaccinated { get; private set; }
     
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;
-    
-    public ValueObjectList<TransferDetails> TransferDetailsList { get; private set; }
+
+    private List<TransferDetails> _transferDetails = [];
+    public IReadOnlyList<TransferDetails> TransferDetailsList => _transferDetails;
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-    public ValueObjectList<PetPhoto>? PhotoList { get; private set; }
+    private List<PetPhoto> _photos = [];
+    public IReadOnlyList<PetPhoto>? PhotoList => _photos;
 
     //ef core
     private Pet() {}
@@ -61,8 +65,8 @@ public class Pet : Entity<PetId>
         DateTime dateOfBirth,
         bool isVaccinated,
         HelpStatus helpStatus,
-        ValueObjectList<TransferDetails> transferDetails,
-        ValueObjectList<PetPhoto>? photoList)
+        IEnumerable<TransferDetails> transferDetails,
+        IEnumerable<PetPhoto> photoList)
     {
         Id = id;
         Name = name;
@@ -77,8 +81,8 @@ public class Pet : Entity<PetId>
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
         HelpStatus = helpStatus;
-        TransferDetailsList = transferDetails;
-        PhotoList = photoList;
+        _transferDetails = transferDetails.ToList();
+        _photos = photoList.ToList();
     }
 
     public static Result<Pet, Error> Create(
@@ -95,8 +99,8 @@ public class Pet : Entity<PetId>
         DateTime dateOfBirth,
         bool isVaccinated,
         int helpStatus,
-        ValueObjectList<TransferDetails> transferDetailsList,
-        ValueObjectList<PetPhoto>? photoList)
+        IEnumerable<TransferDetails> transferDetailsList,
+        IEnumerable<PetPhoto> photoList)
     {
         var pet = new Pet(
             id,
@@ -149,8 +153,8 @@ public class Pet : Entity<PetId>
         return Result.Success<Error>();
     }
     
-    public void AddPhotos(ValueObjectList<PetPhoto> photos) 
-        => PhotoList = photos;    
+    public void AddPhotos(IEnumerable<PetPhoto> photos) 
+        => _photos = photos.ToList();    
 }
 
 

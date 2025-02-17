@@ -5,15 +5,16 @@ namespace PetFamily.Domain.Shared.SharedVO;
 
 public record TransferDetails
 {
-    public string Name { get; private set; }
-    
-    public string Description { get; private set; }
-
+    public TransferDetails() {}
     private TransferDetails(string name, string description)
     {
         Name = name;
         Description = description;
     }
+    
+    public string Name { get; private set; }
+    
+    public string Description { get; private set; }
 
     public static Result<TransferDetails, Error.Error> Create(string name, string description)
     {
