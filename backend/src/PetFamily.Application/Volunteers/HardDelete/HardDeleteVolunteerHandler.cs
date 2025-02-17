@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using PetFamily.Application.DataBase;
 using PetFamily.Application.Extensions;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
@@ -12,15 +13,18 @@ public class HardDeleteVolunteerHandler
     private readonly IValidator<DeleteVolunteerCommand> _validator;
     private readonly IVolunteersRepository _repository;
     private readonly ILogger<HardDeleteVolunteerHandler> _logger;
+    private readonly IUnitOfWork _unitOfWork;
 
     public HardDeleteVolunteerHandler(
         IValidator<DeleteVolunteerCommand> validator,
         IVolunteersRepository repository,
-        ILogger<HardDeleteVolunteerHandler> logger)
+        ILogger<HardDeleteVolunteerHandler> logger,
+        IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _repository = repository;
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
     
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -40,10 +44,12 @@ public class HardDeleteVolunteerHandler
             return existedVolunteer.Error; 
         }
 
-        var deleteResult =  await _repository.DeleteAsync(existedVolunteer.Value, cancellationToken);
+        await _repository.DeleteAsync(existedVolunteer.Value, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("Volunteer with id = {volunteerId} рфкв deleted" ,volunteerId);
         
-        return deleteResult; 
+        return volunteerId.Value; 
     }
 }
