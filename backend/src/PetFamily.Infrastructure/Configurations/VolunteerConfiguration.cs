@@ -71,7 +71,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             swb.ToJson();
 
-            swb.OwnsMany(sl => sl.SocialWebs, slb =>
+            swb.OwnsMany(sl => sl.Values, slb =>
             {
                 slb.Property(l => l.Link)
                     .IsRequired();
@@ -85,7 +85,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         {
             tb.ToJson();
 
-            tb.OwnsMany(td => td.TransferDetails, tdb =>
+            tb.OwnsMany(td => td.Values, tdb =>
             {
                 tdb.Property(n => n.Name)
                     .IsRequired();

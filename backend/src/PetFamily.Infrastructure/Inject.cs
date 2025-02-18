@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
+using PetFamily.Application.Providers;
 using PetFamily.Application.Volunteers;
 using PetFamily.Infrastructure.Options;
+using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
 
 namespace PetFamily.Infrastructure;
@@ -36,6 +38,9 @@ public static class Inject
 
             options.WithSSL(minioOptions.WithSsl);
         });
+
+        services.AddScoped<IFileProvider, MinioProvider>();
+        
         return services;
     }
 }

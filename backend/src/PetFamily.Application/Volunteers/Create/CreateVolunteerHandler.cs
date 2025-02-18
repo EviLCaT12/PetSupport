@@ -59,13 +59,13 @@ public class CreateVolunteerHandler(
         socialWebs.AddRange(socialWebDto
             .Select(socialWeb => SocialWeb.Create(socialWeb.Link, socialWeb.Name))
             .Select(socialWebCreateResult => socialWebCreateResult.Value));
-        var socialWebList = SocialWebList.Create(socialWebs);
+        var socialWebList = new ValueObjectList<SocialWeb>(socialWebs);
         
         List<TransferDetails> transferDetails = [];
         transferDetails.AddRange(transferDetailDto
             .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
             .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
-        var transferDetailsList = TransferDetailsList.Create(transferDetails);
+        var transferDetailsList = new ValueObjectList<TransferDetails>(transferDetails);
         
         var validVolunteer = Volunteer.Create(
             volunteerId,
@@ -74,8 +74,8 @@ public class CreateVolunteerHandler(
             emailCreateResult,
             descriptionCreateResult,
             yOExpCreateResult,
-            socialWebList.Value,
-            transferDetailsList.Value
+            socialWebList,
+            transferDetailsList
             );
         
         await volunteersRepository.AddAsync(validVolunteer.Value, cancellationToken);

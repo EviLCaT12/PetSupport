@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 
@@ -26,9 +27,9 @@ public class Volunteer : Entity<VolunteerId>
     
     public int SumPetsUnderTreatment {get; private set;}
     
-    public SocialWebList SocialWeb { get; private set; }
+    public ValueObjectList<SocialWeb> SocialWeb { get; private set; }
     
-    public TransferDetailsList TransferDetailsList { get; private set; }
+    public ValueObjectList<TransferDetails> TransferDetailsList { get; private set; }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
@@ -43,8 +44,8 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        SocialWebList socialWebs,
-        TransferDetailsList transferDetails
+        ValueObjectList<SocialWeb> socialWebs,
+        ValueObjectList<TransferDetails> transferDetails
     )
     {
         Id = id;
@@ -67,8 +68,8 @@ public class Volunteer : Entity<VolunteerId>
         Email email,
         Description description,
         YearsOfExperience yearsOfExperience,
-        SocialWebList socialWebsList,
-        TransferDetailsList transferDetailsList)
+        ValueObjectList<SocialWeb> socialWebsList,
+        ValueObjectList<TransferDetails> transferDetailsList)
     {
         var volunteer = new Volunteer(
             id,
@@ -100,12 +101,12 @@ public class Volunteer : Entity<VolunteerId>
 
     public void UpdateSocialWebList(IEnumerable<SocialWeb> newSocialWebs)
     {
-        SocialWeb = SocialWebList.Create(newSocialWebs).Value; 
+        SocialWeb = new ValueObjectList<SocialWeb>(newSocialWebs); 
     }
     
-    public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
+    public void UpdateTransferDetailsList(ValueObjectList<TransferDetails> newTransferDetails)
     {
-        TransferDetailsList = TransferDetailsList.Create(newTransferDetails).Value;
+        TransferDetailsList = newTransferDetails;
     }
 
     public void Delete()

@@ -121,7 +121,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         {
             tb.ToJson();
 
-            tb.OwnsMany(td => td.TransferDetails, tdb =>
+            tb.OwnsMany(td => td.Values, tdb =>
             {
                 tdb.Property(n => n.Name)
                     .IsRequired();
