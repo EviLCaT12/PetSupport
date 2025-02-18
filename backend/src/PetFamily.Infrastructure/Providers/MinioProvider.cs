@@ -56,7 +56,7 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFiles(
+    public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFilesAsync(
         IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default)
     {
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);

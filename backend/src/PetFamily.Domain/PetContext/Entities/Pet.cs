@@ -154,7 +154,22 @@ public class Pet : Entity<PetId>
     }
     
     public void AddPhotos(IEnumerable<PetPhoto> photos) 
-        => _photos = photos.ToList();    
+        => _photos = photos.ToList();
+
+    public UnitResult<ErrorList> DeletePhotos(IEnumerable<PetPhoto> photos)
+    {
+        foreach (var photo in photos)
+        {
+            var removeResult = _photos.Remove(photo);
+            if (removeResult == false)
+            {
+                var error = Error.NotFound("value.not.found", $"Photo {photo.PathToStorage.Path} was not found");
+                return new ErrorList([error]);
+            }
+        }
+        
+        return Result.Success<ErrorList>();
+    }
 }
 
 
