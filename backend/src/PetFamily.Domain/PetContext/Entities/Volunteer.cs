@@ -137,10 +137,19 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<Error>();
     }
 
-    public UnitResult<ErrorList> AddPetPhotos(PetId petId, ValueObjectList<PetPhoto> photos)
+    public void AddPetPhotos(PetId petId, IEnumerable<PetPhoto> photos)
     {
-        var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId);
+        var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId)!;
         pet.AddPhotos(photos);
+        
+    }
+    
+    public UnitResult<ErrorList> DeletePetPhotos(PetId petId, IEnumerable<PetPhoto> photos)
+    {
+        var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId)!;
+        var removeResult = pet.DeletePhotos(photos);
+        if (removeResult.IsFailure)
+            return removeResult.Error;
         
         return Result.Success<ErrorList>();
     }

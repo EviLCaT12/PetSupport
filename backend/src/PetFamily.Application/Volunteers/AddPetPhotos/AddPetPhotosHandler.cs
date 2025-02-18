@@ -69,7 +69,7 @@ public class AddPetPhotosHandler
             {
                 var extension = Path.GetExtension(photo.FileName);
                 var path = Guid.NewGuid();
-                var filePath = FilePath.Create(path, extension).Value;
+                var filePath = FilePath.Create(path.ToString(), extension).Value;
     
                 var petPhoto = PetPhoto.Create(filePath).Value;
                 petPhotos.Add(petPhoto);

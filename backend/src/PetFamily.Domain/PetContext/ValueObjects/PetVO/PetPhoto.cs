@@ -7,7 +7,7 @@ namespace PetFamily.Domain.PetContext.ValueObjects.PetVO;
 public record PetPhoto
 {
     //ef core
-    private PetPhoto() { }
+    public PetPhoto() { }
     private PetPhoto(FilePath pathToStorage)
     {
         PathToStorage = pathToStorage;

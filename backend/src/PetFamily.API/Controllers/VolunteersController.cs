@@ -5,13 +5,14 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.API.Requests;
 using PetFamily.API.Requests.AddPet;
-using PetFamily.API.Requests.AddPetPhotos;
 using PetFamily.API.Requests.CreateVolunteer;
+using PetFamily.API.Requests.PetPhotos;
 using PetFamily.API.Requests.UpdateVolunteer;
 using PetFamily.Application.Dto.PetDto;
 using PetFamily.Application.Volunteers.AddPet;
 using PetFamily.Application.Volunteers.AddPetPhotos;
 using PetFamily.Application.Volunteers.Create;
+using PetFamily.Application.Volunteers.DeletePetPhotos;
 using PetFamily.Application.Volunteers.HardDelete;
 using PetFamily.Application.Volunteers.UpdateMainInfo;
 using PetFamily.Application.Volunteers.UpdateSocialWeb;
@@ -133,7 +134,7 @@ public class VolunteersController : ControllerBase
         return result.Value;
     }
 
-    [HttpPost("{id:guid}/pet")]
+    [HttpPut("{id:guid}/pet")]
     public async Task<ActionResult> AddPet(
         [FromRoute] Guid id,
         [FromBody] AddPetRequest request,
@@ -162,6 +163,22 @@ public class VolunteersController : ControllerBase
         
                 
         return Ok(addPetResult.Value);
+    }
+    
+    [HttpDelete("{volunteerId:guid}/pet/photos")]
+    public async Task<ActionResult> DeletePetPhotos(
+        [FromRoute] Guid volunteerId,
+        [FromBody] DeletePetPhotoRequest request,
+        [FromServices] DeletePetPhotosHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetPhotosCommand(volunteerId, request.PetId, request.PhotoNames);
+        
+        var handleResult = await handler.HandleAsync(command, cancellationToken);
+        if (handleResult.IsFailure)
+            return handleResult.Error.ToResponse();
+
+        return Ok(); 
     }
 
     [HttpPut("{id:guid}/pet/photos")]
