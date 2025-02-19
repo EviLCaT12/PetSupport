@@ -13,13 +13,24 @@ public record Position
     {
         if (value < 1)
             return Errors.General.ValueIsInvalid(nameof(Position));
+        
 
         return new Position(value);
     }
 
-    public Result<Position, Error> Forward()
-        => Create(Value + 1);
-    
-    public Result<Position, Error> Backward()
-        => Create(Value - 1);
+    public Result<Position, Error> Forward(int minNumber ,int maxNumber)
+    {
+        if (Value == maxNumber)
+            return Create(minNumber);
+        
+        return Create(Value + 1);
+    }
+
+    public Result<Position, Error> Backward(int minNumber,int maxNumber)
+    {
+        if (Value == minNumber)
+            return Create(maxNumber);
+        
+        return Create(Value - 1);
+    }
 }
