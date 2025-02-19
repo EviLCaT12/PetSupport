@@ -13,7 +13,7 @@ using PetFamily.Infrastructure;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250218132529_Initial")]
+    [Migration("20250219073927_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -56,6 +56,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnName("is_vaccinated");
 
                     b.Property<string>("PhotoList")
+                        .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("photos");
 

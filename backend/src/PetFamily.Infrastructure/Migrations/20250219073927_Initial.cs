@@ -77,7 +77,7 @@ namespace PetFamily.Infrastructure.Migrations
                     help_status = table.Column<string>(type: "text", nullable: false),
                     transfer_details = table.Column<string>(type: "jsonb", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
-                    photos = table.Column<string>(type: "jsonb", nullable: true),
+                    photos = table.Column<string>(type: "jsonb", nullable: false),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     city = table.Column<string>(type: "text", nullable: false),
                     house_number = table.Column<string>(type: "text", nullable: false),

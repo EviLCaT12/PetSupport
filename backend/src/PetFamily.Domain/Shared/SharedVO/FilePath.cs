@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.Error;
 
@@ -5,6 +6,7 @@ namespace PetFamily.Domain.Shared.SharedVO;
 
 public record FilePath
 {
+    [JsonConstructor]
     private FilePath(string path)
     {
         Path = path;

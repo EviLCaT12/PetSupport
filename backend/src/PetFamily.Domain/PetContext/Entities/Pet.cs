@@ -41,12 +41,23 @@ public class Pet : Entity<PetId>
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;
 
     private List<TransferDetails> _transferDetails = [];
-    public IReadOnlyList<TransferDetails> TransferDetailsList => _transferDetails;
+
+    public IReadOnlyList<TransferDetails> TransferDetailsList
+    {
+        get => _transferDetails;
+        private set => _transferDetails = value.ToList();
+    }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     private List<PetPhoto> _photos = [];
-    public IReadOnlyList<PetPhoto>? PhotoList => _photos;
+
+    public IReadOnlyList<PetPhoto> PhotoList
+    {
+        get => _photos;
+        private set => _photos = value.ToList(); 
+    }
+    
 
     //ef core
     private Pet() {}

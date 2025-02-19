@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.Constants;
-using PetFamily.Domain.Shared.SharedVO;
-using PetFamily.Infrastructure.Converters;
 using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations;
@@ -119,11 +117,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.HelpStatus)
             .IsRequired()
             .HasConversion<string>();
-        
+
         builder.Property(v => v.TransferDetailsList)
             .JsonValueObjectCollectionConversion()
-            .HasColumnName("transfer_details")
-            .HasField("_transferDetails");
+            .HasColumnName("transfer_details");
             
         builder.Property(p => p.CreatedAt)
             .HasDefaultValue(DateTime.MinValue)
@@ -133,23 +130,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
-
-
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new PetPhotoConverter(), new FilePathConverter() }
-        };
+        
         
         builder.Property(p => p.PhotoList!)
-            .HasConversion(
-                    value => JsonSerializer.Serialize(value, options),
-                    json => JsonSerializer.Deserialize<IReadOnlyList<PetPhoto>>(json, options)!,
-                    new ValueComparer<IReadOnlyList<PetPhoto>>(
-                        (c1, c2) => c1!.SequenceEqual(c2!),
-                        c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                        c => c.ToList()))
-            .HasColumnType("jsonb")
-            .HasColumnName("photos")
-            .HasField("_photos");
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("photos");
     }
 }

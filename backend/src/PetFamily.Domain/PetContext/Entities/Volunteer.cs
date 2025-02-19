@@ -28,10 +28,20 @@ public class Volunteer : Entity<VolunteerId>
     public int SumPetsUnderTreatment {get; private set;}
     
     private List<SocialWeb> _socialWebs = [];
-    public IReadOnlyList<SocialWeb> SocialWebList => _socialWebs;
+
+    public IReadOnlyList<SocialWeb> SocialWebList
+    {
+        get => _socialWebs;
+        private set => _socialWebs = value.ToList();
+    }
     
     private List<TransferDetails> _transferDetails = [];
-    public IReadOnlyList<TransferDetails> TransferDetailsList => _transferDetails;
+
+    public IReadOnlyList<TransferDetails> TransferDetailsList
+    {
+        get => _transferDetails;
+        private set => _transferDetails = value.ToList();
+    }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;

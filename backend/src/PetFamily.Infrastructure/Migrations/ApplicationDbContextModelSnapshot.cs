@@ -53,6 +53,7 @@ namespace PetFamily.Infrastructure.Migrations
                         .HasColumnName("is_vaccinated");
 
                     b.Property<string>("PhotoList")
+                        .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("photos");
 

@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
@@ -8,6 +9,8 @@ public record PetPhoto
 {
     //ef core
     public PetPhoto() { }
+    
+    [JsonConstructor]
     private PetPhoto(FilePath pathToStorage)
     {
         PathToStorage = pathToStorage;

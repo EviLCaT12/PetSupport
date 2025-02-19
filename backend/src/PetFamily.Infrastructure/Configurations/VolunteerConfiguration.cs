@@ -72,13 +72,11 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
 
         builder.Property(v => v.SocialWebList)
             .JsonValueObjectCollectionConversion()
-            .HasColumnName("social_webs")
-            .HasField("_socialWebs"); //Если не использовать этот метод, то падает ошибка
-            
+            .HasColumnName("social_webs");
+
         builder.Property(v => v.TransferDetailsList)
             .JsonValueObjectCollectionConversion()
-            .HasColumnName("transfer_details")
-            .HasField("_transferDetails");
+            .HasColumnName("transfer_details");
 
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne(p => p.Volunteer)
