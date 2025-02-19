@@ -19,7 +19,7 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer.Id.Value;
     }
 
-    public async Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    public Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         context.Volunteers.Remove(volunteer);
         return volunteer.Id.Value;
@@ -35,22 +35,6 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
             return new ErrorList([Errors.General.ValueNotFound(id.Value)]);
 
         return volunteer;
-    }
-
-    public async Task<Result<Pet, ErrorList>> GetPetByIdAsync(
-        VolunteerId id, 
-        PetId petId,
-        CancellationToken cancellationToken)
-    {
-        var getVolunteerResult = await GetByIdAsync(id, cancellationToken);
-        if (getVolunteerResult.IsFailure)
-            return getVolunteerResult.Error;
-        
-        var pet = getVolunteerResult.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
-        if (pet == null)
-            return new ErrorList([Errors.General.ValueNotFound(id.Value)]);
-        
-        return pet;
     }
     
 }

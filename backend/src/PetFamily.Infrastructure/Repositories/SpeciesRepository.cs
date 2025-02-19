@@ -21,20 +21,5 @@ public class SpeciesRepository(ApplicationDbContext context) : ISpeciesRepositor
 
         return species;
     }
-
-    public async Task<Result<Breed, ErrorList>> GetBreedByIdAsync(
-        SpeciesId id,
-        BreedId breedId,
-        CancellationToken cancellationToken)
-    {
-        var getSpeciesByIdResult = await GetByIdAsync(id, cancellationToken);
-        if (getSpeciesByIdResult.IsFailure)
-            return getSpeciesByIdResult.Error;
-        
-        var breed = getSpeciesByIdResult.Value.Breeds.FirstOrDefault(b => b.Id == breedId);
-        if (breed == null)
-            return new ErrorList([Errors.General.ValueNotFound(breedId.Value)]);
-        
-        return breed;
-    }
+    
 }

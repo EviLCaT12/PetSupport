@@ -52,13 +52,11 @@ public class AddPetPhotosHandler
                 var error = Errors.General.ValueNotFound(petId.Value);
                 return new ErrorList([error]);
             }
-            var getPetResult = await _volunteersRepository.GetPetByIdAsync(
-                volunteerId,
-                petId,
-                cancellationToken);
-            if (getPetResult.IsFailure)
+            var getPetResult = getVolunteerResult.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
+            if (getPetResult == null)
             {
-                 _logger.LogError("Failed to get pet with id: {r}", petId);
+                 _logger.LogError("Pet with id {petId} not found for volunteer with id {volunteerId}",
+                     petId.Value, volunteerId.Value);
                  var error = Errors.General.ValueNotFound(petId.Value);
                  return new ErrorList([error]);
             }

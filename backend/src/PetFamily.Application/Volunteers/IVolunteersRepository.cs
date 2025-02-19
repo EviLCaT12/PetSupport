@@ -10,12 +10,8 @@ public interface IVolunteersRepository
 {
     Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
     
-    Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default);
+    Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default);
 
     Task<Result<Volunteer, ErrorList>> GetByIdAsync(VolunteerId id, CancellationToken cancellationToken = default);
-
-    Task<Result<Pet, ErrorList>> GetPetByIdAsync(
-        VolunteerId id,
-        PetId petId,
-        CancellationToken cancellationToken);
+    
 }

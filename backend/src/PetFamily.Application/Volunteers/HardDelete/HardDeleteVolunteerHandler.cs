@@ -44,7 +44,7 @@ public class HardDeleteVolunteerHandler
             return existedVolunteer.Error; 
         }
 
-        await _repository.DeleteAsync(existedVolunteer.Value, cancellationToken);
+        _repository.Delete(existedVolunteer.Value, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

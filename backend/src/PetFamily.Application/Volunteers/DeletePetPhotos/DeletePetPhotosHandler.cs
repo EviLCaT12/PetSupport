@@ -57,13 +57,11 @@ public class DeletePetPhotosHandler
                return new ErrorList([error]);
             }
          
-         var pet = await _volunteersRepository.GetPetByIdAsync(
-            volunteerId,
-            petId,
-            cancellationToken);
-         if (pet.IsFailure)
+         var getPetResult = volunteer.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
+         if (getPetResult == null)
          {
-            _logger.LogError("Failed to get pet with id: {r}", petId);
+            _logger.LogError("Pet with id {petId} not found for volunteer with id {volunteerId}",
+               petId.Value, volunteerId.Value);
             var error = Errors.General.ValueNotFound(petId.Value);
             return new ErrorList([error]);
          }

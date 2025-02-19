@@ -11,9 +11,4 @@ public interface ISpeciesRepository
     Task<Result<Domain.SpeciesContext.Entities.Species, ErrorList>> GetByIdAsync(
         SpeciesId id,
         CancellationToken cancellationToken);
-
-    Task<Result<Breed, ErrorList>> GetBreedByIdAsync(
-        SpeciesId id,
-        BreedId breedId,
-        CancellationToken cancellationToken);
 }
