@@ -1,10 +1,9 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Domain.SpeciesContext.Entites;
+namespace PetFamily.Domain.SpeciesContext.Entities;
 
 public class Species : Entity<SpeciesId>
 {

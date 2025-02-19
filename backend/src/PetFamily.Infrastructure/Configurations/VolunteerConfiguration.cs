@@ -1,8 +1,11 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -67,38 +70,19 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
                 .HasColumnName("years_of_experience");
         });
 
-        builder.OwnsOne(v => v.SocialWeb, swb =>
-        {
-            swb.ToJson();
+        builder.Property(v => v.SocialWebList)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("social_webs");
 
-            swb.OwnsMany(sl => sl.Values, slb =>
-            {
-                slb.Property(l => l.Link)
-                    .IsRequired();
-
-                slb.Property(n => n.Name)
-                    .IsRequired();
-            });
-        });
-
-        builder.OwnsOne(v => v.TransferDetailsList, tb =>
-        {
-            tb.ToJson();
-
-            tb.OwnsMany(td => td.Values, tdb =>
-            {
-                tdb.Property(n => n.Name)
-                    .IsRequired();
-
-                tdb.Property(d => d.Description)
-                    .IsRequired();
-            });
-        });
+        builder.Property(v => v.TransferDetailsList)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("transfer_details");
 
         builder.HasMany(v => v.AllOwnedPets)
-            .WithOne()
+            .WithOne(p => p.Volunteer)
             .HasForeignKey("pet_id")
-            .IsRequired(false);
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
         
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)

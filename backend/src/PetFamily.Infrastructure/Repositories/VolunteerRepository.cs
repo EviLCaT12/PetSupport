@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Volunteers;
 using PetFamily.Domain.PetContext.Entities;
+using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 
@@ -18,10 +19,9 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer.Id.Value;
     }
 
-    public async Task<Guid> DeleteAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
+    public Guid Delete(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
         context.Volunteers.Remove(volunteer);
-        await context.SaveChangesAsync(cancellationToken);
         return volunteer.Id.Value;
     }
 
@@ -37,12 +37,4 @@ public class VolunteerRepository(ApplicationDbContext context) : IVolunteersRepo
         return volunteer;
     }
     
-    public async Task<Guid> UpdateAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
-    {
-        context.Volunteers.Attach(volunteer);
-        
-        await context.SaveChangesAsync(cancellationToken); 
-        
-        return volunteer.Id.Value;
-    }
 }

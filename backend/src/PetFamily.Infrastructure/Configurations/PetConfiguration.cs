@@ -1,8 +1,11 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations;
 
@@ -17,7 +20,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.Id)
             .HasConversion(
                 id => id.Value,
-                value => PetId.Create(value));
+                value => PetId.Create(value).Value);
 
         builder.ComplexProperty(p => p.Name, nb =>
         {
@@ -113,23 +116,11 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.HelpStatus)
             .IsRequired()
-            .HasConversion(
-                status => (int)status,
-                status => (HelpStatus)status);
+            .HasConversion<string>();
 
-        builder.OwnsOne(p => p.TransferDetailsList, tb =>
-        {
-            tb.ToJson();
-
-            tb.OwnsMany(td => td.Values, tdb =>
-            {
-                tdb.Property(n => n.Name)
-                    .IsRequired();
-
-                tdb.Property(d => d.Description)
-                    .IsRequired();
-            });
-        });
+        builder.Property(v => v.TransferDetailsList)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("transfer_details");
             
         builder.Property(p => p.CreatedAt)
             .HasDefaultValue(DateTime.MinValue)
@@ -139,5 +130,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
+        
+        
+        builder.Property(p => p.PhotoList!)
+            .JsonValueObjectCollectionConversion()
+            .HasColumnName("photos");
     }
 }

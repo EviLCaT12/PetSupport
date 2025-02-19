@@ -6,7 +6,9 @@ using Minio.DataModel.Args;
 using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
+using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Error;
+using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Infrastructure.Providers;
 
@@ -21,8 +23,8 @@ public class MinioProvider : IFileProvider
         _minioClient = minioClient;
         _logger = logger;
     }
-    public async Task<Result<IReadOnlyList<FilePath>, ErrorList>> UploadFiles(
-        IEnumerable<FileData> fileData, CancellationToken cancellationToken = default)
+    public async Task<UnitResult<ErrorList>> UploadFilesAsync(
+        IEnumerable<FileData> fileData, CancellationToken cancellationToken)
     {
         
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);
@@ -39,9 +41,8 @@ public class MinioProvider : IFileProvider
             if (pathResult.Any(p => p.IsFailure))
                 return pathResult.First().Error;
             
-            var result = pathResult.Select(p => p.Value).ToList();
-            
-            return result;
+
+            return Result.Success<ErrorList>();
         }
         catch (Exception e)
         {
@@ -55,7 +56,7 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFiles(
+    public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFilesAsync(
         IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default)
     {
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);

@@ -12,6 +12,8 @@ public class Pet : Entity<PetId>
     private bool _isDeleted = false;
     public PetId Id { get; private set; }
     
+    public Volunteer Volunteer { get; private set; } = null!; //Для 100% каскадного удаления
+    
     public Name Name { get; private set; }
     
     public Position Position { get; private set; }
@@ -37,10 +39,25 @@ public class Pet : Entity<PetId>
     public bool IsVaccinated { get; private set; }
     
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;
-    
-    public ValueObjectList<TransferDetails> TransferDetailsList { get; private set; }
+
+    private List<TransferDetails> _transferDetails = [];
+
+    public IReadOnlyList<TransferDetails> TransferDetailsList
+    {
+        get => _transferDetails;
+        private set => _transferDetails = value.ToList();
+    }
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+
+    private List<PetPhoto> _photos = [];
+
+    public IReadOnlyList<PetPhoto> PhotoList
+    {
+        get => _photos;
+        private set => _photos = value.ToList(); 
+    }
+    
 
     //ef core
     private Pet() {}
@@ -58,8 +75,9 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        ValueObjectList<TransferDetails> transferDetails
-    )
+        HelpStatus helpStatus,
+        IEnumerable<TransferDetails> transferDetails,
+        IEnumerable<PetPhoto> photoList)
     {
         Id = id;
         Name = name;
@@ -73,7 +91,9 @@ public class Pet : Entity<PetId>
         IsCastrate = isCastrate;
         DateOfBirth = dateOfBirth;
         IsVaccinated = isVaccinated;
-        TransferDetailsList = transferDetails;
+        HelpStatus = helpStatus;
+        _transferDetails = transferDetails.ToList();
+        _photos = photoList.ToList();
     }
 
     public static Result<Pet, Error> Create(
@@ -89,7 +109,9 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        ValueObjectList<TransferDetails> transferDetailsList)
+        int helpStatus,
+        IEnumerable<TransferDetails> transferDetailsList,
+        IEnumerable<PetPhoto> photoList)
     {
         var pet = new Pet(
             id,
@@ -104,7 +126,9 @@ public class Pet : Entity<PetId>
             isCastrate,
             dateOfBirth,
             isVaccinated,
-            transferDetailsList);
+            (HelpStatus)helpStatus,
+            transferDetailsList,
+            photoList);
 
         return pet;
     }
@@ -138,6 +162,24 @@ public class Pet : Entity<PetId>
         Position = newPosition.Value;
 
         return Result.Success<Error>();
+    }
+    
+    public void AddPhotos(IEnumerable<PetPhoto> photos) 
+        => _photos = photos.ToList();
+
+    public UnitResult<ErrorList> DeletePhotos(IEnumerable<PetPhoto> photos)
+    {
+        foreach (var photo in photos)
+        {
+            var removeResult = _photos.Remove(photo);
+            if (removeResult == false)
+            {
+                var error = Error.NotFound("value.not.found", $"Photo {photo.PathToStorage.Path} was not found");
+                return new ErrorList([error]);
+            }
+        }
+        
+        return Result.Success<ErrorList>();
     }
 }
 

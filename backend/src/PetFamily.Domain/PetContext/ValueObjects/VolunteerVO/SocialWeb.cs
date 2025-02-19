@@ -6,15 +6,17 @@ namespace PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 public record SocialWeb
 {
-    public string Link { get; private set; } 
-    
-    public string Name { get; private set; }
-
+    public SocialWeb() {} //Если оставить его private, то получаю ошибку от efcore Microsoft.EntityFrameworkCore.Query[10100]
     private SocialWeb(string link, string name)
     {
         Link = link;
         Name = name;
     }
+    public string Link { get; private set; } 
+    
+    public string Name { get; private set; }
+
+
 
     public static Result<SocialWeb, Error> Create(string link, string name)
     {
