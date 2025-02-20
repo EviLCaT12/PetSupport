@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Application.Volunteers.AddPet;
 using PetFamily.Application.Volunteers.AddPetPhotos;
+using PetFamily.Application.Volunteers.ChangePetPosition;
 using PetFamily.Application.Volunteers.Create;
 using PetFamily.Application.Volunteers.DeletePetPhotos;
 using PetFamily.Application.Volunteers.HardDelete;
@@ -24,6 +25,7 @@ public static class Inject
         services.AddScoped<AddPetHandler>();
         services.AddScoped<AddPetPhotosHandler>();
         services.AddScoped<DeletePetPhotosHandler>();
+        services.AddScoped<ChangePetPositionHandler>();
 
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         

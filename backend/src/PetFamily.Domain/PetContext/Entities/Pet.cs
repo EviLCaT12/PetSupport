@@ -142,26 +142,32 @@ public class Pet : Entity<PetId>
     public void SetPosition(Position position) 
         => Position = position;
 
-    public UnitResult<Error> MoveForward()
+    public UnitResult<ErrorList> MoveForward(int minNumber ,int maxNumber)
     {
-        var newPosition = Position.Forward();
+        var newPosition = Position.Forward(minNumber ,maxNumber);
         if (newPosition.IsFailure)
-            return newPosition.Error;
+        {
+            var error = newPosition.Error;
+            return new ErrorList([error]);
+        }
         
         Position = newPosition.Value;
 
-        return Result.Success<Error>();
+        return Result.Success<ErrorList>();
     }
     
-    public UnitResult<Error> MoveBackward()
+    public UnitResult<ErrorList> MoveBackward(int minNumber, int maxNumber)
     {
-        var newPosition = Position.Backward();
+        var newPosition = Position.Backward(minNumber, maxNumber);
         if (newPosition.IsFailure)
-            return newPosition.Error;
+        {
+            var error = newPosition.Error;
+            return new ErrorList([error]);
+        }
         
         Position = newPosition.Value;
 
-        return Result.Success<Error>();
+        return Result.Success<ErrorList>();
     }
     
     public void AddPhotos(IEnumerable<PetPhoto> photos) 
