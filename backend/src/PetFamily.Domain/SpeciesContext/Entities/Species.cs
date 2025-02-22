@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
+using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Domain.SpeciesContext.Entities;
@@ -31,5 +32,18 @@ public class Species : Entity<SpeciesId>
         var species = new Species(id, name, breeds);
         
         return species; 
+    }
+
+    public Result<Breed, ErrorList> GetBreedById(BreedId breedId)
+    {
+        var getBreedResult = _breeds.FirstOrDefault(p => p.Id == breedId);
+        if (getBreedResult is null)
+        {
+            var errorMes = ($"Breed with id {breedId.Value} not found for species {Id.Value}");
+            var error = Error.NotFound("value.not.found", errorMes);
+            return new ErrorList([error]);
+        }
+        
+        return getBreedResult;
     }
 }

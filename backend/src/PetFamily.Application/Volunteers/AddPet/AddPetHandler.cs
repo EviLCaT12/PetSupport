@@ -52,15 +52,16 @@ public class AddPetHandler
     
             var speciesId = SpeciesId.Create(command.Classification.SpeciesId);
             var breedId = BreedId.Create(command.Classification.BreedId);
+            
             var getSpeciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);
             if (getSpeciesResult.IsFailure)
                 return getSpeciesResult.Error;
-            var breed = getSpeciesResult.Value.Breeds.FirstOrDefault(b => b.Id == breedId);
-            if (breed == null)
+
+            var breed = getSpeciesResult.Value.GetBreedById(breedId);
+            if (breed.IsFailure)
             {
-                _logger.LogError("Breed with id {breedId} not found for species with id {SpeciesId}",
-                    breedId.Value, speciesId.Value);
-                return new ErrorList([Errors.General.ValueNotFound(breedId.Value)]);
+                _logger.LogError("Failed to get breed with id: {id}", breedId);
+                return breed.Error;
             }
             
     
