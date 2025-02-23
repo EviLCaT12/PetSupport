@@ -2,12 +2,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using PetFamily.Application.DataBase;
+using PetFamily.Application.Files;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Application.Species;
 using PetFamily.Application.Volunteers;
+using PetFamily.Infrastructure.BackgroundServices;
+using PetFamily.Infrastructure.Files;
+using PetFamily.Infrastructure.MessageQueues;
 using PetFamily.Infrastructure.Options;
 using PetFamily.Infrastructure.Providers;
 using PetFamily.Infrastructure.Repositories;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Infrastructure;
 
@@ -21,6 +27,9 @@ public static class Inject
         services.AddScoped<ISpeciesRepository, SpeciesRepository>();
         services.AddMinio(configuration);
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddHostedService<PhotoCleanerBackgroundService>();
+        services.AddSingleton<IMessageQueue<IEnumerable<FileInfo>>, FileCleanerMessageQueue<IEnumerable<FileInfo>>>();
+        services.AddScoped<IFileCleanerService, FilesCleanerService>();
         
         return services;
     }

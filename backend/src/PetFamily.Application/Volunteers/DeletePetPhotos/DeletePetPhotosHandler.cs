@@ -3,12 +3,12 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Application.Volunteers.DeletePetPhotos;
 
@@ -65,7 +65,7 @@ public class DeletePetPhotosHandler
          }
 
          List<PetPhoto> photos = [];
-         List<ExistFileData> fileDatas = [];
+         List<FileInfo> fileDatas = [];
          foreach (var photoName in command.PhotoNames)
          {
             var filePath = FilePath.Create(photoName, null).Value;
@@ -73,7 +73,7 @@ public class DeletePetPhotosHandler
             var petPhoto = PetPhoto.Create(filePath).Value;
             photos.Add(petPhoto);
             
-            var fileData = new ExistFileData(filePath, BUCKET_NAME);
+            var fileData = new FileInfo(filePath, BUCKET_NAME);
             fileDatas.Add(fileData);
          }
 

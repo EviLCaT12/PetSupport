@@ -1,14 +1,17 @@
+using System.Collections;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FileProvider;
+using PetFamily.Application.Files;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Application.Volunteers.AddPetPhotos;
 
@@ -20,19 +23,22 @@ public class AddPetPhotosHandler
     private readonly IValidator<AddPetPhotosCommand> _validator;
     private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public AddPetPhotosHandler(
         ILogger<AddPetPhotosHandler> logger,
         IVolunteersRepository volunteersRepository,
         IValidator<AddPetPhotosCommand> validator,
         IFileProvider fileProvider,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
     {
         _logger = logger;
         _volunteersRepository = volunteersRepository;
         _validator = validator;
         _fileProvider = fileProvider;
         _unitOfWork = unitOfWork;
+        _messageQueue = messageQueue;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(AddPetPhotosCommand command, CancellationToken cancellationToken)
     {
@@ -71,7 +77,8 @@ public class AddPetPhotosHandler
                 var petPhoto = PetPhoto.Create(filePath).Value;
                 petPhotos.Add(petPhoto);
                 
-                var fileData = new FileData(photo.Stream, filePath, BUCKET_NAME);
+                var fileInfo = new FileInfo(filePath, BUCKET_NAME);
+                var fileData = new FileData(photo.Stream, fileInfo);
                 filesData.Add(fileData);
             }
             
@@ -83,7 +90,11 @@ public class AddPetPhotosHandler
     
             var uploadPhotosResult = await _fileProvider.UploadFilesAsync(filesData, cancellationToken);
             if (uploadPhotosResult.IsFailure)
+            {
+                await _messageQueue.WriteAsync(filesData.Select(f => f.Info), cancellationToken);
                 return uploadPhotosResult.Error;
+            }
+                
             
             transaction.Commit();
     
