@@ -31,17 +31,10 @@ public class VolunteersController : ControllerBase
         [FromBody] CreateVolunteerRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new CreateVolunteerCommand(
-            request.Fio, 
-            request.PhoneNumber, 
-            request.Email, 
-            request.Description,
-            request.YearsOfExperience);
+        var command = request.ToCommand();
         
         var result = await handler.HandleAsync(
             command,
-            request.SocialWebDto,
-            request.TransferDetailDto,
             cancellationToken);
 
         if (result.IsFailure)
@@ -57,13 +50,7 @@ public class VolunteersController : ControllerBase
         [FromBody] UpdateVolunteerMainInfoRequest mainInfoRequest,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateVolunteerMainInfoCommand(
-            id,
-            mainInfoRequest.Fio,
-            mainInfoRequest.Phone,
-            mainInfoRequest.Email,
-            mainInfoRequest.Description, 
-            mainInfoRequest.YearsOfExperience);
+        var command = mainInfoRequest.ToCommand(id);
         
         var result = await handler.Handle(command, cancellationToken);
 
@@ -80,7 +67,7 @@ public class VolunteersController : ControllerBase
         [FromBody] UpdateVolunteerSocialWebRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateVolunteerSocialWebCommand(id, request.SocialWebs);
+        var command = request.ToCommand(id);
         
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
@@ -96,7 +83,7 @@ public class VolunteersController : ControllerBase
         [FromBody] UpdateVolunteerTransferDetailsRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new UpdateVolunteerTransferDetailsCommand(id, request.NewTransferDetail);
+        var command = request.ToCommand(id);
         
         var result = await handler.Handle(command, cancellationToken);
         if (result.IsFailure)
@@ -142,21 +129,7 @@ public class VolunteersController : ControllerBase
         [FromServices] AddPetHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new AddPetCommand(
-            id,
-            request.Name,
-            request.Classification,
-            request.Description,
-            request.Color,
-            request.HealthInfo,
-            request.Address,
-            request.Dimensions,
-            request.OwnerPhone,
-            request.IsCastrate,
-            request.DateOfBirth,
-            request.IsVaccinated,
-            request.HelpStatus,
-            request.TransferDetailsDto);
+        var command = request.ToCommand(id);
 
         var addPetResult = await handler.HandleAsync(command, cancellationToken);
         if (addPetResult.IsFailure)
@@ -174,7 +147,7 @@ public class VolunteersController : ControllerBase
         [FromServices] DeletePetPhotosHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetPhotosCommand(volunteerId, petId, request.PhotoNames);
+        var command = request.ToCommand(volunteerId, petId);
         
         var handleResult = await handler.HandleAsync(command, cancellationToken);
         if (handleResult.IsFailure)
@@ -215,7 +188,7 @@ public class VolunteersController : ControllerBase
         [FromServices] ChangePetPositionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new ChangePetPositionCommand(volunteerId, petId, request.NewPetPosition);
+        var command = request.ToCommand(volunteerId, petId);
         
         var handleResult = await handler.HandleAsync(command, cancellationToken);
         if (handleResult.IsFailure)
