@@ -48,13 +48,11 @@ public class ChangePetPositionHandler
                 return volunteer.Error;
             
             var petId = PetId.Create(command.PetId).Value;
-            var pet = volunteer.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
-            if (pet == null)
+            var pet = volunteer.Value.GetPetById(petId);
+            if (pet.IsFailure)
             {
-                _logger.LogError("Pet with id {petId} not found for volunteer with id {volunteerId}",
-                    petId.Value, volunteerId.Value);
-                var error = Errors.General.ValueNotFound(petId.Value);
-                return new ErrorList([error]);
+                _logger.LogError("Failed to get pet with id: {id}", petId);
+                return pet.Error;
             }
             
             var position = Position.Create(command.PetPosition).Value;
@@ -62,7 +60,7 @@ public class ChangePetPositionHandler
             if (result.IsFailure)
             {
                 _logger.LogError("Error during change pet ({petId}) position: from {fromPosition} to {toPosition}",
-                    petId, pet.Position.Value, command.PetPosition);
+                    petId, pet.Value.Position.Value, command.PetPosition);
                 return result.Error;
             }
 

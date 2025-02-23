@@ -294,6 +294,19 @@ public class Volunteer : Entity<VolunteerId>
         return lastPosition.Value;
     }
 
+    public Result<Pet, ErrorList> GetPetById(PetId petId)
+    {
+        var getPetResult = _pets.FirstOrDefault(p => p.Id == petId);
+        if (getPetResult is null)
+        {
+            var errorMes = ($"Pet with id {petId.Value} not found for volunteer {Id.Value}");
+            var error = Error.NotFound("value.not.found", errorMes);
+            return new ErrorList([error]);
+        }
+        
+        return getPetResult;
+    }
+
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
     private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 

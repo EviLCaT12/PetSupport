@@ -1,3 +1,3 @@
 namespace PetFamily.API.Requests;
 
-public record ChangePetPositionRequest(Guid PetId, int NewPetPosition);
+public record ChangePetPositionRequest(int NewPetPosition);

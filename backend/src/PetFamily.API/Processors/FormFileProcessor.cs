@@ -4,14 +4,14 @@ namespace PetFamily.API.Processors;
 
 public class FormFileProcessor : IAsyncDisposable
 {
-    private readonly List<CreatePhotoDto> _photos = [];
+    private readonly List<UploadPhotoDto> _photos = [];
 
-    public List<CreatePhotoDto> Process(IFormFileCollection photos)
+    public List<UploadPhotoDto> Process(IFormFileCollection photos)
     {
         foreach (var photo in photos)
         {
             var stream = photo.OpenReadStream();
-            var photoDto = new CreatePhotoDto(stream, photo.FileName);
+            var photoDto = new UploadPhotoDto(stream, photo.FileName);
             _photos.Add(photoDto);
         }
         return _photos;

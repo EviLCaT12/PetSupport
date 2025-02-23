@@ -1,8 +1,9 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Application.FileProvider;
+using PetFamily.Application.Files;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Error;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Application.Providers;
 
@@ -12,8 +13,8 @@ public interface IFileProvider
         IEnumerable<FileData> fileData, CancellationToken cancellationToken = default);
     
     Task<Result<IEnumerable<string>, ErrorList>> RemoveFilesAsync(
-        IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default);
+        IEnumerable<FileInfo> files, CancellationToken cancellationToken = default);
 
     Task<Result<string, ErrorList>> GetFilePresignedUrl(
-        ExistFileData file, CancellationToken cancellationToken);
+        FileInfo file, CancellationToken cancellationToken);
 }
