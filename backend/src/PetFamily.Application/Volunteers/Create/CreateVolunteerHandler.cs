@@ -19,8 +19,6 @@ public class CreateVolunteerHandler(
 {
     public async Task<Result<Guid, ErrorList>> HandleAsync(
         CreateVolunteerCommand createVolunteerCommand,
-        List<SocialWebDto> socialWebDto,
-        List<TransferDetailDto> transferDetailDto,
         CancellationToken cancellationToken = default)
     {
         var createVolunteerValidationResult = await createVolunteerCommandValidator.ValidateAsync(
@@ -29,11 +27,13 @@ public class CreateVolunteerHandler(
         if (createVolunteerValidationResult.IsValid == false)
             return createVolunteerValidationResult.ToErrorList();
         
-        var socialWebDtoValidatorResult = await socialWebDtoValidator.ValidateAsync(socialWebDto, cancellationToken);
+        var socialWebDtoValidatorResult = await socialWebDtoValidator.ValidateAsync(
+            createVolunteerCommand.SocialWebDto, cancellationToken);
         if (socialWebDtoValidatorResult.IsValid == false)
             return socialWebDtoValidatorResult.ToErrorList();
         
-        var transferDetailDtoValidatorResult = await transferDetailDtoValidator.ValidateAsync(transferDetailDto, cancellationToken);
+        var transferDetailDtoValidatorResult = await transferDetailDtoValidator.ValidateAsync(
+            createVolunteerCommand.TransferDetailDto, cancellationToken);
         if (transferDetailDtoValidatorResult.IsValid == false)
             return transferDetailDtoValidatorResult.ToErrorList();
         
@@ -56,16 +56,16 @@ public class CreateVolunteerHandler(
         var yOExpCreateResult = YearsOfExperience.Create(createVolunteerCommand.YearsOfExperience).Value;
         
         List<SocialWeb> socialWebs = [];
-        socialWebs.AddRange(socialWebDto
+        socialWebs.AddRange(createVolunteerCommand.SocialWebDto
             .Select(socialWeb => SocialWeb.Create(socialWeb.Link, socialWeb.Name))
             .Select(socialWebCreateResult => socialWebCreateResult.Value));
-        var socialWebList = new ValueObjectList<SocialWeb>(socialWebs);
+        var socialWebList = new List<SocialWeb>(socialWebs);
         
         List<TransferDetails> transferDetails = [];
-        transferDetails.AddRange(transferDetailDto
+        transferDetails.AddRange(createVolunteerCommand.TransferDetailDto
             .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
             .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
-        var transferDetailsList = new ValueObjectList<TransferDetails>(transferDetails);
+        var transferDetailsList = new List<TransferDetails>(transferDetails);
         
         var validVolunteer = Volunteer.Create(
             volunteerId,

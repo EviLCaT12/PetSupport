@@ -69,7 +69,7 @@ public class AddPetHandler
             transferDetails.AddRange(command.TransferDetailDto
                 .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
                 .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
-            var transferDetailsList = new ValueObjectList<TransferDetails>(transferDetails);
+            var transferDetailsList = new List<TransferDetails>(transferDetails);
     
             var createPetResult = Pet.Create(
                 PetId.NewPetId(),

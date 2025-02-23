@@ -52,7 +52,7 @@ public class UpdateVolunteerTransferDetailsHandler
             .Select(td => TransferDetails.Create(td.Name, td.Name).Value);
 
 
-        var transferDetailsLit = new ValueObjectList<TransferDetails>(transferDetails);
+        var transferDetailsLit = new List<TransferDetails>(transferDetails);
         
         existedVolunteer.Value.UpdateTransferDetailsList(transferDetailsLit); 
         
