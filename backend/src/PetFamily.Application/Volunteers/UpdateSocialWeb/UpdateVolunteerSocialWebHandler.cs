@@ -55,7 +55,7 @@ public class UpdateVolunteerSocialWebHandler
             .Select(d => new {d.Link, d.Name})
             .Select(sw => SocialWeb.Create(sw.Link, sw.Name).Value);
 
-        var socialWebList = new ValueObjectList<SocialWeb>(socialWebs);
+        var socialWebList = new List<SocialWeb>(socialWebs);
         existedVolunteer.Value.UpdateSocialWebList(socialWebList);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
