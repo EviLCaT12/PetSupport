@@ -1,6 +1,6 @@
 using FluentValidation;
+using PetFamily.Application.PetManagement.UseCases.UpdateTransferDetails;
 using PetFamily.Application.Validators.Shared;
-using PetFamily.Application.Volunteers.UpdateTransferDetails;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Application.Validators.Volunteer;

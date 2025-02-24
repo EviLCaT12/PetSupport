@@ -5,10 +5,11 @@ using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
+using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class SpeciesRepository(ApplicationDbContext context) : ISpeciesRepository
+public class SpeciesRepository(WriteDbDbContext context) : ISpeciesRepository
 {
     public async Task<Result<Species, ErrorList>> GetByIdAsync(SpeciesId id, CancellationToken cancellationToken)
     {

@@ -1,14 +1,15 @@
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Application.Volunteers.AddPet;
-using PetFamily.Application.Volunteers.AddPetPhotos;
-using PetFamily.Application.Volunteers.ChangePetPosition;
-using PetFamily.Application.Volunteers.Create;
-using PetFamily.Application.Volunteers.DeletePetPhotos;
-using PetFamily.Application.Volunteers.HardDelete;
-using PetFamily.Application.Volunteers.UpdateMainInfo;
-using PetFamily.Application.Volunteers.UpdateSocialWeb;
-using PetFamily.Application.Volunteers.UpdateTransferDetails;
+using PetFamily.Application.PetManagement.Queries.GetPetsWithPagination;
+using PetFamily.Application.PetManagement.UseCases.AddPet;
+using PetFamily.Application.PetManagement.UseCases.AddPetPhotos;
+using PetFamily.Application.PetManagement.UseCases.ChangePetPosition;
+using PetFamily.Application.PetManagement.UseCases.Create;
+using PetFamily.Application.PetManagement.UseCases.DeletePetPhotos;
+using PetFamily.Application.PetManagement.UseCases.HardDelete;
+using PetFamily.Application.PetManagement.UseCases.UpdateMainInfo;
+using PetFamily.Application.PetManagement.UseCases.UpdateSocialWeb;
+using PetFamily.Application.PetManagement.UseCases.UpdateTransferDetails;
 
 namespace PetFamily.Application;
 
@@ -26,6 +27,7 @@ public static class Inject
         services.AddScoped<AddPetPhotosHandler>();
         services.AddScoped<DeletePetPhotosHandler>();
         services.AddScoped<ChangePetPositionHandler>();
+        services.AddScoped<GetPetsWithPaginationHandler>();
 
         services.AddValidatorsFromAssembly(typeof(Inject).Assembly);
         
