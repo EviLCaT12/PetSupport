@@ -166,14 +166,15 @@ public class VolunteersController : ControllerBase
         return Ok(addPetResult.Value);
     }
     
-    [HttpDelete("{volunteerId:guid}/pet/photos")]
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/photos")]
     public async Task<ActionResult> DeletePetPhotos(
         [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
         [FromBody] DeletePetPhotoRequest request,
         [FromServices] DeletePetPhotosHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new DeletePetPhotosCommand(volunteerId, request.PetId, request.PhotoNames);
+        var command = new DeletePetPhotosCommand(volunteerId, petId, request.PhotoNames);
         
         var handleResult = await handler.HandleAsync(command, cancellationToken);
         if (handleResult.IsFailure)
@@ -182,9 +183,10 @@ public class VolunteersController : ControllerBase
         return Ok(); 
     }
 
-    [HttpPut("{id:guid}/pet/photos")]
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/photos")]
     public async Task<ActionResult> AddPetPhotos(
-        [FromRoute] Guid id,
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
         [FromForm] AddPetPhotosRequest request,
         [FromServices] AddPetPhotosHandler handler,
         CancellationToken cancellationToken)
@@ -193,7 +195,7 @@ public class VolunteersController : ControllerBase
         
         var createPhotoDtos = processor.Process(request.Photos);
 
-        var command = new AddPetPhotosCommand(id, request.PetId, createPhotoDtos);
+        var command = new AddPetPhotosCommand(volunteerId, petId, createPhotoDtos);
 
         var resultHandle = await handler.HandleAsync(
             command,
@@ -205,14 +207,15 @@ public class VolunteersController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("{id:guid}/pet/position")]
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/position")]
     public async Task<ActionResult> ChangePetPosition(
-        [FromRoute] Guid id,
+        [FromRoute] Guid volunteerId,
+        [FromRoute] Guid petId,
         [FromBody] ChangePetPositionRequest request,
         [FromServices] ChangePetPositionHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new ChangePetPositionCommand(id, request.PetId, request.NewPetPosition);
+        var command = new ChangePetPositionCommand(volunteerId, petId, request.NewPetPosition);
         
         var handleResult = await handler.HandleAsync(command, cancellationToken);
         if (handleResult.IsFailure)

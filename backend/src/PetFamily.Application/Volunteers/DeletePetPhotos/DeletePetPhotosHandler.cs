@@ -3,12 +3,12 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.FileProvider;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Application.Volunteers.DeletePetPhotos;
 
@@ -57,17 +57,15 @@ public class DeletePetPhotosHandler
                return new ErrorList([error]);
             }
          
-         var getPetResult = volunteer.Value.AllOwnedPets.FirstOrDefault(p => p.Id == petId);
-         if (getPetResult == null)
+         var getPetResult = volunteer.Value.GetPetById(petId);
+         if (getPetResult.IsFailure)
          {
-            _logger.LogError("Pet with id {petId} not found for volunteer with id {volunteerId}",
-               petId.Value, volunteerId.Value);
-            var error = Errors.General.ValueNotFound(petId.Value);
-            return new ErrorList([error]);
+            _logger.LogError("Failed to get pet with id: {id}", petId);
+            return getPetResult.Error;
          }
 
          List<PetPhoto> photos = [];
-         List<ExistFileData> fileDatas = [];
+         List<FileInfo> fileDatas = [];
          foreach (var photoName in command.PhotoNames)
          {
             var filePath = FilePath.Create(photoName, null).Value;
@@ -75,7 +73,7 @@ public class DeletePetPhotosHandler
             var petPhoto = PetPhoto.Create(filePath).Value;
             photos.Add(petPhoto);
             
-            var fileData = new ExistFileData(filePath, BUCKET_NAME);
+            var fileData = new FileInfo(filePath, BUCKET_NAME);
             fileDatas.Add(fileData);
          }
 

@@ -3,12 +3,13 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
-using PetFamily.Application.FileProvider;
+using PetFamily.Application.Files;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.Shared.SharedVO;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Infrastructure.Providers;
 
@@ -26,7 +27,6 @@ public class MinioProvider : IFileProvider
     public async Task<UnitResult<ErrorList>> UploadFilesAsync(
         IEnumerable<FileData> fileData, CancellationToken cancellationToken)
     {
-        
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);
         var fileList = fileData.ToList();
 
@@ -57,7 +57,7 @@ public class MinioProvider : IFileProvider
     }
 
     public async Task<Result<IEnumerable<string>, ErrorList>> RemoveFilesAsync(
-        IEnumerable<ExistFileData> files, CancellationToken cancellationToken = default)
+        IEnumerable<FileInfo> files, CancellationToken cancellationToken = default)
     {
         var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLEL_FILES);
         var fileList = files.ToList();
@@ -91,7 +91,7 @@ public class MinioProvider : IFileProvider
     }
 
     public async Task<Result<string, ErrorList>> GetFilePresignedUrl(
-        ExistFileData file, CancellationToken cancellationToken)
+        FileInfo file, CancellationToken cancellationToken)
     {
         try
         {
@@ -130,30 +130,30 @@ public class MinioProvider : IFileProvider
         }
     }
     
-
+    
 
     private async Task<Result<string, ErrorList>> RemoveObject(
-        ExistFileData existFileData,
+        FileInfo fileInfo,
         SemaphoreSlim semaphoreSlim,
         CancellationToken cancellationToken)
     {
         await semaphoreSlim.WaitAsync(cancellationToken);
 
         var removeObjectArgs = new RemoveObjectArgs()
-            .WithBucket(existFileData.BucketName)
-            .WithObject(existFileData.FilePath.Path);
+            .WithBucket(fileInfo.BucketName)
+            .WithObject(fileInfo.FilePath.Path);
 
         try
         {
             await _minioClient.RemoveObjectAsync(removeObjectArgs, cancellationToken);
 
-            return existFileData.FilePath.Path;
+            return fileInfo.FilePath.Path;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Fail to upload file with path {path} in minio bucket {bucket}",
-                existFileData.FilePath.Path,
-                existFileData.BucketName);
+                fileInfo.FilePath.Path,
+                fileInfo.BucketName);
 
             var error = Error.Failure("file.remove", "Fail to remove file in minio");
             var errorList = new ErrorList([error]);
@@ -174,22 +174,22 @@ public class MinioProvider : IFileProvider
         await semaphoreSlim.WaitAsync(cancellationToken);
         
         var putObjectArgs = new PutObjectArgs()
-            .WithBucket(fileData.BucketName)
+            .WithBucket(fileData.Info.BucketName)
             .WithStreamData(fileData.Stream)
             .WithObjectSize(fileData.Stream.Length)
-            .WithObject(fileData.FilePath.Path);
+            .WithObject(fileData.Info.FilePath.Path);
 
         try
         {
             await _minioClient.PutObjectAsync(putObjectArgs, cancellationToken);
 
-            return fileData.FilePath;
+            return fileData.Info.FilePath;
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Fail to upload file with path {path} in minio bucket {bucket}",
-                fileData.FilePath.Path,
-                fileData.BucketName);
+                fileData.Info.FilePath.Path,
+                fileData.Info.BucketName);
             var error = Error.Failure("file.upload", "Fail to upload file in minio");
             var errorList = new ErrorList([error]);
             return errorList;
@@ -201,7 +201,7 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    private async Task<UnitResult<ErrorList>> CheckObjectsExisted(IEnumerable<ExistFileData> files, CancellationToken cancellationToken)
+    private async Task<UnitResult<ErrorList>> CheckObjectsExisted(IEnumerable<FileInfo> files, CancellationToken cancellationToken)
     {
         foreach (var file in files)
         {
@@ -211,7 +211,9 @@ public class MinioProvider : IFileProvider
                     .WithBucket(file.BucketName)
                     .WithObject(file.FilePath.Path);
         
-                await _minioClient.StatObjectAsync(stateObjectArgs, cancellationToken);
+                var objectStat = await _minioClient.StatObjectAsync(stateObjectArgs, cancellationToken);
+                if (objectStat == null)
+                    return Result.Success<ErrorList>();
             }
             catch (Exception e)
             {
@@ -228,7 +230,7 @@ public class MinioProvider : IFileProvider
         IEnumerable<FileData> filesData,
         CancellationToken cancellationToken)
     {
-        HashSet<string> bucketNames = [..filesData.Select(file => file.BucketName)];
+        HashSet<string> bucketNames = [..filesData.Select(file => file.Info.BucketName)];
 
         foreach (var bucketName in bucketNames)
         {
@@ -247,7 +249,7 @@ public class MinioProvider : IFileProvider
         }
     }
 
-    private async Task<UnitResult<ErrorList>> CheckBucketsForExistAsync(IEnumerable<ExistFileData> files, CancellationToken cancellationToken)
+    private async Task<UnitResult<ErrorList>> CheckBucketsForExistAsync(IEnumerable<FileInfo> files, CancellationToken cancellationToken)
     {
         HashSet<string> bucketNames = [..files.Select(file => file.BucketName)];
 
