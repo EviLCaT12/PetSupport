@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.UseCases.ChangePetPosition;
+using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
 

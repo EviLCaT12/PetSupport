@@ -46,5 +46,10 @@ public class PetDto
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-    public string Photos = string.Empty;
+    public PhotoDto[] Photos { get; init; }
+}
+
+public class PhotoDto
+{
+    public string PathToStorage { get; set; } = string.Empty;
 }

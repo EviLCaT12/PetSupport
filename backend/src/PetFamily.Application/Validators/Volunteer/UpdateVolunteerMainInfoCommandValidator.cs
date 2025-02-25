@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.UseCases.UpdateMainInfo;
+using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.SharedVO;
 

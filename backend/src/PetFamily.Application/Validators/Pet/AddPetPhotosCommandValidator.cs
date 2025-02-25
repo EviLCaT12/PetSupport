@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.UseCases.AddPetPhotos;
+using PetFamily.Application.PetManagement.Commands.AddPetPhotos;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 

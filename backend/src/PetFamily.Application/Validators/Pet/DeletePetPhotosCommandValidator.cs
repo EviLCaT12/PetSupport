@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.UseCases.DeletePetPhotos;
+using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 

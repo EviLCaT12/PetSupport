@@ -1,6 +1,6 @@
 using PetFamily.Application.Dto.Shared;
 using PetFamily.Application.Dto.VolunteerDto;
-using PetFamily.Application.PetManagement.UseCases.Create;
+using PetFamily.Application.PetManagement.Commands.Create;
 
 namespace PetFamily.API.Requests.Volunteers.CreateVolunteer;
 

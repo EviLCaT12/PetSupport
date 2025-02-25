@@ -1,5 +1,5 @@
 using PetFamily.Application.Dto.Shared;
-using PetFamily.Application.PetManagement.UseCases.UpdateSocialWeb;
+using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
 
 namespace PetFamily.API.Requests.Volunteers.UpdateVolunteer;
 

@@ -1,8 +1,12 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.Dto.PetDto;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
@@ -128,10 +132,24 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
-        
-        
+
+
         builder.Property(p => p.PhotoList!)
-            .JsonValueObjectCollectionConversion()
+            .HasConversion(
+                photos => JsonSerializer.Serialize(
+                    photos.Select(p => new PhotoDto
+                    {
+                        PathToStorage = p.PathToStorage.Path
+                    }),
+                    JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<List<PhotoDto>>(json, JsonSerializerOptions.Default)!
+                    .Select(dto => PetPhoto.Create(FilePath.Create(dto.PathToStorage, null).Value).Value)
+                    .ToList(),
+                new ValueComparer<IReadOnlyList<PetPhoto>>(
+                    (c1, c2) => c1.SequenceEqual(c2),
+                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+                    c =>  (IReadOnlyList<PetPhoto>)c.ToList()))
+            .HasColumnType("jsonb")
             .HasColumnName("photos");
     }
 }

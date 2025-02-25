@@ -12,8 +12,8 @@ public class ReadDbContext(IConfiguration configuration) : DbContext, IReadDbCon
 {
     private const string DATABASE = Constants.DATABASE; 
     
-    public DbSet<VolunteerDto> Volunteers => Set<VolunteerDto>();
-    public DbSet<PetDto> Pets => Set<PetDto>();
+    public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
+    public IQueryable<PetDto> Pets => Set<PetDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -6,15 +6,15 @@ using PetFamily.API.Requests.Volunteers.ChangePosition;
 using PetFamily.API.Requests.Volunteers.CreateVolunteer;
 using PetFamily.API.Requests.Volunteers.PetPhotos;
 using PetFamily.API.Requests.Volunteers.UpdateVolunteer;
-using PetFamily.Application.PetManagement.UseCases.AddPet;
-using PetFamily.Application.PetManagement.UseCases.AddPetPhotos;
-using PetFamily.Application.PetManagement.UseCases.ChangePetPosition;
-using PetFamily.Application.PetManagement.UseCases.Create;
-using PetFamily.Application.PetManagement.UseCases.DeletePetPhotos;
-using PetFamily.Application.PetManagement.UseCases.HardDelete;
-using PetFamily.Application.PetManagement.UseCases.UpdateMainInfo;
-using PetFamily.Application.PetManagement.UseCases.UpdateSocialWeb;
-using PetFamily.Application.PetManagement.UseCases.UpdateTransferDetails;
+using PetFamily.Application.PetManagement.Commands.AddPet;
+using PetFamily.Application.PetManagement.Commands.AddPetPhotos;
+using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
+using PetFamily.Application.PetManagement.Commands.Create;
+using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
+using PetFamily.Application.PetManagement.Commands.HardDelete;
+using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
+using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
+using PetFamily.Application.PetManagement.Commands.UpdateTransferDetails;
 
 namespace PetFamily.API.Controllers.Volunteers;
 
@@ -49,7 +49,7 @@ public class VolunteersController : ControllerBase
     {
         var command = mainInfoRequest.ToCommand(id);
         
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -66,7 +66,7 @@ public class VolunteersController : ControllerBase
     {
         var command = request.ToCommand(id);
         
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
         
@@ -82,7 +82,7 @@ public class VolunteersController : ControllerBase
     {
         var command = request.ToCommand(id);
         
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
         
@@ -97,7 +97,7 @@ public class VolunteersController : ControllerBase
     {
         var command = new DeleteVolunteerCommand(id);
         
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
         
@@ -112,7 +112,7 @@ public class VolunteersController : ControllerBase
     {
         var command = new DeleteVolunteerCommand(id);
         
-        var result = await handler.Handle(command, cancellationToken);
+        var result = await handler.HandleAsync(command, cancellationToken);
         if (result.IsFailure)
             return result.Error.ToResponse();
         
