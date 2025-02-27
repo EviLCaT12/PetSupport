@@ -16,6 +16,7 @@ using PetFamily.Application.PetManagement.Commands.HardDelete;
 using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
 using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
 using PetFamily.Application.PetManagement.Commands.UpdateTransferDetails;
+using PetFamily.Application.PetManagement.Queries.GetVolunteerById;
 using PetFamily.Application.PetManagement.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.API.Controllers.Volunteers;
@@ -206,7 +207,22 @@ public class VolunteersController : ControllerBase
         
         var result = await handler.HandleAsync(query, cancellationToken);
 
-        return Ok(result);
+        return Ok(result.Value);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult> GetById(
+        [FromRoute] Guid id,
+        [FromServices] GetVolunteerByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetVolunteerByIdQuery(id);
+        var result = await handler.HandleAsync(query, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
     
     

@@ -1,8 +1,10 @@
+using CSharpFunctionalExtensions;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Dto.VolunteerDto;
 using PetFamily.Application.Extensions;
 using PetFamily.Application.Volunteers;
+using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Application.PetManagement.Queries.GetVolunteersWithPagination;
 
@@ -15,7 +17,7 @@ public class GetVolunteersWithPaginationHandler : IQueryHandler<PagedList<Volunt
         _context = context;
     }
 
-    public async Task<PagedList<VolunteerDto>> HandleAsync(GetVolunteerWithPaginationQuery query, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<VolunteerDto>, ErrorList>> HandleAsync(GetVolunteerWithPaginationQuery query, CancellationToken cancellationToken)
     {
         var volunteerQuery = _context.Volunteers;
 
