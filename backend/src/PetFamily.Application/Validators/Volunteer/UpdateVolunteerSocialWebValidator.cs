@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.Volunteers.UpdateSocialWeb;
+using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Application.Validators.Volunteer;

@@ -34,6 +34,8 @@ builder.Services
 
 var app = builder.Build();
 
+await app.ApplyMigration(); 
+
 app.UseExceptionMiddleware();
 
 app.UseSerilogRequestLogging();
