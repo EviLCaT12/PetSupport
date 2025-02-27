@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests.Species;
+using PetFamily.Application.SpeciesManagement.AddBreeds;
 using PetFamily.Application.SpeciesManagement.Create;
 
-namespace PetFamily.API.Controllers;
+namespace PetFamily.API.Controllers.Species;
 
 [ApiController]
 [Route("[controller]")]
@@ -22,7 +23,21 @@ public class SpeciesController : ControllerBase
             return createResult.Error.ToResponse();
         
         return Ok(createResult.Value);
+    }
 
-
+    [HttpPost("{speciesId:guid}/breeds")]
+    public async Task<ActionResult<IEnumerable<Guid>>> AddBreeds(
+        [FromRoute] Guid speciesId,
+        [FromBody] AddBreedsRequest request,
+        [FromServices] AddBreedsHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(speciesId);
+        
+        var addBreedsResult = await handler.HandleAsync(command, cancellationToken);
+        if (addBreedsResult.IsFailure)
+            return addBreedsResult.Error.ToResponse();
+        
+        return Ok(addBreedsResult.Value);
     }
 }

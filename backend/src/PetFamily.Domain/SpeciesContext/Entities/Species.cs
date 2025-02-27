@@ -45,4 +45,9 @@ public class Species : Entity<SpeciesId>
         
         return getBreedResult;
     }
+
+    public void AddBreeds(IEnumerable<Breed> newBreeds)
+    {
+        _breeds.AddRange(newBreeds);
+    }
 }

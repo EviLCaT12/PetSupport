@@ -58,6 +58,7 @@ public class CreateHandler : ICommandHandler<Guid, CreateCommand>
                 var msg = $"An Error occured while creating species in transaction: {e.Message}";
                 _logger.LogError(msg);
                 var error = Error.Failure("server.error", msg);
+                transaction.Rollback();
                 return new ErrorList([error]);
             } 
         }
