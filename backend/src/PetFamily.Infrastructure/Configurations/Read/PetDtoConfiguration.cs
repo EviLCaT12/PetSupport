@@ -18,7 +18,12 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
         builder.Property(p => p.Photos)
             .HasConversion(
                 photos => JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<PhotoDto[]>(json, JsonSerializerOptions.Default)!);
+                json => JsonSerializer.Deserialize<IEnumerable<PetPhoto>>(json, JsonSerializerOptions.Default)!
+                    .Select(photo => new PhotoDto
+                    {
+                        PathToStorage = photo.PathToStorage.Path
+                    })
+                    .ToArray());
 
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Volunteers;
 
@@ -24,5 +25,13 @@ public static class QueriesExtensions
             Page = page,
             TotalCount = count
         };
+    }
+
+    public static IQueryable<T> WhereIf<T>(
+        this IQueryable<T> source,
+        bool condition,
+        Expression<Func<T, bool>> predicate)
+    {
+        return condition ? source.Where(predicate) : source;
     }
 }

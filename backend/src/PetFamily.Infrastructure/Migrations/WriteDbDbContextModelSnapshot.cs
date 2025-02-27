@@ -255,7 +255,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
-                                .HasColumnName("second_name");
+                                .HasColumnName("last_name");
 
                             b1.Property<string>("Surname")
                                 .IsRequired()

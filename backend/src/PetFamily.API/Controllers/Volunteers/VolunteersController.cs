@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
+using PetFamily.API.Requests.Shared;
 using PetFamily.API.Requests.Volunteers.AddPet;
 using PetFamily.API.Requests.Volunteers.ChangePosition;
 using PetFamily.API.Requests.Volunteers.CreateVolunteer;
@@ -15,6 +16,7 @@ using PetFamily.Application.PetManagement.Commands.HardDelete;
 using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
 using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
 using PetFamily.Application.PetManagement.Commands.UpdateTransferDetails;
+using PetFamily.Application.PetManagement.Queries.GetVolunteersWithPagination;
 
 namespace PetFamily.API.Controllers.Volunteers;
 
@@ -193,5 +195,19 @@ public class VolunteersController : ControllerBase
         
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<ActionResult> Get(
+        [FromQuery] GetEntityWithPaginationRequest request,
+        [FromServices] GetVolunteersWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        
+        var result = await handler.HandleAsync(query, cancellationToken);
+
+        return Ok(result);
+    }
+    
     
 }

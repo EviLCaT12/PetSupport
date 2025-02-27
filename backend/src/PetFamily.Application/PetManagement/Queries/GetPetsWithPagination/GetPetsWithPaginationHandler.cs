@@ -21,6 +21,6 @@ public class GetPetsWithPaginationHandler : IQueryHandler<PagedList<PetDto>, Get
     {
         var petQuery = _context.Pets;
         
-        return await petQuery.ToPagedList(query.Page, query.PageSize, ct);
+        return await petQuery.OrderBy(p => p.Position).ToPagedList(query.Page, query.PageSize, ct);
     }
 }

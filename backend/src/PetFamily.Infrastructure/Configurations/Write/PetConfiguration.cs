@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Application.Dto.PetDto;
+using PetFamily.Application.Dto.Shared;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared.Constants;
@@ -120,8 +121,10 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .IsRequired()
             .HasConversion<string>();
 
-        builder.Property(v => v.TransferDetailsList)
-            .JsonValueObjectCollectionConversion()
+        builder.Property(p => p.TransferDetailsList)
+            .Json1DeepLvlVoCollectionConverter(
+                transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
+                dto => TransferDetails.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
             
         builder.Property(p => p.CreatedAt)
@@ -133,23 +136,12 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
 
-
-        builder.Property(p => p.PhotoList!)
+        builder.Property(p => p.PhotoList)
             .HasConversion(
-                photos => JsonSerializer.Serialize(
-                    photos.Select(p => new PhotoDto
-                    {
-                        PathToStorage = p.PathToStorage.Path
-                    }),
-                    JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<List<PhotoDto>>(json, JsonSerializerOptions.Default)!
-                    .Select(dto => PetPhoto.Create(FilePath.Create(dto.PathToStorage, null).Value).Value)
-                    .ToList(),
-                new ValueComparer<IReadOnlyList<PetPhoto>>(
-                    (c1, c2) => c1.SequenceEqual(c2),
-                    c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
-                    c =>  (IReadOnlyList<PetPhoto>)c.ToList()))
-            .HasColumnType("jsonb")
-            .HasColumnName("photos");
+                photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
+                json => JsonSerializer.Deserialize<IReadOnlyList<PetPhoto>>(json, JsonSerializerOptions.Default)!)
+            .HasColumnName("photos")
+            .HasColumnType("jsonb");
+        
     }
 }

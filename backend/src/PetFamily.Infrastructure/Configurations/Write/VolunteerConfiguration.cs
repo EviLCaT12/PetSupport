@@ -1,8 +1,11 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PetFamily.Application.Dto.Shared;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Constants;
+using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Infrastructure.Extensions;
 
 namespace PetFamily.Infrastructure.Configurations.Write;
@@ -30,7 +33,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
             fb.Property(f => f.LastName)
                 .IsRequired()
                 .HasMaxLength(VolunteerConstant.MAX_NAME_LENGTH)
-                .HasColumnName("second_name");
+                .HasColumnName("last_name");
 
             fb.Property(f => f.Surname)
                 .IsRequired()
@@ -69,11 +72,15 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         });
 
         builder.Property(v => v.SocialWebList)
-            .JsonValueObjectCollectionConversion()
+            .Json1DeepLvlVoCollectionConverter(
+                socialWeb => new SocialWebDto(socialWeb.Link, socialWeb.Name),
+                dto => SocialWeb.Create(dto.Link, dto.Name).Value)
             .HasColumnName("social_webs");
 
         builder.Property(v => v.TransferDetailsList)
-            .JsonValueObjectCollectionConversion()
+            .Json1DeepLvlVoCollectionConverter(
+                transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
+                dto => TransferDetails.Create(dto.Name, dto.Description).Value)
             .HasColumnName("transfer_details");
 
         builder.HasMany(v => v.AllOwnedPets)

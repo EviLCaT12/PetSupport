@@ -13,7 +13,7 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbDbContext))]
-    [Migration("20250225131505_Initial")]
+    [Migration("20250227081622_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -258,7 +258,7 @@ namespace PetFamily.Infrastructure.Migrations
                                 .IsRequired()
                                 .HasMaxLength(100)
                                 .HasColumnType("character varying(100)")
-                                .HasColumnName("second_name");
+                                .HasColumnName("last_name");
 
                             b1.Property<string>("Surname")
                                 .IsRequired()

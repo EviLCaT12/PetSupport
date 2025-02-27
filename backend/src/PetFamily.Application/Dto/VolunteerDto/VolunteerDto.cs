@@ -12,7 +12,7 @@ public class VolunteerDto
     
     public string Surname { get; init; } = string.Empty;
     
-    public string Number { get; init; } = string.Empty;
+    public string Phone { get; init; } = string.Empty;
     
     public string Email { get; init; } = string.Empty;
     
@@ -20,9 +20,9 @@ public class VolunteerDto
 
     public int YearsOfExperience { get; init; } = default;
     
-    public string SocialWebs { get; init; } = string.Empty;
+    public SocialWebDto[] SocialWebs { get; init; } = [];
     
-    public string TransferDetails { get; init; } = string.Empty;
+    public TransferDetailDto[] TransferDetails { get; init; } = [];
     
     public PetDto.PetDto[] Pets { get; init; } = [];
 }
