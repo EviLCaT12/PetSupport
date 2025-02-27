@@ -17,7 +17,7 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         builder.Property(s => s.Id)
             .HasConversion(
                 s => s.Value,
-                value => SpeciesId.Create(value));
+                value => SpeciesId.Create(value).Value);
         
         builder.ComplexProperty(s => s.Name, nb =>
         {

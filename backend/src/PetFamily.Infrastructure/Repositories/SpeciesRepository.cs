@@ -28,5 +28,11 @@ public class SpeciesRepository(WriteDbDbContext context) : ISpeciesRepository
 
         return species;
     }
-    
+
+    public Guid Remove(Species species)
+    {
+        context.Remove(species);
+        
+        return species.Id.Value;
+    }
 }

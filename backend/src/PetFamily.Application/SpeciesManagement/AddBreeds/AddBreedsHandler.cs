@@ -40,7 +40,7 @@ public class AddBreedsHandler : ICommandHandler<List<Guid>, AddBreedsCommand>
                 return validationResult.ToErrorList();
 
             var speciesId = SpeciesId.Create(command.SpeciesId);
-            var getSpeciesResult = await _repository.GetByIdAsync(speciesId, cancellationToken);
+            var getSpeciesResult = await _repository.GetByIdAsync(speciesId.Value, cancellationToken);
             if (getSpeciesResult.IsFailure)
             {
                 _logger.LogError($"Species with id: {speciesId} not found");

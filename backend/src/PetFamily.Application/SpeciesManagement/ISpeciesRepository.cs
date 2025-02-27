@@ -11,4 +11,6 @@ public interface ISpeciesRepository
     Task<Result<Species, ErrorList>> GetByIdAsync(
         SpeciesId id,
         CancellationToken cancellationToken);
+    
+    Guid Remove(Species species);
 }

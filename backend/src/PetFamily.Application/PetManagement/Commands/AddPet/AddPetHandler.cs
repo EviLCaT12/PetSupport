@@ -51,7 +51,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             if (getVolunteerResult.IsFailure)
                 return getVolunteerResult.Error;
     
-            var speciesId = SpeciesId.Create(command.Classification.SpeciesId);
+            var speciesId = SpeciesId.Create(command.Classification.SpeciesId).Value;
             var breedId = BreedId.Create(command.Classification.BreedId);
             
             var getSpeciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);

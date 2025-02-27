@@ -3,6 +3,7 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Requests.Species;
 using PetFamily.Application.SpeciesManagement.AddBreeds;
 using PetFamily.Application.SpeciesManagement.Create;
+using PetFamily.Application.SpeciesManagement.Remove;
 
 namespace PetFamily.API.Controllers.Species;
 
@@ -39,5 +40,20 @@ public class SpeciesController : ControllerBase
             return addBreedsResult.Error.ToResponse();
         
         return Ok(addBreedsResult.Value);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult> RemoveSpecies(
+        [FromRoute] Guid id,
+        [FromServices] RemoveSpeciesHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RemoveSpeciesCommand(id);
+        
+        var removeSpeciesResult = await handler.HandleAsync(command, cancellationToken);
+        if (removeSpeciesResult.IsFailure)
+            return removeSpeciesResult.Error.ToResponse();
+        
+        return Ok(removeSpeciesResult.Value);
     }
 }
