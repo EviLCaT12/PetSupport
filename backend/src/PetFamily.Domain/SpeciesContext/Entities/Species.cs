@@ -19,17 +19,16 @@ public class Species : Entity<SpeciesId>
 
     //ef core
     private Species() {}
-    private Species(SpeciesId id, Name name, List<Breed> breeds)
+    private Species(SpeciesId id, Name name)
     {
         Id = id;
         Name = name;
-        _breeds = breeds;
     }
 
-    public static Result<Species, Error> Create(SpeciesId id, Name name, List<Breed> breeds)
+    public static Result<Species, ErrorList> Create(SpeciesId id, Name name)
     {
-
-        var species = new Species(id, name, breeds);
+        
+        var species = new Species(id, name);
         
         return species; 
     }

@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Application.Species;
+using PetFamily.Application.SpeciesManagement;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
@@ -11,6 +11,12 @@ namespace PetFamily.Infrastructure.Repositories;
 
 public class SpeciesRepository(WriteDbDbContext context) : ISpeciesRepository
 {
+    public async Task<Guid> AddAsync(Species species, CancellationToken cancellationToken)
+    {
+        await context.AddAsync(species, cancellationToken);
+
+        return species.Id.Value;
+    }
     public async Task<Result<Species, ErrorList>> GetByIdAsync(SpeciesId id, CancellationToken cancellationToken)
     {
         var species = await context.Species

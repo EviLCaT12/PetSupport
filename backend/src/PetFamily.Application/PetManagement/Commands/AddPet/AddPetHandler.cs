@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Species;
+using PetFamily.Application.SpeciesManagement;
 using PetFamily.Domain.PetContext.Entities;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
@@ -96,7 +96,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             
             transaction.Commit();
             
-            return volunteer.Id.Value;
+            return createPetResult.Value.Id.Value;
         }
         catch (Exception e)
         {

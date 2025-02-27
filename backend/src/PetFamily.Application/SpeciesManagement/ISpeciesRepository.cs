@@ -1,14 +1,14 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Domain.Shared.Error;
 using PetFamily.Domain.SpeciesContext.Entities;
-using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Application.Species;
+namespace PetFamily.Application.SpeciesManagement;
 
 public interface ISpeciesRepository
 {
-    Task<Result<Domain.SpeciesContext.Entities.Species, ErrorList>> GetByIdAsync(
+    Task<Guid> AddAsync(Species species, CancellationToken cancellationToken);
+    Task<Result<Species, ErrorList>> GetByIdAsync(
         SpeciesId id,
         CancellationToken cancellationToken);
 }
