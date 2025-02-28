@@ -9,7 +9,7 @@ using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Application.SpeciesManagement.Create;
+namespace PetFamily.Application.SpeciesManagement.Commands.Create;
 
 public class CreateHandler : ICommandHandler<Guid, CreateCommand>
 {

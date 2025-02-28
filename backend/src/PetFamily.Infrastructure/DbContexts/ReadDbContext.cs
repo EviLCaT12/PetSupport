@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.DataBase;
+using PetFamily.Application.Dto.BreedDto;
 using PetFamily.Application.Dto.PetDto;
 using PetFamily.Application.Dto.SpeciesDto;
 using PetFamily.Application.Dto.VolunteerDto;
@@ -15,6 +16,7 @@ public class ReadDbContext(IConfiguration configuration) : DbContext, IReadDbCon
     public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
     public IQueryable<PetDto> Pets => Set<PetDto>();
     public IQueryable<SpeciesDto> Species => Set<SpeciesDto>();
+    public IQueryable<BreedDto> Breeds => Set<BreedDto>();
     
     
 

@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.SpeciesManagement.AddBreeds;
+using PetFamily.Application.SpeciesManagement.Commands.AddBreeds;
 using PetFamily.Domain.Shared.SharedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 

@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.SpeciesManagement.Remove;
+using PetFamily.Application.SpeciesManagement.Commands.Remove;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Application.Validators.Species;

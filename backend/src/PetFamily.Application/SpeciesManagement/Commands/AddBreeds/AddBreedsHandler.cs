@@ -10,7 +10,7 @@ using PetFamily.Domain.SpeciesContext.Entities;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
-namespace PetFamily.Application.SpeciesManagement.AddBreeds;
+namespace PetFamily.Application.SpeciesManagement.Commands.AddBreeds;
 
 public class AddBreedsHandler : ICommandHandler<List<Guid>, AddBreedsCommand>
 {

@@ -18,6 +18,6 @@ public class PetController : ControllerBase
         
         var response = await handler.HandleAsync(query, cancellationToken);
         
-        return Ok(response);
+        return Ok(response.Value);
     }
 }

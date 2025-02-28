@@ -1,5 +1,5 @@
 using PetFamily.Application.Dto.BreedDto;
-using PetFamily.Application.SpeciesManagement.AddBreeds;
+using PetFamily.Application.SpeciesManagement.Commands.AddBreeds;
 
 namespace PetFamily.API.Requests.Species;
 

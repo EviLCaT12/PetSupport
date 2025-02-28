@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.API.Extensions;
 using PetFamily.API.Requests.Species;
-using PetFamily.Application.SpeciesManagement.AddBreeds;
-using PetFamily.Application.SpeciesManagement.Create;
-using PetFamily.Application.SpeciesManagement.Remove;
-using PetFamily.Application.SpeciesManagement.RemoveBreed;
+using PetFamily.Application.SpeciesManagement.Commands.AddBreeds;
+using PetFamily.Application.SpeciesManagement.Commands.Create;
+using PetFamily.Application.SpeciesManagement.Commands.Remove;
+using PetFamily.Application.SpeciesManagement.Commands.RemoveBreed;
+using PetFamily.Application.SpeciesManagement.Queries;
+using PetFamily.Application.SpeciesManagement.Queries.GetBreedsByIdWithPagination;
+using PetFamily.Application.SpeciesManagement.Queries.GetSpeciesWithPagination;
 
 namespace PetFamily.API.Controllers.Species;
 
@@ -72,5 +75,31 @@ public class SpeciesController : ControllerBase
         
         return Ok(removeSpeciesResult.Value);
     }
+
+    [HttpGet]
+    public async Task<ActionResult> Get(
+        [FromQuery] GetSpeciesWithPaginationRequest request,
+        [FromServices] GetSpeciesWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery();
+        
+        var result = await handler.HandleAsync(query, cancellationToken);
+        
+        return Ok(result.Value);
+    }
     
+    [HttpGet("{speciesId:guid}/breeds/")]
+    public async Task<ActionResult> GetAllBreeds(
+        [FromRoute] Guid speciesId,
+        [FromQuery]  GetBreedsByIdWithPaginationRequest request,
+        [FromServices] GetBreedsByIdWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(speciesId);
+        
+        var result = await handler.HandleAsync(query, cancellationToken);
+        
+        return Ok(result.Value);
+    }
 }

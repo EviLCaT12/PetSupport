@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.SpeciesManagement.RemoveBreed;
+using PetFamily.Application.SpeciesManagement.Commands.RemoveBreed;
 using PetFamily.Domain.SpeciesContext.ValueObjects.BreedVO;
 using PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
