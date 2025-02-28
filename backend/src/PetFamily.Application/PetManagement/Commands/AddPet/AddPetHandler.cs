@@ -58,7 +58,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             if (getSpeciesResult.IsFailure)
                 return getSpeciesResult.Error;
 
-            var breed = getSpeciesResult.Value.GetBreedById(breedId);
+            var breed = getSpeciesResult.Value.GetBreedById(breedId.Value);
             if (breed.IsFailure)
             {
                 _logger.LogError("Failed to get breed with id: {id}", breedId);
@@ -75,7 +75,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
             var createPetResult = Pet.Create(
                 PetId.NewPetId(),
                 Name.Create(command.Name).Value,
-                PetClassification.Create(speciesId.Value, breedId.Value).Value,
+                PetClassification.Create(speciesId.Value, breedId.Value.Value).Value,
                 Description.Create(command.Description).Value,
                 Color.Create(command.Color).Value,
                 HealthInfo.Create(command.HealthInfo).Value,

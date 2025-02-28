@@ -35,4 +35,9 @@ public class SpeciesRepository(WriteDbDbContext context) : ISpeciesRepository
         
         return species.Id.Value;
     }
+
+    public async Task RemoveBreed(Species species, Breed breed, CancellationToken cancellationToken)
+    {
+        var breedToRemove = species.Breeds.First(b => b.Id == breed.Id);
+    }
 }

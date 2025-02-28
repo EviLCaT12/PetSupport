@@ -50,4 +50,9 @@ public class Species : Entity<SpeciesId>
     {
         _breeds.AddRange(newBreeds);
     }
+
+    public void RemoveBreed(Breed breed)
+    {
+        _breeds.Remove(breed);
+    }
 }

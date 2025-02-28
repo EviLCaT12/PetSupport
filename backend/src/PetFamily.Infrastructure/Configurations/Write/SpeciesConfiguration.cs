@@ -29,6 +29,8 @@ public class SpeciesConfiguration : IEntityTypeConfiguration<Species>
         
         builder.HasMany(s => s.Breeds)
             .WithOne()
-            .HasForeignKey("species_id");
+            .HasForeignKey("species_id")
+            .OnDelete(DeleteBehavior.Cascade)
+            .IsRequired();
     }
 }
