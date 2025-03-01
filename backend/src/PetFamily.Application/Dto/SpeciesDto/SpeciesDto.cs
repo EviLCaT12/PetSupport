@@ -6,5 +6,5 @@ public class SpeciesDto
     
     public string Name { get; init; }
     
-    public BreedDto.BreedDto[] Breed { get; init;}
+    public IReadOnlyList<BreedDto.BreedDto> Breeds { get; init; }
 }

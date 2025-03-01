@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
@@ -22,19 +23,22 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     private readonly ISpeciesRepository _speciesRepository;
     private readonly IValidator<AddPetCommand> _validator;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IReadDbContext _context;
 
     public AddPetHandler(
         ILogger<AddPetHandler> logger,
         IVolunteersRepository volunteersRepository,
         ISpeciesRepository speciesRepository,
         IValidator<AddPetCommand> validator,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IReadDbContext context)
     {
         _logger = logger;
         _volunteersRepository = volunteersRepository;
         _speciesRepository = speciesRepository;
         _validator = validator;
         _unitOfWork = unitOfWork;
+        _context = context;
     }
 
     public async Task<Result<Guid, ErrorList>> HandleAsync(AddPetCommand command, CancellationToken cancellationToken)
@@ -53,19 +57,28 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     
             var speciesId = SpeciesId.Create(command.Classification.SpeciesId).Value;
             var breedId = BreedId.Create(command.Classification.BreedId);
-            
-            var getSpeciesResult = await _speciesRepository.GetByIdAsync(speciesId, cancellationToken);
-            if (getSpeciesResult.IsFailure)
-                return getSpeciesResult.Error;
 
-            var breed = getSpeciesResult.Value.GetBreedById(breedId.Value);
-            if (breed.IsFailure)
+            var getSpeciesResult = await _context.Species
+                .Include(s => s.Breeds)
+                .FirstOrDefaultAsync(s => s.Id == command.Classification.SpeciesId, cancellationToken);
+            if (getSpeciesResult is null)
             {
-                _logger.LogError("Failed to get breed with id: {id}", breedId);
-                return breed.Error;
+                var msg = $"Species {command.Classification.SpeciesId} not found";
+                _logger.LogError(msg);
+                var error = Errors.General.ValueNotFound(command.Classification.SpeciesId);
+                return new ErrorList([error]);
             }
             
-    
+            var isSpeciesHasBreed = getSpeciesResult.Breeds
+                .FirstOrDefault(b => b.Id == command.Classification.BreedId);
+            if (isSpeciesHasBreed is null)
+            {
+                var msg = $"Breed {command.Classification.BreedId} not found";
+                _logger.LogError(msg);
+                var error = Errors.General.ValueNotFound(command.Classification.BreedId);
+                return new ErrorList([error]);
+            }
+
             List<TransferDetails> transferDetails = [];
             transferDetails.AddRange(command.TransferDetailDto
                 .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))

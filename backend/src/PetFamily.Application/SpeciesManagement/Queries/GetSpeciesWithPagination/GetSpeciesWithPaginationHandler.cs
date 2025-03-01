@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using Microsoft.EntityFrameworkCore;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Dto.SpeciesDto;
@@ -22,6 +23,7 @@ public class GetSpeciesWithPaginationHandler : IQueryHandler<PagedList<SpeciesDt
         var species = _context.Species;
 
         return await species
+            .Include(s => s.Breeds)
             .OrderBy(s => s.Name)
             .ToPagedList(query.Page, query.PageSize, cancellationToken);
     }

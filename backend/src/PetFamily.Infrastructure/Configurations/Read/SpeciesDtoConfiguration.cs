@@ -14,7 +14,7 @@ public class SpeciesDtoConfiguration : IEntityTypeConfiguration<SpeciesDto>
         
         builder.HasKey(dto => dto.Id);
 
-        builder.HasMany<BreedDto>(s => s.Breed)
+        builder.HasMany<BreedDto>(s => s.Breeds)
             .WithOne()
             .HasForeignKey(b => b.SpeciesId)
             .IsRequired();
