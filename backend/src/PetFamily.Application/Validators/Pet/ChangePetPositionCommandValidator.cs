@@ -2,8 +2,7 @@ using FluentValidation;
 using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 
-
-namespace PetFamily.Application.Validators;
+namespace PetFamily.Application.Validators.Pet;
 
 public class ChangePetPositionCommandValidator : AbstractValidator<ChangePetPositionCommand>
 {

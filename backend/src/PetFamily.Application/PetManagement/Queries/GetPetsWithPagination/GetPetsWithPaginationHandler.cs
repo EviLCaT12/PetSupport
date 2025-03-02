@@ -3,7 +3,6 @@ using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
 using PetFamily.Application.Dto.PetDto;
 using PetFamily.Application.Extensions;
-using PetFamily.Application.Volunteers;
 using PetFamily.Domain.Shared.Error;
 
 namespace PetFamily.Application.PetManagement.Queries.GetPetsWithPagination;

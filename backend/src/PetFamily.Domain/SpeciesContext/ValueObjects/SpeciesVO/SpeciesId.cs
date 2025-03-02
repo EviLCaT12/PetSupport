@@ -1,3 +1,6 @@
+using CSharpFunctionalExtensions;
+using PetFamily.Domain.Shared.Error;
+
 namespace PetFamily.Domain.SpeciesContext.ValueObjects.SpeciesVO;
 
 public record SpeciesId : IComparable<SpeciesId>
@@ -11,8 +14,17 @@ public record SpeciesId : IComparable<SpeciesId>
     }
     
     public Guid Value { get; }
-    
-    public static SpeciesId Create(Guid value) => new(value);
+
+    public static Result<SpeciesId, Error> Create(Guid value)
+    {
+        if (value == Guid.Empty)
+        {
+            var error = Errors.General.ValueIsRequired(nameof(SpeciesId));
+            return error;
+        }
+        
+        return new SpeciesId(value);
+    }
     public static SpeciesId NewSpeciesId() => new(Guid.NewGuid());
     public static SpeciesId EmptySpeciesId() => new(Guid.Empty);
 

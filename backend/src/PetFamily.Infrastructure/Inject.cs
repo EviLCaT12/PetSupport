@@ -6,7 +6,7 @@ using PetFamily.Application.Files;
 using PetFamily.Application.Messaging;
 using PetFamily.Application.PetManagement;
 using PetFamily.Application.Providers;
-using PetFamily.Application.Species;
+using PetFamily.Application.SpeciesManagement;
 using PetFamily.Infrastructure.BackgroundServices;
 using PetFamily.Infrastructure.DbContexts;
 using PetFamily.Infrastructure.Files;

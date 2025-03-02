@@ -123,7 +123,7 @@ public class VolunteersController : ControllerBase
     }
 
     [HttpPut("{id:guid}/pet")]
-    public async Task<ActionResult> AddPet(
+    public async Task<ActionResult<Guid>> AddPet(
         [FromRoute] Guid id,
         [FromBody] AddPetRequest request,
         [FromServices] AddPetHandler handler,

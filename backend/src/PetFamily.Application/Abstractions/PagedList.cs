@@ -1,4 +1,4 @@
-namespace PetFamily.Application.Volunteers;
+namespace PetFamily.Application.Abstractions;
 
 public class PagedList<T>
 {
