@@ -340,6 +340,19 @@ public class Volunteer : Entity<VolunteerId>
         return getPetResult;
     }
 
+    public UnitResult<ErrorList> ChangePetHelpStatus(PetId petId, HelpStatus helpStatus)
+    {
+        var getPetResult = GetPetById(petId);
+        if (getPetResult.IsFailure)
+            return getPetResult.Error;
+        
+        var pet = getPetResult.Value;
+        
+        pet.ChangeHelpStatus(helpStatus);
+        
+        return Result.Success<ErrorList>();
+    }
+
     private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
 
     private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 

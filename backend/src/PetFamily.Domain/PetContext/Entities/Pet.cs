@@ -109,7 +109,7 @@ public class Pet : Entity<PetId>
         bool isCastrate,
         DateTime dateOfBirth,
         bool isVaccinated,
-        int helpStatus,
+        string helpStatus,
         IEnumerable<TransferDetails> transferDetailsList,
         IEnumerable<PetPhoto> photoList)
     {
@@ -126,7 +126,7 @@ public class Pet : Entity<PetId>
             isCastrate,
             dateOfBirth,
             isVaccinated,
-            (HelpStatus)helpStatus,
+            Enum.Parse<HelpStatus>(helpStatus),
             transferDetailsList,
             photoList);
 
@@ -217,6 +217,9 @@ public class Pet : Entity<PetId>
         HelpStatus = helpStatus ?? HelpStatus;
         if (transferDetails != null) _transferDetails = transferDetails.ToList();
     }
+    
+    public void ChangeHelpStatus(HelpStatus helpStatus)
+        => HelpStatus = helpStatus;
 }
 
 

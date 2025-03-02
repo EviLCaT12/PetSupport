@@ -17,5 +17,5 @@ public record AddPetCommand(
     bool IsCastrate,
     DateTime DateOfBirth,
     bool IsVaccinated,
-    int HelpStatus,
+    string HelpStatus,
     IEnumerable<TransferDetailDto> TransferDetailDto) : ICommand;

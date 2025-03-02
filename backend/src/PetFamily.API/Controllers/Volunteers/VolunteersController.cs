@@ -3,6 +3,7 @@ using PetFamily.API.Extensions;
 using PetFamily.API.Processors;
 using PetFamily.API.Requests.Shared;
 using PetFamily.API.Requests.Volunteers.AddPet;
+using PetFamily.API.Requests.Volunteers.ChangePetHelpStatus;
 using PetFamily.API.Requests.Volunteers.ChangePosition;
 using PetFamily.API.Requests.Volunteers.CreateVolunteer;
 using PetFamily.API.Requests.Volunteers.PetPhotos;
@@ -10,6 +11,7 @@ using PetFamily.API.Requests.Volunteers.UpdatePetRequest;
 using PetFamily.API.Requests.Volunteers.UpdateVolunteer;
 using PetFamily.Application.PetManagement.Commands.AddPet;
 using PetFamily.Application.PetManagement.Commands.AddPetPhotos;
+using PetFamily.Application.PetManagement.Commands.ChangePetHelpStatus;
 using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
 using PetFamily.Application.PetManagement.Commands.Create;
 using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
@@ -242,5 +244,22 @@ public class VolunteersController : ControllerBase
             return handleResult.Error.ToResponse();
         
         return Ok(handleResult.Value);
+    }
+
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/help-status")]
+    public async Task<ActionResult> ChangePetStatus(
+        [FromRoute] Guid volunteerId, Guid petId,
+        [FromBody] ChangePetHelpStatusRequest request,
+        [FromServices] ChangePetHelpStatusHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+        
+        var handleResult = await handler.HandleAsync(command, cancellationToken);
+        
+        if (handleResult.IsFailure)
+            return handleResult.Error.ToResponse();
+        
+        return Ok();
     }
 }
