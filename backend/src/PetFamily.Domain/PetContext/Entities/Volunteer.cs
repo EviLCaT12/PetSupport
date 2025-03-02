@@ -117,6 +117,40 @@ public class Volunteer : Entity<VolunteerId>
     public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
         => _transferDetails = newTransferDetails.ToList();
 
+    public void UpdatePet(
+        Pet updatedPet,
+        Name? name,
+        PetClassification classification,
+        Description? description,
+        Color? color,
+        HealthInfo? health,
+        Address? address,
+        Dimensions? dimensions,
+        Phone? ownerPhoneNumber,
+        bool? isCastrate,
+        DateTime? dateOfBirth,
+        bool? isVaccinated,
+        int? helpStatus,
+        IEnumerable<TransferDetails>? transferDetailsList
+    )
+    {
+        updatedPet.Update(
+            name,
+            classification,
+            description,
+            color,
+            health,
+            address,
+            dimensions,
+            ownerPhoneNumber,
+            isCastrate,
+            dateOfBirth,
+            isVaccinated,
+            (HelpStatus?)helpStatus,
+            transferDetailsList
+            );
+    }
+
     public void Delete()
     {
         _isDeleted = true;
@@ -251,8 +285,7 @@ public class Volunteer : Entity<VolunteerId>
                                              && p.Position.Value <= currentPosition.Value).ToList();
 
             var firstElement = petToMove.Min(p => p.Position.Value);
-            var lastElement = petToMove.Max(p => p.Position.Value);
-            foreach (var pet in petToMove)
+            var lastElement = petToMove.Max(p => p.Position.Value); foreach (var pet in petToMove)
             {
                 var result = pet.MoveForward(firstElement, lastElement);
                 if (result.IsFailure)

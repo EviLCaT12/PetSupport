@@ -187,6 +187,36 @@ public class Pet : Entity<PetId>
         
         return Result.Success<ErrorList>();
     }
+
+    public void Update(
+        Name? name,
+        PetClassification classification,
+        Description? description,
+        Color? color,
+        HealthInfo? healthInfo,
+        Address? address,
+        Dimensions? dimensions,
+        Phone? ownerPhoneNumber,
+        bool? isCastrate,
+        DateTime? dateOfBirth,
+        bool? isVaccinated,
+        HelpStatus? helpStatus,
+        IEnumerable<TransferDetails>? transferDetails)
+    {
+        if (name != null) Name = name;
+        Classification = classification; 
+        if (description != null) Description = description;
+        if (color != null) Color = color;
+        if (healthInfo != null) HealthInfo = healthInfo;
+        if (address != null) Address = address;
+        if (dimensions != null) Dimensions = dimensions;
+        if (ownerPhoneNumber != null) OwnerPhoneNumber = ownerPhoneNumber;
+        IsCastrate = isCastrate ?? IsCastrate;
+        DateOfBirth = dateOfBirth ?? DateOfBirth;
+        IsVaccinated = isVaccinated ?? IsVaccinated;
+        HelpStatus = helpStatus ?? HelpStatus;
+        if (transferDetails != null) _transferDetails = transferDetails.ToList();
+    }
 }
 
 
