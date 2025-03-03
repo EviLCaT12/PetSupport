@@ -14,6 +14,7 @@ using PetFamily.Application.PetManagement.Commands.AddPetPhotos;
 using PetFamily.Application.PetManagement.Commands.ChangePetHelpStatus;
 using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
 using PetFamily.Application.PetManagement.Commands.Create;
+using PetFamily.Application.PetManagement.Commands.DeletePet;
 using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
 using PetFamily.Application.PetManagement.Commands.HardDelete;
 using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
@@ -260,6 +261,32 @@ public class VolunteersController : ControllerBase
         if (handleResult.IsFailure)
             return handleResult.Error.ToResponse();
         
+        return Ok();
+    }
+
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/soft")]
+    public async Task<ActionResult> SoftDeletePet(
+        [FromRoute] Guid volunteerId, Guid petId,
+        [FromServices] SoftDeletePetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetCommand(volunteerId, petId);
+        var handleResult = await handler.HandleAsync(command, cancellationToken);
+        if (handleResult.IsFailure)
+            return handleResult.Error.ToResponse();
+        return Ok();
+    }
+    
+    [HttpDelete("{volunteerId:guid}/pet/{petId:guid}/Hard")]
+    public async Task<ActionResult> HardDeletePet(
+        [FromRoute] Guid volunteerId, Guid petId,
+        [FromServices] HardDeletePetHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new DeletePetCommand(volunteerId, petId);
+        var handleResult = await handler.HandleAsync(command, cancellationToken);
+        if (handleResult.IsFailure)
+            return handleResult.Error.ToResponse();
         return Ok();
     }
 }

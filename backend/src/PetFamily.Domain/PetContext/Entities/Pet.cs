@@ -10,9 +10,11 @@ namespace PetFamily.Domain.PetContext.Entities;
 public class Pet : Entity<PetId>
 {
     private bool _isDeleted = false;
+    
+    public bool IsDeleted => _isDeleted;
     public PetId Id { get; private set; }
     
-    public Volunteer Volunteer { get; private set; } = null!; //Для 100% каскадного удаления
+    public Volunteer Volunteer { get; private set; } = null!;
     
     public Name Name { get; private set; }
     

@@ -151,6 +151,27 @@ public class Volunteer : Entity<VolunteerId>
             );
     }
 
+    public void HardDeletePet(Pet pet)
+    {
+        _pets.Remove(pet);
+    }
+
+    public void SoftDeletePet(Pet pet)
+    {
+        pet.Delete();
+    }
+
+    public UnitResult<ErrorList> RestorePet(PetId petId)
+    {
+        var getPetResult = GetPetById(petId);
+        if (getPetResult.IsFailure)
+            return getPetResult.Error;
+        
+        getPetResult.Value.Restore();
+
+        return Result.Success<ErrorList>();
+    }
+    
     public void Delete()
     {
         _isDeleted = true;
@@ -353,9 +374,15 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<ErrorList>();
     }
 
-    private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
+    private int CountPetsWithHome() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.FindHome);
 
-    private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 
+    private int CountPetsTryFindHome() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.SeekHome); 
     
-    private int CountPetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
+    private int CountPetsUnderTreatment() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
 }
