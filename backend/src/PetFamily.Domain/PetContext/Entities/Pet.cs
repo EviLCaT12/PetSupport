@@ -216,6 +216,29 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
 
+    public UnitResult<ErrorList> RemoveMainPhoto(PetPhoto photo)
+    {
+        if (PetPhoto.CountMainPhoto == 0)
+        {
+            var error = Error.Failure("invalid.pet.operation", 
+                $"Fail to remove main from photo {photo.PathToStorage.Path}. Main Photo hasn`t already been set.");
+            return new ErrorList([error]);
+        }
+    
+        var newPetPhotoList = new List<PetPhoto>();
+        newPetPhotoList.AddRange(_photos);
+        
+        var result = photo.RemoveMain();
+        if (result.IsFailure)
+            return result.Error;
+        
+        _photos = newPetPhotoList;
+        
+        PetPhoto.CountMainPhoto -= 1;
+        
+        return Result.Success<ErrorList>();
+    }
+    
     public Result<PetPhoto, ErrorList> GetPhotoByPath(FilePath path)
     {
         var photo = _photos.FirstOrDefault(p => p.PathToStorage == path);

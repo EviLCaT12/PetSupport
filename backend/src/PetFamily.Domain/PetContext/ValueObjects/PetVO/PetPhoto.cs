@@ -9,15 +9,20 @@ public record PetPhoto
 {
     //ef core
     public PetPhoto() { }
-    
-    [JsonConstructor]
     private PetPhoto(FilePath pathToStorage)
     {
         PathToStorage = pathToStorage;
     }
+    
+    [JsonConstructor]
+    private PetPhoto(FilePath pathToStorage, bool isMain)
+    {
+        PathToStorage = pathToStorage;
+        IsMain = isMain;
+    }
     public FilePath PathToStorage { get; }
 
-    public bool IsMain { get; private set; } = false;
+    public bool IsMain { get; private set; }
     
     public static int CountMainPhoto = 0;
 
@@ -40,6 +45,16 @@ public record PetPhoto
     }
     
     
-    public void RemoveMain()
-        => IsMain = false;
+    public UnitResult<ErrorList> RemoveMain()
+    {
+        if (IsMain == false)
+        {
+            var error = Error.Failure("invalid.pet.operation",
+                $"This photo {PathToStorage.Path} is already not a main photo.");
+            return new ErrorList([error]);
+        }
+        
+        IsMain = false;
+        return new UnitResult<ErrorList>();
+    }
 }

@@ -11,23 +11,23 @@ using PetFamily.Domain.Shared.SharedVO;
 using FileInfo = PetFamily.Application.Files.FileInfo;
 
 
-namespace PetFamily.Application.PetManagement.Commands.SetMainPetPhoto;
+namespace PetFamily.Application.PetManagement.Commands.MainPetPhoto;
 
-public class SetPetMainPhotoHandler : ICommandHandler<SetPetMainPhotoCommand>
+public class RemovePetMainPhotoHandler : ICommandHandler<PetMainPhotoCommand>
 {
     private const string BUCKET_NAME = "photos";
     private readonly ILogger<SetPetMainPhotoHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVolunteersRepository _repository;
     private readonly Providers.IFileProvider _provider;
-    private readonly IValidator<SetPetMainPhotoCommand> _validator;
+    private readonly IValidator<PetMainPhotoCommand> _validator;
 
-    public SetPetMainPhotoHandler(
+    public RemovePetMainPhotoHandler(
         ILogger<SetPetMainPhotoHandler> logger,
         IUnitOfWork unitOfWork,
         IVolunteersRepository repository,
         Providers.IFileProvider provider,
-        IValidator<SetPetMainPhotoCommand> validator)
+        IValidator<PetMainPhotoCommand> validator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
@@ -35,7 +35,7 @@ public class SetPetMainPhotoHandler : ICommandHandler<SetPetMainPhotoCommand>
         _provider = provider;
         _validator = validator;
     }
-    public async Task<UnitResult<ErrorList>> HandleAsync(SetPetMainPhotoCommand command, CancellationToken cancellationToken)
+    public async Task<UnitResult<ErrorList>> HandleAsync(PetMainPhotoCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
@@ -63,9 +63,9 @@ public class SetPetMainPhotoHandler : ICommandHandler<SetPetMainPhotoCommand>
 
             var petPhoto = volunteer.Value.GetPetPhoto(pet.Value, filePath).Value;
 
-            var setMainPhotoResult = volunteer.Value.SetPetMainPhoto(pet.Value, petPhoto);
-            if (setMainPhotoResult.IsFailure)
-                return setMainPhotoResult.Error;
+            var removeMainPhotoResult = volunteer.Value.RemovePetMainPhoto(pet.Value, petPhoto);
+            if (removeMainPhotoResult.IsFailure)
+                return removeMainPhotoResult.Error;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Commit();
@@ -74,7 +74,7 @@ public class SetPetMainPhotoHandler : ICommandHandler<SetPetMainPhotoCommand>
         catch (Exception e)
         {
             _logger.LogError(e,
-                "Fail to set main pet photo {photo} for pet {pet} for volunteer {volunteerId} in transaction",
+                "Fail to remove main pet photo {photo} for pet {pet} for volunteer {volunteerId} in transaction",
                 command.FullPath, command.PetId ,command.VolunteerId);
             
             transaction.Rollback();

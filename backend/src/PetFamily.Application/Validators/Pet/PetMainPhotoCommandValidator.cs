@@ -1,14 +1,14 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.Commands.SetMainPetPhoto;
+using PetFamily.Application.PetManagement.Commands.MainPetPhoto;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.SharedVO;
 
 namespace PetFamily.Application.Validators.Pet;
 
-public class SetPetMainPhotoCommandValidator : AbstractValidator<SetPetMainPhotoCommand>
+public class PetMainPhotoCommandValidator : AbstractValidator<PetMainPhotoCommand>
 {
-    public SetPetMainPhotoCommandValidator()
+    public PetMainPhotoCommandValidator()
     {
         RuleFor(c => c.VolunteerId)
             .MustBeValueObject(VolunteerId.Create);

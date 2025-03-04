@@ -1,8 +1,8 @@
 using PetFamily.Application.Abstractions;
 
-namespace PetFamily.Application.PetManagement.Commands.SetMainPetPhoto;
+namespace PetFamily.Application.PetManagement.Commands.MainPetPhoto;
 
-public record SetPetMainPhotoCommand(
+public record PetMainPhotoCommand(
     Guid VolunteerId,
     Guid PetId,
     string FullPath) : ICommand;

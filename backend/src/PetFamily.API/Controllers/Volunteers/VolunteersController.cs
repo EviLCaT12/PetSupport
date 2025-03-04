@@ -6,8 +6,8 @@ using PetFamily.API.Requests.Volunteers.AddPet;
 using PetFamily.API.Requests.Volunteers.ChangePetHelpStatus;
 using PetFamily.API.Requests.Volunteers.ChangePosition;
 using PetFamily.API.Requests.Volunteers.CreateVolunteer;
+using PetFamily.API.Requests.Volunteers.PetMainPhoto;
 using PetFamily.API.Requests.Volunteers.PetPhotos;
-using PetFamily.API.Requests.Volunteers.SetPetMainPhoto;
 using PetFamily.API.Requests.Volunteers.UpdatePetRequest;
 using PetFamily.API.Requests.Volunteers.UpdateVolunteer;
 using PetFamily.Application.PetManagement.Commands.AddPet;
@@ -18,7 +18,7 @@ using PetFamily.Application.PetManagement.Commands.Create;
 using PetFamily.Application.PetManagement.Commands.DeletePet;
 using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
 using PetFamily.Application.PetManagement.Commands.HardDelete;
-using PetFamily.Application.PetManagement.Commands.SetMainPetPhoto;
+using PetFamily.Application.PetManagement.Commands.MainPetPhoto;
 using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
 using PetFamily.Application.PetManagement.Commands.UpdatePet;
 using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
@@ -292,11 +292,26 @@ public class VolunteersController : ControllerBase
         return Ok();
     }
 
-    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/main-photo")]
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/set-main-photo")]
     public async Task<ActionResult> SetPetMainPhoto(
         [FromRoute] Guid volunteerId, Guid petId,
-        [FromBody] SetPetMainPhotoRequest request,
+        [FromBody] PetMainPhotoRequest request,
         [FromServices] SetPetMainPhotoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = request.ToCommand(volunteerId, petId);
+        
+        var handleResult = await handler.HandleAsync(command, cancellationToken);
+        if (handleResult.IsFailure)
+            return handleResult.Error.ToResponse();
+        return Ok();
+    }
+    
+    [HttpPut("{volunteerId:guid}/pet/{petId:guid}/remove-main-photo")]
+    public async Task<ActionResult> RemovePetMainPhoto(
+        [FromRoute] Guid volunteerId, Guid petId,
+        [FromBody] PetMainPhotoRequest request,
+        [FromServices] RemovePetMainPhotoHandler handler,
         CancellationToken cancellationToken)
     {
         var command = request.ToCommand(volunteerId, petId);

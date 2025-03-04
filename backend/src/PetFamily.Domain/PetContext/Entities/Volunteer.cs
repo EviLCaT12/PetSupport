@@ -381,6 +381,14 @@ public class Volunteer : Entity<VolunteerId>
             return result.Error;
         return Result.Success<ErrorList>();
     }
+    
+    public UnitResult<ErrorList> RemovePetMainPhoto(Pet pet, PetPhoto petPhoto)
+    {
+        var result = pet.RemoveMainPhoto(petPhoto);
+        if (result.IsFailure)
+            return result.Error;
+        return Result.Success<ErrorList>();
+    }
 
     public Result<PetPhoto, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
     {
