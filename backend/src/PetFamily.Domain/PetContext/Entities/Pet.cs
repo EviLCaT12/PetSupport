@@ -190,6 +190,44 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
 
+    public UnitResult<ErrorList> SetMainPhoto(PetPhoto photo)
+    {
+        if (PetPhoto.CountMainPhoto > 0)
+        {
+            var error = Error.Failure("invalid.pet.operation", 
+                $"Fail to set main to photo {photo.PathToStorage.Path}. Main Photo has already been set.");
+            return new ErrorList([error]);
+        }
+    
+        var newPetPhotoList = new List<PetPhoto>();
+        newPetPhotoList.AddRange(_photos);
+        newPetPhotoList.Remove(photo);
+        
+        var newPhoto = PetPhoto.Create(photo.PathToStorage).Value;
+        var result = newPhoto.SetMain();
+        if (result.IsFailure)
+            return result.Error;
+        
+        newPetPhotoList.Insert(0, newPhoto);
+        _photos = newPetPhotoList;
+        
+        PetPhoto.CountMainPhoto += 1;
+        
+        return Result.Success<ErrorList>();
+    }
+
+    public Result<PetPhoto, ErrorList> GetPhotoByPath(FilePath path)
+    {
+        var photo = _photos.FirstOrDefault(p => p.PathToStorage == path);
+        if (photo == null)
+        {
+            var error = Errors.General.ValueNotFound();
+            return new ErrorList([error]);
+        }
+        
+        return photo;
+    }
+
     public void Update(
         Name? name,
         PetClassification classification,

@@ -13,7 +13,7 @@ using PetFamily.Infrastructure.DbContexts;
 namespace PetFamily.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbDbContext))]
-    [Migration("20250302133047_Initial")]
+    [Migration("20250303135529_Initial")]
     partial class Initial
     {
         /// <inheritdoc />

@@ -374,6 +374,23 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<ErrorList>();
     }
 
+    public UnitResult<ErrorList> SetPetMainPhoto(Pet pet, PetPhoto petPhoto)
+    {
+        var result = pet.SetMainPhoto(petPhoto);
+        if (result.IsFailure)
+            return result.Error;
+        return Result.Success<ErrorList>();
+    }
+
+    public Result<PetPhoto, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
+    {
+        var result = pet.GetPhotoByPath(photoPath);
+        if (result.IsFailure)
+            return result.Error;
+
+        return result.Value;
+    }
+
     private int CountPetsWithHome() => AllOwnedPets
         .Where(p => p.IsDeleted == false)
         .Count(p => p.HelpStatus == HelpStatus.FindHome);
