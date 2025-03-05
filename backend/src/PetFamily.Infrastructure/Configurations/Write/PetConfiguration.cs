@@ -119,7 +119,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.HelpStatus)
             .IsRequired()
-            .HasConversion<string>();
+            .HasConversion(
+                v => v.ToString(),
+                v => (HelpStatus)Enum.Parse(typeof(HelpStatus), v));
 
         builder.Property(p => p.TransferDetailsList)
             .Json1DeepLvlVoCollectionConverter(
