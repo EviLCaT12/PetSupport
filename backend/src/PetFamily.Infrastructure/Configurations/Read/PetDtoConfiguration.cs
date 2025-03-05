@@ -24,6 +24,8 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
                         PathToStorage = photo.PathToStorage.Path
                     })
                     .ToArray());
+        
+        builder.HasQueryFilter(p => p.IsDeleted == false);
 
     }
 }

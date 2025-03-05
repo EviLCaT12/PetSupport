@@ -31,5 +31,7 @@ public class VolunteerDtoConfiguration : IEntityTypeConfiguration<VolunteerDto>
             .WithOne()
             .HasForeignKey(p => p.VolunteerId)
             .IsRequired(false);
+        
+        builder.HasQueryFilter(v => v.IsDeleted == false);
     }
 }

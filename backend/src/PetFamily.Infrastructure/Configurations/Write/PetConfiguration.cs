@@ -119,7 +119,9 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
 
         builder.Property(p => p.HelpStatus)
             .IsRequired()
-            .HasConversion<string>();
+            .HasConversion(
+                v => v.ToString(),
+                v => (HelpStatus)Enum.Parse(typeof(HelpStatus), v));
 
         builder.Property(p => p.TransferDetailsList)
             .Json1DeepLvlVoCollectionConverter(
@@ -135,6 +137,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
+        
+        builder.HasQueryFilter(p => EF.Property<bool>(p, "_isDeleted") == false);
 
         builder.Property(p => p.PhotoList)
             .HasConversion(
@@ -142,6 +146,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 json => JsonSerializer.Deserialize<IReadOnlyList<PetPhoto>>(json, JsonSerializerOptions.Default)!)
             .HasColumnName("photos")
             .HasColumnType("jsonb");
-        
     }
 }
