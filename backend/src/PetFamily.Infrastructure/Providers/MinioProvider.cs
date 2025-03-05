@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
 using PetFamily.Application.Files;
+using PetFamily.Application.Messaging;
 using PetFamily.Application.Providers;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.Shared;
@@ -19,7 +20,9 @@ public class MinioProvider : IFileProvider
     private readonly IMinioClient _minioClient;
     private readonly ILogger<MinioProvider> _logger;
 
-    public MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logger)
+    public MinioProvider(
+        IMinioClient minioClient, 
+        ILogger<MinioProvider> logger)
     {
         _minioClient = minioClient;
         _logger = logger;

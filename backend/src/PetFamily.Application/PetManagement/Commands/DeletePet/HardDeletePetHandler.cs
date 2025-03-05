@@ -2,26 +2,32 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using PetFamily.Application.Abstractions;
 using PetFamily.Application.DataBase;
+using PetFamily.Application.Messaging;
 using PetFamily.Domain.PetContext.ValueObjects.PetVO;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 using PetFamily.Domain.Shared.Error;
+using FileInfo = PetFamily.Application.Files.FileInfo;
 
 namespace PetFamily.Application.PetManagement.Commands.DeletePet;
 
 public class HardDeletePetHandler : ICommandHandler<DeletePetCommand>
 {
+    private const string BUCKETNAME = "photos";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SoftDeletePetHandler> _logger;
     private readonly IVolunteersRepository _repository;
+    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public HardDeletePetHandler(
         IUnitOfWork unitOfWork,
         ILogger<SoftDeletePetHandler> logger,
-        IVolunteersRepository repository)
+        IVolunteersRepository repository,
+        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _repository = repository;
+        _messageQueue = messageQueue;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(DeletePetCommand command, CancellationToken cancellationToken)
     {
@@ -39,6 +45,12 @@ public class HardDeletePetHandler : ICommandHandler<DeletePetCommand>
                 return pet.Error;
             
             volunteer.Value.HardDeletePet(pet.Value);
+
+            var fileInfos = pet.Value.PhotoList
+                .Select(photo => photo.PathToStorage)
+                .Select(fileInfo => new FileInfo(fileInfo, BUCKETNAME));
+            
+            await _messageQueue.WriteAsync(fileInfos, cancellationToken);
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Commit();
