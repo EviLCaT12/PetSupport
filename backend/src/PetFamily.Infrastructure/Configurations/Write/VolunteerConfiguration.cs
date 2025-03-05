@@ -92,5 +92,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
+        
+        builder.HasQueryFilter(v => EF.Property<bool>(v, "_isDeleted") == false);
     }
 }

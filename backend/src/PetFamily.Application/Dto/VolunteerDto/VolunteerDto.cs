@@ -4,6 +4,7 @@ namespace PetFamily.Application.Dto.VolunteerDto;
 
 public class VolunteerDto
 {
+    public bool IsDeleted { get; init; }
     public Guid Id { get; init; }
     
     public string FirstName { get; init; } = string.Empty;

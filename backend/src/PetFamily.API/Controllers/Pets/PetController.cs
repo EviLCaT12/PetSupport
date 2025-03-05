@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.API.Extensions;
 using PetFamily.API.Requests.Pets;
 using PetFamily.Application.PetManagement.Queries.GetPetsWithPagination;
 
@@ -17,6 +18,8 @@ public class PetController : ControllerBase
         var query = request.ToQuery();
         
         var response = await handler.HandleAsync(query, cancellationToken);
+        if (response.IsFailure)
+            return response.Error.ToResponse();
         
         return Ok(response.Value);
     }
