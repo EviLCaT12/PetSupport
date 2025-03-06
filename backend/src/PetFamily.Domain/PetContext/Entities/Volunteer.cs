@@ -117,6 +117,61 @@ public class Volunteer : Entity<VolunteerId>
     public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
         => _transferDetails = newTransferDetails.ToList();
 
+    public void UpdatePet(
+        Pet updatedPet,
+        Name? name,
+        PetClassification classification,
+        Description? description,
+        Color? color,
+        HealthInfo? health,
+        Address? address,
+        Dimensions? dimensions,
+        Phone? ownerPhoneNumber,
+        bool? isCastrate,
+        DateTime? dateOfBirth,
+        bool? isVaccinated,
+        int? helpStatus,
+        IEnumerable<TransferDetails>? transferDetailsList
+    )
+    {
+        updatedPet.Update(
+            name,
+            classification,
+            description,
+            color,
+            health,
+            address,
+            dimensions,
+            ownerPhoneNumber,
+            isCastrate,
+            dateOfBirth,
+            isVaccinated,
+            (HelpStatus?)helpStatus,
+            transferDetailsList
+            );
+    }
+
+    public void HardDeletePet(Pet pet)
+    {
+        _pets.Remove(pet);
+    }
+
+    public void SoftDeletePet(Pet pet)
+    {
+        pet.Delete();
+    }
+
+    public UnitResult<ErrorList> RestorePet(PetId petId)
+    {
+        var getPetResult = GetPetById(petId);
+        if (getPetResult.IsFailure)
+            return getPetResult.Error;
+        
+        getPetResult.Value.Restore();
+
+        return Result.Success<ErrorList>();
+    }
+    
     public void Delete()
     {
         _isDeleted = true;
@@ -251,8 +306,7 @@ public class Volunteer : Entity<VolunteerId>
                                              && p.Position.Value <= currentPosition.Value).ToList();
 
             var firstElement = petToMove.Min(p => p.Position.Value);
-            var lastElement = petToMove.Max(p => p.Position.Value);
-            foreach (var pet in petToMove)
+            var lastElement = petToMove.Max(p => p.Position.Value); foreach (var pet in petToMove)
             {
                 var result = pet.MoveForward(firstElement, lastElement);
                 if (result.IsFailure)
@@ -307,9 +361,53 @@ public class Volunteer : Entity<VolunteerId>
         return getPetResult;
     }
 
-    private int CountPetsWithHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.FindHome);
+    public UnitResult<ErrorList> ChangePetHelpStatus(PetId petId, HelpStatus helpStatus)
+    {
+        var getPetResult = GetPetById(petId);
+        if (getPetResult.IsFailure)
+            return getPetResult.Error;
+        
+        var pet = getPetResult.Value;
+        
+        pet.ChangeHelpStatus(helpStatus);
+        
+        return Result.Success<ErrorList>();
+    }
 
-    private int CountPetsTryFindHome() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.SeekHome); 
+    public UnitResult<ErrorList> SetPetMainPhoto(Pet pet, PetPhoto petPhoto)
+    {
+        var result = pet.SetMainPhoto(petPhoto);
+        if (result.IsFailure)
+            return result.Error;
+        return Result.Success<ErrorList>();
+    }
     
-    private int CountPetsUnderTreatment() => AllOwnedPets.Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
+    public UnitResult<ErrorList> RemovePetMainPhoto(Pet pet, PetPhoto petPhoto)
+    {
+        var result = pet.RemoveMainPhoto(petPhoto);
+        if (result.IsFailure)
+            return result.Error;
+        return Result.Success<ErrorList>();
+    }
+
+    public Result<PetPhoto, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
+    {
+        var result = pet.GetPhotoByPath(photoPath);
+        if (result.IsFailure)
+            return result.Error;
+
+        return result.Value;
+    }
+
+    private int CountPetsWithHome() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.FindHome);
+
+    private int CountPetsTryFindHome() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.SeekHome); 
+    
+    private int CountPetsUnderTreatment() => AllOwnedPets
+        .Where(p => p.IsDeleted == false)
+        .Count(p => p.HelpStatus == HelpStatus.NeedHelp); 
 }
