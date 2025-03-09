@@ -28,9 +28,6 @@ public record Position
 
     public Result<Position, Error> Backward(int minNumber,int maxNumber)
     {
-        if (Value == minNumber)
-            return Create(maxNumber);
-        
         return Create(Value - 1);
     }
 }

@@ -41,7 +41,7 @@ public record PetPhoto
         }
         
         IsMain = true;
-        return new UnitResult<ErrorList>();
+        return Result.Success<ErrorList>();
     }
     
     
@@ -55,6 +55,6 @@ public record PetPhoto
         }
         
         IsMain = false;
-        return new UnitResult<ErrorList>();
+        return Result.Success<ErrorList>();
     }
 }
