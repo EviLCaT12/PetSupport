@@ -10,6 +10,9 @@ namespace PetFamily.Domain.PetContext.Entities;
 public class Volunteer : Entity<VolunteerId>
 {
     private bool _isDeleted = false;
+    
+    public bool IsDeleted => _isDeleted;
+    
     public VolunteerId Id { get; private set; }
     
     public VolunteerFio Fio { get; private set; }

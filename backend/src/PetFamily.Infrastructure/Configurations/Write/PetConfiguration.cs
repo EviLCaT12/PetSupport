@@ -137,6 +137,8 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
+        
+        builder.HasQueryFilter(p => EF.Property<bool>(p, "_isDeleted") == false);
 
         builder.Property(p => p.PhotoList)
             .HasConversion(
@@ -144,6 +146,5 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
                 json => JsonSerializer.Deserialize<IReadOnlyList<PetPhoto>>(json, JsonSerializerOptions.Default)!)
             .HasColumnName("photos")
             .HasColumnType("jsonb");
-        
     }
 }
