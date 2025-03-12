@@ -9,7 +9,7 @@ using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class VolunteerRepository(WriteDbDbContext context) : IVolunteersRepository
+public class VolunteerRepository(WriteDbContext context) : IVolunteersRepository
 {
     public async Task<Guid> AddAsync(Volunteer volunteer, CancellationToken cancellationToken = default)
     {
