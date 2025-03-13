@@ -1,5 +1,5 @@
 using FluentValidation;
-using PetFamily.Application.PetManagement.Commands.HardDelete;
+using PetFamily.Application.PetManagement.Commands.Delete;
 using PetFamily.Domain.PetContext.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Application.Validators.Volunteer;
