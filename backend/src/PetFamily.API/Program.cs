@@ -1,10 +1,8 @@
-using FluentValidation.AspNetCore;
 using PetFamily.API.Extensions;
 using PetFamily.Application;
 using PetFamily.Infrastructure;
 using Serilog;
 using Serilog.Events;
-using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,7 +32,7 @@ builder.Services
 
 var app = builder.Build();
 
-await app.ApplyMigration(); 
+// await app.ApplyMigration(); 
 
 app.UseExceptionMiddleware();
 
@@ -56,3 +54,8 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+namespace PetFamily.API
+{
+    public partial class Program;
+}

@@ -9,7 +9,7 @@ using PetFamily.Infrastructure.DbContexts;
 
 namespace PetFamily.Infrastructure.Repositories;
 
-public class SpeciesRepository(WriteDbDbContext context) : ISpeciesRepository
+public class SpeciesRepository(WriteDbContext context) : ISpeciesRepository
 {
     public async Task<Guid> AddAsync(Species species, CancellationToken cancellationToken)
     {

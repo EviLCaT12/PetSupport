@@ -7,9 +7,9 @@ namespace PetFamily.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly WriteDbDbContext _context;
+    private readonly WriteDbContext _context;
 
-    public UnitOfWork(WriteDbDbContext context)
+    public UnitOfWork(WriteDbContext context)
     {
         _context = context;
     }

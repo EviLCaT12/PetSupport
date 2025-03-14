@@ -6,7 +6,6 @@ using PetFamily.Application.PetManagement.Commands.AddPetPhotos;
 using PetFamily.Application.PetManagement.Commands.ChangePetPosition;
 using PetFamily.Application.PetManagement.Commands.Create;
 using PetFamily.Application.PetManagement.Commands.DeletePetPhotos;
-using PetFamily.Application.PetManagement.Commands.HardDelete;
 using PetFamily.Application.PetManagement.Commands.UpdateMainInfo;
 using PetFamily.Application.PetManagement.Commands.UpdateSocialWeb;
 using PetFamily.Application.PetManagement.Commands.UpdateTransferDetails;

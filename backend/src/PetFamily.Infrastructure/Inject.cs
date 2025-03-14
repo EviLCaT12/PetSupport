@@ -24,7 +24,7 @@ public static class Inject
         this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContext()
+            .AddDbContext(configuration)
             .AddMinio(configuration)
             .AddRepositories()
             .AddDatabase()
@@ -58,10 +58,13 @@ public static class Inject
         return services;
     }
     
-    private static IServiceCollection AddDbContext(this IServiceCollection services)
+    private static IServiceCollection AddDbContext(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<WriteDbDbContext>();
-        services.AddScoped<IReadDbContext,  ReadDbContext>();
+        services.AddScoped<WriteDbContext>(_ => 
+            new WriteDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
+        
+        services.AddScoped<IReadDbContext,  ReadDbContext>(_ =>
+            new ReadDbContext(configuration.GetConnectionString(Constants.DATABASE)!));
         
         return services;
     }

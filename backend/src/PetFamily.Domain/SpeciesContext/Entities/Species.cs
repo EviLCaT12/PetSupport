@@ -12,7 +12,7 @@ public class Species : Entity<SpeciesId>
     
     public Name Name { get; private set; }
     
-    private readonly List<Breed> _breeds;
+    private readonly List<Breed> _breeds = [];
 
     public IReadOnlyList<Breed> Breeds => _breeds;
     
