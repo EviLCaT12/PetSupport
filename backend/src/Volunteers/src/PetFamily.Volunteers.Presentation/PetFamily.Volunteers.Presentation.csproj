@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>PetFamily.Volunteer.Api</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\PetFamily.Framework\PetFamily.Framework.csproj" />
+      <ProjectReference Include="..\..\..\Species\src\PetFamily.Species.Infrastructure\PetFamily.Species.Infrastructure.csproj" />
+      <ProjectReference Include="..\PetFamily.Volunteers.Application\PetFamily.Volunteers.Application.csproj" />
+      <ProjectReference Include="..\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
+      <ProjectReference Include="..\PetFamily.Volunteers.Contracts\PetFamily.Volunteers.Contracts.csproj" />
+    </ItemGroup>
+
+</Project>
