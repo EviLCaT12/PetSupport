@@ -11,9 +11,9 @@ using PetFamily.Species.Contracts.Requests.Species;
 
 namespace PetFamily.Species.Presentation.Species;
 
+[Authorize]
 public class SpeciesController : ApplicationController
 {
-    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
         [FromBody] CreateRequest request,
@@ -28,7 +28,7 @@ public class SpeciesController : ApplicationController
         
         return Ok(createResult.Value);
     }
-
+    
     [HttpPost("{speciesId:guid}/breeds")]
     public async Task<ActionResult<IEnumerable<Guid>>> AddBreeds(
         [FromRoute] Guid speciesId,
@@ -44,7 +44,7 @@ public class SpeciesController : ApplicationController
         
         return Ok(addBreedsResult.Value);
     }
-
+    
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> RemoveSpecies(
         [FromRoute] Guid id,
@@ -75,6 +75,7 @@ public class SpeciesController : ApplicationController
         return Ok(removeSpeciesResult.Value);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetSpeciesWithPaginationRequest request,
@@ -88,6 +89,7 @@ public class SpeciesController : ApplicationController
         return Ok(result.Value);
     }
     
+    [AllowAnonymous]
     [HttpGet("{speciesId:guid}/breeds/")]
     public async Task<ActionResult> GetAllBreeds(
         [FromRoute] Guid speciesId,

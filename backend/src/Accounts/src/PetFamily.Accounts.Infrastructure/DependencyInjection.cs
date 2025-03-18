@@ -32,8 +32,14 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AuthorizationDbContext>();
         
         services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                }
+            )
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,options =>
             {
                 var jwtTokens = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
                     ?? throw new ApplicationException("Missing JWT configuration");
