@@ -27,5 +27,21 @@ public static class Errors
             var text = propertyName ?? ""; 
             return Error.Validation("value.length.invalid", $"{text} length is invalid. Maximum length is {lessThen}.");
         }
+
+        public static Error AlreadyExist(string? propertyName = null)
+        {
+            var text = String.IsNullOrEmpty(propertyName)
+                ? "Record already exists"
+                : $"Record {propertyName} already exists";
+            return Error.Validation("record.already.exists", $"{text}");
+        }
+    }
+
+    public static class User
+    {
+        public static Error InvalidCredentials()
+        {
+            return Error.Validation("credentials.is.invalid", "Invalid credentials");
+        }
     }
 }

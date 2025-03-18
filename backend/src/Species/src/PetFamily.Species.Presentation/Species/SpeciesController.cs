@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Species.Application.Commands.AddBreeds;
@@ -10,10 +11,9 @@ using PetFamily.Species.Contracts.Requests.Species;
 
 namespace PetFamily.Species.Presentation.Species;
 
-[ApiController]
-[Route("[controller]")]
-public class SpeciesController : ControllerBase
+public class SpeciesController : ApplicationController
 {
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
         [FromBody] CreateRequest request,

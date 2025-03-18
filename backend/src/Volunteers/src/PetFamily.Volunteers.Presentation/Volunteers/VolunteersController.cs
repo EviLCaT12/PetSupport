@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Core.Extensions;
 using PetFamily.Framework;
 using PetFamily.Volunteer.Api.Processors;
 using PetFamily.Volunteers.Application.Commands.AddPet;
@@ -29,9 +28,7 @@ using PetFamily.Volunteers.Contracts.Requests.Volunteer.UpdateVolunteer;
 
 namespace PetFamily.Volunteer.Api.Volunteers;
 
-[ApiController]
-[Route("[controller]")]
-public class VolunteersController : ControllerBase
+public class VolunteersController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
