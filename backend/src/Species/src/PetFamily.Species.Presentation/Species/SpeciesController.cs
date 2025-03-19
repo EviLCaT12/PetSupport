@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Species.Application.Commands.AddBreeds;
@@ -10,9 +11,8 @@ using PetFamily.Species.Contracts.Requests.Species;
 
 namespace PetFamily.Species.Presentation.Species;
 
-[ApiController]
-[Route("[controller]")]
-public class SpeciesController : ControllerBase
+[Authorize]
+public class SpeciesController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
@@ -28,7 +28,7 @@ public class SpeciesController : ControllerBase
         
         return Ok(createResult.Value);
     }
-
+    
     [HttpPost("{speciesId:guid}/breeds")]
     public async Task<ActionResult<IEnumerable<Guid>>> AddBreeds(
         [FromRoute] Guid speciesId,
@@ -44,7 +44,7 @@ public class SpeciesController : ControllerBase
         
         return Ok(addBreedsResult.Value);
     }
-
+    
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> RemoveSpecies(
         [FromRoute] Guid id,
@@ -75,6 +75,7 @@ public class SpeciesController : ControllerBase
         return Ok(removeSpeciesResult.Value);
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetSpeciesWithPaginationRequest request,
@@ -88,6 +89,7 @@ public class SpeciesController : ControllerBase
         return Ok(result.Value);
     }
     
+    [AllowAnonymous]
     [HttpGet("{speciesId:guid}/breeds/")]
     public async Task<ActionResult> GetAllBreeds(
         [FromRoute] Guid speciesId,

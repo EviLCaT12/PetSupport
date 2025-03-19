@@ -1,5 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Core.Extensions;
 using PetFamily.Framework;
 using PetFamily.Volunteer.Api.Processors;
 using PetFamily.Volunteers.Application.Commands.AddPet;
@@ -29,9 +29,8 @@ using PetFamily.Volunteers.Contracts.Requests.Volunteer.UpdateVolunteer;
 
 namespace PetFamily.Volunteer.Api.Volunteers;
 
-[ApiController]
-[Route("[controller]")]
-public class VolunteersController : ControllerBase
+[Authorize]
+public class VolunteersController : ApplicationController
 {
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
@@ -232,6 +231,7 @@ public class VolunteersController : ControllerBase
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetVolunteersWithPaginationRequest request,
@@ -245,6 +245,7 @@ public class VolunteersController : ControllerBase
         return Ok(result.Value);
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,

@@ -1,3 +1,6 @@
+using Microsoft.OpenApi.Models;
+using PetFamily.Accounts.Application;
+using PetFamily.Accounts.Infrastructure;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
@@ -25,7 +28,32 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { 
+        Title = "My API", 
+        Version = "v1" 
+    });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
+        In = ParameterLocation.Header, 
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey 
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+        { 
+            new OpenApiSecurityScheme 
+            { 
+                Reference = new OpenApiReference 
+                { 
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer" 
+                } 
+            },
+            new string[] { } 
+        } 
+    });
+});
 builder.Services.AddOpenApi();
 builder.Services.AddSerilog();
 
@@ -35,7 +63,12 @@ builder.Services
     .AddSpeciesPresentation()
     .AddVolunteerApplication()
     .AddVolunteerInfrastructure(builder.Configuration)
-    .AddVolunteerPresentation();
+    .AddVolunteerPresentation()
+    .AddAccountsInfrastructure(builder.Configuration)
+    .AddAccountsApplication();
+
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -57,6 +90,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
