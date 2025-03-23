@@ -47,7 +47,7 @@ public class UpdateVolunteerMainInfoHandler : ICommandHandler<Guid, UpdateVolunt
             return existedVolunteer.Error; 
         }
 
-        var fio = VolunteerFio.Create(
+        var fio = Fio.Create(
                 updateVolunteerMainInfoCommand.Fio.FirstName,
                 updateVolunteerMainInfoCommand.Fio.LastName,
                 updateVolunteerMainInfoCommand.Fio.SurName)
@@ -59,14 +59,11 @@ public class UpdateVolunteerMainInfoHandler : ICommandHandler<Guid, UpdateVolunt
         
         var description = Description.Create(updateVolunteerMainInfoCommand.Description).Value;
         
-        var exp = YearsOfExperience.Create(updateVolunteerMainInfoCommand.YearsOfExperience).Value;
-        
         existedVolunteer.Value.UpdateMainInfo(
             fio,
             phone,
             email,
-            description,
-            exp);
+            description);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

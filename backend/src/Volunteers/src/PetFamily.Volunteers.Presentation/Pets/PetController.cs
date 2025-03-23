@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Core;
-using PetFamily.Core.Extensions;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Volunteers.Application.Queries.GetPetById;
 using PetFamily.Volunteers.Application.Queries.GetPetsWithPagination;
 using PetFamily.Volunteers.Contracts.Requests.Pet;
@@ -11,6 +10,7 @@ namespace PetFamily.Volunteer.Api.Pets;
 
 public class PetController : ApplicationController
 {
+    [Permission(Permissions.Volunteers.GetPet)]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetPetsWithPaginationRequest request,
@@ -49,6 +49,7 @@ public class PetController : ApplicationController
         return Ok(response.Value);
     }
     
+    [Permission(Permissions.Volunteers.GetPet)]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,

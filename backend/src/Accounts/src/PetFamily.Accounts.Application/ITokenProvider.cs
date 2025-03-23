@@ -1,8 +1,9 @@
 using PetFamily.Accounts.Domain;
+using PetFamily.Accounts.Domain.Entitues;
 
 namespace PetFamily.Accounts.Application;
 
 public interface ITokenProvider
 {
-    string GenerateAccessToken(User user);
+    Task<string> GenerateAccessToken(User user);
 }

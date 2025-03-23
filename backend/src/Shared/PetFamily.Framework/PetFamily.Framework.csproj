@@ -11,11 +11,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Accounts\src\PetFamily.Accounts.Contracts\PetFamily.Accounts.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.Core\PetFamily.Core.csproj" />
       <ProjectReference Include="..\PetFamily.SharedKernel\PetFamily.SharedKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />  
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     </ItemGroup>

@@ -66,13 +66,13 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand>
             return getPetResult.Error;
          }
 
-         List<PetPhoto> photos = [];
+         List<Photo> photos = [];
          List<FileInfo> fileDatas = [];
          foreach (var photoName in command.PhotoNames)
          {
             var filePath = FilePath.Create(photoName, null).Value;
             
-            var petPhoto = PetPhoto.Create(filePath).Value;
+            var petPhoto = Photo.Create(filePath).Value;
             photos.Add(petPhoto);
             
             var fileData = new FileInfo(filePath, BUCKET_NAME);

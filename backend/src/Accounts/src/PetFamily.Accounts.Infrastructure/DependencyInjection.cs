@@ -1,12 +1,20 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Infrastructure.Options;
-using PetFamily.Accounts.Infrastructure.TokenProviders;
+using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Infrastructure.Contexts;
+using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Providers;
+using PetFamily.Core.Options;
+using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel.Constants;
 
 namespace PetFamily.Accounts.Infrastructure;
@@ -17,45 +25,52 @@ public static class DependencyInjection
         this IServiceCollection services, 
         IConfiguration configuration)
     {
-        services.AddTransient<ITokenProvider, JwtTokenProvider>();
-        
-        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
-        
-        services.AddScoped<AuthorizationDbContext>(_ =>
-            new AuthorizationDbContext(configuration.GetConnectionString(VolunteerConstant.DATABASE)!));
-        
         services
-            .AddIdentity<User, Role>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<AuthorizationDbContext>();
-        
-        services
-            .AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
-                }
-            )
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme,options =>
-            {
-                var jwtTokens = configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
-                    ?? throw new ApplicationException("Missing JWT configuration");
-                
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = jwtTokens.Issuer,
-                    ValidAudience = jwtTokens.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokens.Key)),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = false
-                };
-            });
+            .AddDbContexts(configuration)
+            .AddSeeding()
+            .ConfigureCustomOptions(configuration)
+            .AddProviders()
+            .AddIdentity();
         
         return services;
     }
+    
+    private static void AddIdentity(this IServiceCollection services)
+    {
+        services
+            .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
+            .AddEntityFrameworkStores<AccountsDbContext>()
+            .AddDefaultTokenProviders();
+
+        services.AddScoped<PermissionManager>();
+        services.AddScoped<RolePermissionManager>();
+    }
+
+    private static IServiceCollection AddProviders(this IServiceCollection services)
+    {
+        services.AddTransient<ITokenProvider, JwtTokenProvider>();
+        return services;
+    }
+    
+    private static IServiceCollection ConfigureCustomOptions(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        return services;
+    }
+    
+    private static IServiceCollection AddSeeding(this IServiceCollection services)
+    {
+        services.AddSingleton<AccountsSeeder>();
+        return services;
+    }
+    
+    private static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddScoped<AccountsDbContext>(_ =>
+            new AccountsDbContext(configuration.GetConnectionString(VolunteerConstant.DATABASE)!));
+        
+        return services;
+    }
+    
 }

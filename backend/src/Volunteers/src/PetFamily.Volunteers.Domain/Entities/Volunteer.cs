@@ -14,36 +14,18 @@ public class Volunteer : Entity<VolunteerId>
     
     public VolunteerId Id { get; private set; }
     
-    public VolunteerFio Fio { get; private set; }
+    public Fio Fio { get; private set; }
     
     public Phone Phone { get; private set; }
     
     public Email Email { get; private set; }
     public Description Description { get; private set; }
     
-    public YearsOfExperience YearsOfExperience { get; private set; }
-
     public int SumPetsWithHome {get; private set;}
     
     public int SumPetsTryFindHome {get; private set;}
     
     public int SumPetsUnderTreatment {get; private set;}
-    
-    private List<SocialWeb> _socialWebs = [];
-
-    public IReadOnlyList<SocialWeb> SocialWebList
-    {
-        get => _socialWebs;
-        private set => _socialWebs = value.ToList();
-    }
-    
-    private List<TransferDetails> _transferDetails = [];
-
-    public IReadOnlyList<TransferDetails> TransferDetailsList
-    {
-        get => _transferDetails;
-        private set => _transferDetails = value.ToList();
-    }
 
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> AllOwnedPets => _pets;
@@ -53,12 +35,10 @@ public class Volunteer : Entity<VolunteerId>
 
     private Volunteer(
         VolunteerId id,
-        VolunteerFio fio,
+        Fio fio,
         Phone phoneNumber,
         Email email,
         Description description,
-        YearsOfExperience yearsOfExperience,
-        IEnumerable<SocialWeb> socialWebsList,
         IEnumerable<TransferDetails> transferDetails
     )
     {
@@ -67,22 +47,17 @@ public class Volunteer : Entity<VolunteerId>
         Phone = phoneNumber;
         Email = email;
         Description = description;
-        YearsOfExperience = yearsOfExperience;
         SumPetsWithHome = CountPetsWithHome();
         SumPetsTryFindHome = CountPetsTryFindHome();
         SumPetsUnderTreatment = CountPetsUnderTreatment();
-        _socialWebs = socialWebsList.ToList();
-        _transferDetails = transferDetails.ToList();
     }
 
     public static Result<Volunteer, Error> Create(
         VolunteerId id,
-        VolunteerFio fio,
+        Fio fio,
         Phone phoneNumber,
         Email email,
         Description description,
-        YearsOfExperience yearsOfExperience,
-        IEnumerable<SocialWeb> socialWebsList,
         IEnumerable<TransferDetails> transferDetailsList)
     {
         var volunteer = new Volunteer(
@@ -91,33 +66,23 @@ public class Volunteer : Entity<VolunteerId>
             phoneNumber,
             email,
             description,
-            yearsOfExperience,
-            socialWebsList,
             transferDetailsList);
         
         return volunteer;
     }
 
     public void UpdateMainInfo(
-        VolunteerFio newFio,
+        Fio newFio,
         Phone newPhone,
         Email newEmail,
-        Description newDescription,
-        YearsOfExperience newYearsOfExperience
+        Description newDescription
     )
     {
         Fio = newFio;
         Phone = newPhone;
         Email = newEmail;
         Description = newDescription;
-        YearsOfExperience = newYearsOfExperience;
     }
-
-    public void UpdateSocialWebList(IEnumerable<SocialWeb> newSocialWebs) 
-        => _socialWebs = newSocialWebs.ToList();
-    
-    public void UpdateTransferDetailsList(IEnumerable<TransferDetails> newTransferDetails)
-        => _transferDetails = newTransferDetails.ToList();
 
     public void UpdatePet(
         Pet updatedPet,
@@ -207,14 +172,14 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<ErrorList>();
     }
 
-    public void AddPetPhotos(PetId petId, IEnumerable<PetPhoto> photos)
+    public void AddPetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId)!;
         pet.AddPhotos(photos);
         
     }
     
-    public UnitResult<ErrorList> DeletePetPhotos(PetId petId, IEnumerable<PetPhoto> photos)
+    public UnitResult<ErrorList> DeletePetPhotos(PetId petId, IEnumerable<Photo> photos)
     {
         var pet = AllOwnedPets.FirstOrDefault(p => p.Id == petId)!;
         var removeResult = pet.DeletePhotos(photos);
@@ -376,23 +341,23 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<ErrorList>();
     }
 
-    public UnitResult<ErrorList> SetPetMainPhoto(Pet pet, PetPhoto petPhoto)
+    public UnitResult<ErrorList> SetPetMainPhoto(Pet pet, Photo photo)
     {
-        var result = pet.SetMainPhoto(petPhoto);
+        var result = pet.SetMainPhoto(photo);
         if (result.IsFailure)
             return result.Error;
         return Result.Success<ErrorList>();
     }
     
-    public UnitResult<ErrorList> RemovePetMainPhoto(Pet pet, PetPhoto petPhoto)
+    public UnitResult<ErrorList> RemovePetMainPhoto(Pet pet, Photo photo)
     {
-        var result = pet.RemoveMainPhoto(petPhoto);
+        var result = pet.RemoveMainPhoto(photo);
         if (result.IsFailure)
             return result.Error;
         return Result.Success<ErrorList>();
     }
 
-    public Result<PetPhoto, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
+    public Result<Photo, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
     {
         var result = pet.GetPhotoByPath(photoPath);
         if (result.IsFailure)

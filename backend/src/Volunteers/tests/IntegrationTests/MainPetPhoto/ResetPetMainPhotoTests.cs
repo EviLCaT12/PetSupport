@@ -25,7 +25,7 @@ public class ResetPetMainPhotoTests : VolunteerBaseTest
         var petId = await SeedPetAsync(volunteer!);
         var pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id.Value == petId);
         
-        var photo = PetPhoto.Create(FilePath.Create("photo.jpg", null).Value).Value;
+        var photo = Photo.Create(FilePath.Create("photo.jpg", null).Value).Value;
         
         pet!.AddPhotos([photo]);
         pet.SetMainPhoto(photo);

@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain;
+using PetFamily.Accounts.Domain.Entitues;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 
@@ -36,7 +37,7 @@ public class LoginUserHandler : ICommandHandler<string, LoginUserCommand>
         if (!passwordConfirmed)
             return Errors.User.InvalidCredentials().ToErrorList();
 
-        var token =  _tokenProvider.GenerateAccessToken(user);
+        var token =  await _tokenProvider.GenerateAccessToken(user);
         
         _logger.LogInformation("User {Email} logged in.", user.Email);
         
