@@ -1,4 +1,4 @@
-namespace PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+namespace PetFamily.Accounts.Domain.Entities.AccountEntitites;
 
 public class AdminAccount
 {

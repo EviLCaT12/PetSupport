@@ -1,5 +1,5 @@
 using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 
 namespace PetFamily.Accounts.Application;
 

@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetFamily.Accounts.Domain.Entitues;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Domain.Entities;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 
 namespace PetFamily.Accounts.Infrastructure.Contexts;
 

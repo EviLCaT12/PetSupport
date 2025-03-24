@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Core.Models;
 using PetFamily.Core.Options;
