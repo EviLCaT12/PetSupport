@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PetFamily.Accounts.Infrastructure.Contexts;
@@ -12,9 +13,11 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    partial class AccountsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324114209_dfscfd")]
+    partial class dfscfd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,16 +164,24 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid?>("user_id")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
+
+                    b.Property<Guid?>("UserId1")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id1");
 
                     b.HasKey("Id")
                         .HasName("pk_admin_accounts");
 
-                    b.HasIndex("user_id")
+                    b.HasIndex("UserId")
                         .IsUnique()
                         .HasDatabaseName("ix_admin_accounts_user_id");
+
+                    b.HasIndex("UserId1")
+                        .IsUnique()
+                        .HasDatabaseName("ix_admin_accounts_user_id1");
 
                     b.ToTable("admin_accounts", "account");
                 });
@@ -445,9 +456,16 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
             modelBuilder.Entity("PetFamily.Accounts.Domain.Entitues.AccountEntitites.AdminAccount", b =>
                 {
                     b.HasOne("PetFamily.Accounts.Domain.Entitues.User", "User")
+                        .WithOne()
+                        .HasForeignKey("PetFamily.Accounts.Domain.Entitues.AccountEntitites.AdminAccount", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_admin_accounts_user_user_id");
+
+                    b.HasOne("PetFamily.Accounts.Domain.Entitues.User", null)
                         .WithOne("AdminAccount")
-                        .HasForeignKey("PetFamily.Accounts.Domain.Entitues.AccountEntitites.AdminAccount", "user_id")
-                        .HasConstraintName("fk_admin_accounts_users_user_id");
+                        .HasForeignKey("PetFamily.Accounts.Domain.Entitues.AccountEntitites.AdminAccount", "UserId1")
+                        .HasConstraintName("fk_admin_accounts_asp_net_users_user_id1");
 
                     b.Navigation("User");
                 });
