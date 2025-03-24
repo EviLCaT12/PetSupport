@@ -12,6 +12,7 @@ using PetFamily.Accounts.Domain.Entitues;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Providers;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
@@ -44,6 +45,7 @@ public static class DependencyInjection
 
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
+        services.AddScoped<AdminAccountManager>();
     }
 
     private static IServiceCollection AddProviders(this IServiceCollection services)
@@ -56,12 +58,14 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
         return services;
     }
     
     private static IServiceCollection AddSeeding(this IServiceCollection services)
     {
         services.AddSingleton<AccountsSeeder>();
+        services.AddScoped<AccountsSeederService>();
         return services;
     }
     
