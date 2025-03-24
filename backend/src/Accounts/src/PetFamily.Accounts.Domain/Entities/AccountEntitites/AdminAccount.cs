@@ -2,7 +2,7 @@ namespace PetFamily.Accounts.Domain.Entities.AccountEntitites;
 
 public class AdminAccount
 {
-    public const string ADMIN = nameof(ADMIN);
+    public const string Admin = nameof(Admin);
     
     private AdminAccount()
     {}
