@@ -29,6 +29,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey<AdminAccount>("user_id")
             .IsRequired(false);
 
+        builder
+            .HasOne(u => u.ParticipantAccount)
+            .WithOne(p => p.User)
+            .HasForeignKey<ParticipantAccount>("user_id")
+            .IsRequired(false);
+
+        
         // builder.ComplexProperty(u => u.FullName, fb =>
         // {
         //     fb.Property(f => f.FirstName)

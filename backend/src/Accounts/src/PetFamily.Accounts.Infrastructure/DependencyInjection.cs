@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
+using PetFamily.Accounts.Application.AccountManagers;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Domain.Entitues;
 using PetFamily.Accounts.Infrastructure.Contexts;
@@ -46,6 +47,7 @@ public static class DependencyInjection
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
         services.AddScoped<AdminAccountManager>();
+        services.AddScoped<IParticipantAccountManager, ParticipantAccountManager>();
     }
 
     private static IServiceCollection AddProviders(this IServiceCollection services)

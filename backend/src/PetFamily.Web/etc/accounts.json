@@ -26,7 +26,7 @@
     ]
   },
   "Roles": {
-    "Default" : [
+    "Participant" : [
       "volunteer.get",
       "volunteer.pets.get",
       "species.get",

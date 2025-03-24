@@ -24,22 +24,24 @@ public class User : IdentityUser<Guid>
     
     public AdminAccount? AdminAccount { get; set; }
     
-    public ParticipantAccount? Participant { get; set; }
+    public ParticipantAccount? ParticipantAccount { get; set; }
     
     public VolunteerAccount? VolunteerAccount { get; set; }
     
-    public static Result<User, Error> CreateParticipant(
+    public static Result<User, ErrorList> CreateParticipant(
         string userName,
         string email,
         Role role)
     {
-        var defaultAcc = new User()
+        if (role.Name != ParticipantAccount.PARTICIPANT)
+            return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
+        
+        return new User
         {
             UserName = userName,
             Email = email,
-            _roles =  [role]
+            _roles = [role]
         };
-        return defaultAcc;
     }
 
     public static Result<User, ErrorList> CreateAdmin(
@@ -47,6 +49,9 @@ public class User : IdentityUser<Guid>
         string email,
         Role role)
     {
+        if (role.Name != AccountEntitites.AdminAccount.ADMIN)
+            return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
+        
         return new User
         {
             UserName = userName,
