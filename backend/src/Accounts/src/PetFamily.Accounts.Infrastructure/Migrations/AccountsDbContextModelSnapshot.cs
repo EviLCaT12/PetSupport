@@ -182,14 +182,14 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("user_id")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
                         .HasName("pk_participant_accounts");
 
-                    b.HasIndex("UserId")
+                    b.HasIndex("user_id")
                         .IsUnique()
                         .HasDatabaseName("ix_participant_accounts_user_id");
 
@@ -454,12 +454,12 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
             modelBuilder.Entity("PetFamily.Accounts.Domain.Entitues.AccountEntitites.ParticipantAccount", b =>
                 {
-                    b.HasOne("PetFamily.Accounts.Domain.Entitues.User", null)
-                        .WithOne("Participant")
-                        .HasForeignKey("PetFamily.Accounts.Domain.Entitues.AccountEntitites.ParticipantAccount", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_participant_accounts_user_user_id");
+                    b.HasOne("PetFamily.Accounts.Domain.Entitues.User", "User")
+                        .WithOne("ParticipantAccount")
+                        .HasForeignKey("PetFamily.Accounts.Domain.Entitues.AccountEntitites.ParticipantAccount", "user_id")
+                        .HasConstraintName("fk_participant_accounts_users_user_id");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetFamily.Accounts.Domain.Entitues.AccountEntitites.VolunteerAccount", b =>
@@ -502,7 +502,7 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 {
                     b.Navigation("AdminAccount");
 
-                    b.Navigation("Participant");
+                    b.Navigation("ParticipantAccount");
 
                     b.Navigation("VolunteerAccount");
                 });
