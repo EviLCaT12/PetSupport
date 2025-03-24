@@ -18,6 +18,7 @@ public class AccountController : ApplicationController
         var command = new RegisterUserCommand(
             request.Email,
             request.UserName,
+            request.Fio,
             request.Password);
         
         var result = await handler.HandleAsync(command, cancellationToken);
@@ -55,6 +56,7 @@ public class AccountController : ApplicationController
         var command = new CreateVolunteerAccountCommand(
             request.UserName,
             request.Email,
+            request.Fio,
             request.Password,
             request.Experience);
         

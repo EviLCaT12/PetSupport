@@ -2,7 +2,7 @@ namespace PetFamily.Accounts.Domain.Entities.AccountEntitites;
 
 public class ParticipantAccount
 {
-    public const string PARTICIPANT = nameof(PARTICIPANT);
+    public const string Participant = nameof(Participant);
     
     private ParticipantAccount() { }
     public ParticipantAccount(User user)

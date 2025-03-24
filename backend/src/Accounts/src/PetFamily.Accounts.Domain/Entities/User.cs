@@ -32,15 +32,17 @@ public class User : IdentityUser<Guid>
     public static Result<User, ErrorList> CreateParticipant(
         string userName,
         string email,
+        Fio fio,
         Role role)
     {
-        if (role.Name != ParticipantAccount.PARTICIPANT)
+        if (role.Name != ParticipantAccount.Participant)
             return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
         
         return new User
         {
             UserName = userName,
             Email = email,
+            FullName = fio,
             _roles = [role]
         };
     }
@@ -48,6 +50,7 @@ public class User : IdentityUser<Guid>
     public static Result<User, ErrorList> CreateVolunteer(
         string userName,
         string email,
+        Fio fio,
         Role role)
     {
         if (role.Name != VolunteerAccount.Volunteer)
@@ -57,6 +60,7 @@ public class User : IdentityUser<Guid>
         {
             UserName = userName,
             Email = email,
+            FullName = fio,
             _roles = [role]
         };
     }
@@ -64,15 +68,17 @@ public class User : IdentityUser<Guid>
     public static Result<User, ErrorList> CreateAdmin(
         string userName,
         string email,
+        Fio fio,
         Role role)
     {
-        if (role.Name != AdminAccount.ADMIN)
+        if (role.Name != AdminAccount.Admin)
             return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
         
         return new User
         {
             UserName = userName,
             Email = email,
+            FullName = fio,
             _roles = [role]
         };
     }

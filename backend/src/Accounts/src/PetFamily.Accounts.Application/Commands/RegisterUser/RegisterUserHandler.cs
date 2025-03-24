@@ -6,6 +6,7 @@ using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
+using PetFamily.SharedKernel.SharedVO;
 
 namespace PetFamily.Accounts.Application.Commands.RegisterUser;
 
@@ -37,17 +38,18 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
             return Errors.General.AlreadyExist(command.Email).ToErrorList();
         }
 
-        // var fio = Fio.Create(command.fio.FirstName, command.fio.LastName, command.fio.SurName);
-        // if (fio.IsFailure)
-        // {
-        //     return Errors.General.ValueIsInvalid(fio.Error.Code).ToErrorList();
-        // }
+        var fio = Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName);
+        if (fio.IsFailure)
+        {
+            return Errors.General.ValueIsInvalid(fio.Error.Code).ToErrorList();
+        }
         
-        var role = await _roleManager.FindByNameAsync(ParticipantAccount.PARTICIPANT);
+        var role = await _roleManager.FindByNameAsync(ParticipantAccount.Participant);
 
         var participantUser = User.CreateParticipant(
             command.UserName,
             command.Email,
+            fio.Value,
             role!).Value;
         
         var result = await _userManager.CreateAsync(participantUser, command.Password);

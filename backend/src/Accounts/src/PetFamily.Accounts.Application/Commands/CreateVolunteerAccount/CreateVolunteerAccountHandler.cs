@@ -7,6 +7,7 @@ using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
+using PetFamily.SharedKernel.SharedVO;
 
 namespace PetFamily.Accounts.Application.Commands.CreateVolunteerAccount;
 
@@ -41,9 +42,16 @@ public class CreateVolunteerAccountHandler : ICommandHandler<CreateVolunteerAcco
 
         var role = await _roleManager.FindByNameAsync(VolunteerAccount.Volunteer);
 
+        var fio = Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName);
+        if (fio.IsFailure)
+        {
+            return Errors.General.ValueIsInvalid(fio.Error.Code).ToErrorList();
+        }
+        
         var volunteerUser = User.CreateVolunteer(
             command.Username,
             command.Email,
+            fio.Value,
             role!);
         
         if (volunteerUser.IsFailure)

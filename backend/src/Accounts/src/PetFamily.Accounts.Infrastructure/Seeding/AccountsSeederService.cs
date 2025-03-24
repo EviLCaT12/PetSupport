@@ -9,6 +9,7 @@ using PetFamily.Accounts.Infrastructure.Configurations;
 using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Framework;
+using PetFamily.SharedKernel.SharedVO;
 
 namespace PetFamily.Accounts.Infrastructure.Seeding;
 
@@ -45,10 +46,19 @@ public class AccountsSeederService(
         if (isAdminExist is not null)
             return;
         
-        var adminRole = await roleManager.FindByNameAsync(AdminAccount.ADMIN)
+        var adminRole = await roleManager.FindByNameAsync(AdminAccount.Admin)
                         ?? throw new ApplicationException("Could not find admin role");
 
-        var adminUser = User.CreateAdmin(_adminOptions.UserName, _adminOptions.Email, adminRole).Value;
+        var fio = Fio.Create(
+            _adminOptions.UserName,
+            _adminOptions.UserName, 
+            _adminOptions.UserName).Value;
+        
+        var adminUser = User.CreateAdmin(
+            _adminOptions.UserName,
+            _adminOptions.Email,
+            fio,
+            adminRole).Value;
         
         await userManager.CreateAsync(adminUser, _adminOptions.Password);
 
