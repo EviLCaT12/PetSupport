@@ -1,11 +1,11 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 
-namespace PetFamily.Accounts.Domain.Entitues;
+namespace PetFamily.Accounts.Domain.Entities;
 
 public class User : IdentityUser<Guid>
 {
@@ -16,11 +16,12 @@ public class User : IdentityUser<Guid>
     private List<Role> _roles = [];
     
     public IReadOnlyList<Role> Roles => _roles; 
-    // public Fio FullName { get; set; } = null!;
-    //
-    // public Photo Photo { get; set; } = null!;
-    //
-    // public IReadOnlyList<SocialWeb> SocialWebs { get; set; } = [];
+    
+    public Fio FullName { get; set; } = null!;
+    
+    public Photo? Photo { get; set; } = null!;
+    
+    public IReadOnlyList<SocialWeb>? SocialWebs { get; set; } = [];
     
     public AdminAccount? AdminAccount { get; set; }
     
@@ -43,13 +44,29 @@ public class User : IdentityUser<Guid>
             _roles = [role]
         };
     }
+    
+    public static Result<User, ErrorList> CreateVolunteer(
+        string userName,
+        string email,
+        Role role)
+    {
+        if (role.Name != VolunteerAccount.Volunteer)
+            return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
+        
+        return new User
+        {
+            UserName = userName,
+            Email = email,
+            _roles = [role]
+        };
+    }
 
     public static Result<User, ErrorList> CreateAdmin(
         string userName,
         string email,
         Role role)
     {
-        if (role.Name != AccountEntitites.AdminAccount.ADMIN)
+        if (role.Name != AdminAccount.ADMIN)
             return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
         
         return new User

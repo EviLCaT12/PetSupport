@@ -2,8 +2,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Accounts.Domain.Entitues;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Domain.Entities;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Dto.PetDto;
 using PetFamily.Core.Dto.Shared;
@@ -33,6 +33,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasOne(u => u.ParticipantAccount)
             .WithOne(p => p.User)
             .HasForeignKey<ParticipantAccount>("user_id")
+            .IsRequired(false);
+        
+        builder
+            .HasOne(u => u.VolunteerAccount)
+            .WithOne(p => p.User)
+            .HasForeignKey<VolunteerAccount>("user_id")
             .IsRequired(false);
 
         

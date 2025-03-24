@@ -2,10 +2,12 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PetFamily.Accounts.Domain.Entitues;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Application.AccountManagers;
+using PetFamily.Accounts.Domain.Entities;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Infrastructure.Configurations;
 using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Framework;
 
 namespace PetFamily.Accounts.Infrastructure.Seeding;
@@ -15,7 +17,7 @@ public class AccountsSeederService(
     UserManager<User> userManager,
     PermissionManager permissionManager,
     RolePermissionManager rolePermissionManager,
-    AdminAccountManager adminAccountManager,
+    IAccountManager accountManager,
     IOptions<AdminOptions> adminOptions,
     ILogger<AccountsSeederService> logger)
 {
@@ -52,7 +54,7 @@ public class AccountsSeederService(
 
         var adminAccount = new AdminAccount(adminUser);
 
-        await adminAccountManager.CreateAdminAccount(adminAccount);
+        await accountManager.CreateAdminAccountAsync(adminAccount);
         
         logger.LogInformation("Admin account created");
     }

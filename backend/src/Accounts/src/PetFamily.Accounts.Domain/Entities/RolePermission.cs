@@ -1,4 +1,4 @@
-namespace PetFamily.Accounts.Domain.Entitues;
+namespace PetFamily.Accounts.Domain.Entities;
 
 public class RolePermission
 {

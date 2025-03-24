@@ -1,24 +1,16 @@
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Application.AccountManagers;
-using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Providers;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Core.Options;
-using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel.Constants;
-
 namespace PetFamily.Accounts.Infrastructure;
 
 public static class DependencyInjection
@@ -46,8 +38,7 @@ public static class DependencyInjection
 
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
-        services.AddScoped<AdminAccountManager>();
-        services.AddScoped<IParticipantAccountManager, ParticipantAccountManager>();
+        services.AddScoped<IAccountManager, AccountManager>();
     }
 
     private static IServiceCollection AddProviders(this IServiceCollection services)

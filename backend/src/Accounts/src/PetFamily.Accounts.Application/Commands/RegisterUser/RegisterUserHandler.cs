@@ -2,13 +2,10 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.AccountManagers;
-using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Domain.Entitues;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Domain.Entities;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Core.Abstractions;
-using PetFamily.Framework;
 using PetFamily.SharedKernel.Error;
-using PetFamily.SharedKernel.SharedVO;
 
 namespace PetFamily.Accounts.Application.Commands.RegisterUser;
 
@@ -16,18 +13,18 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
-    private readonly IParticipantAccountManager _participantAccountManager;
+    private readonly IAccountManager _accountManager;
     private readonly ILogger<RegisterUserHandler> _logger;
 
     public RegisterUserHandler(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IParticipantAccountManager participantAccountManager,
+        IAccountManager accountManager,
         ILogger<RegisterUserHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
-        _participantAccountManager = participantAccountManager;
+        _accountManager = accountManager;
         _logger = logger;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(
@@ -66,7 +63,7 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
 
         var participantAccount = new ParticipantAccount(participantUser);
         
-        await _participantAccountManager.CreateParticipantAccountAsync(participantAccount);
+        await _accountManager.CreateParticipantAccountAsync(participantAccount);
         
         await _userManager.AddToRoleAsync(participantUser, role!.Name!);
         

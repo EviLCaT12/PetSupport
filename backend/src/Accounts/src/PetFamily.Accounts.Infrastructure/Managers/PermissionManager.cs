@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
