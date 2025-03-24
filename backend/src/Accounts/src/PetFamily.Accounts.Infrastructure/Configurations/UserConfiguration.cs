@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Dto.PetDto;
 using PetFamily.Core.Dto.Shared;
@@ -21,6 +22,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMany(u => u.Roles)
             .WithMany()
             .UsingEntity<IdentityUserRole<Guid>>();
+
+        builder
+            .HasOne(u => u.AdminAccount)
+            .WithOne(a => a.User)
+            .HasForeignKey<AdminAccount>("user_id")
+            .IsRequired(false);
 
         // builder.ComplexProperty(u => u.FullName, fb =>
         // {
