@@ -31,7 +31,7 @@ public class JwtTokenProvider : ITokenProvider
             .Include(u => u.Roles)
             .Where(u => u.Id == user.Id)
             .SelectMany(u => u.Roles)
-            .Select(r => new Claim(ClaimTypes.Role, r.Name))
+            .Select(r => new Claim(ClaimTypes.Role, r.Name ?? string.Empty))
             .ToListAsync();
         
         Claim[] claims = [

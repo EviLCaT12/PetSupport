@@ -9,6 +9,10 @@ namespace PetFamily.Accounts.Domain.Entitues;
 
 public class User : IdentityUser<Guid>
 {
+    private User()
+    {
+    }
+    
     private List<Role> _roles = [];
     
     public IReadOnlyList<Role> Roles => _roles; 
@@ -37,5 +41,17 @@ public class User : IdentityUser<Guid>
         };
         return defaultAcc;
     }
-    
+
+    public static Result<User, ErrorList> CreateAdmin(
+        string userName,
+        string email,
+        Role role)
+    {
+        return new User
+        {
+            UserName = userName,
+            Email = email,
+            _roles = [role]
+        };
+    }
 }
