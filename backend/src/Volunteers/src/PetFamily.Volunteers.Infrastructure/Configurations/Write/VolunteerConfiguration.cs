@@ -60,26 +60,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteers.Domain
                 .IsRequired()
                 .HasMaxLength(VolunteerConstant.MAX_DESCRIPTION_LENGHT)
                 .HasColumnName("description");
-        });
-        
-        builder.ComplexProperty(v => v.YearsOfExperience, yb =>
-        {
-            yb.Property(y => y.Value)
-                .IsRequired()
-                .HasColumnName("years_of_experience");
-        });
-
-        builder.Property(v => v.SocialWebList)
-            .Json1DeepLvlVoCollectionConverter(
-                socialWeb => new SocialWebDto(socialWeb.Link, socialWeb.Name),
-                dto => SocialWeb.Create(dto.Link, dto.Name).Value)
-            .HasColumnName("social_webs");
-
-        builder.Property(v => v.TransferDetailsList)
-            .Json1DeepLvlVoCollectionConverter(
-                transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
-                dto => TransferDetails.Create(dto.Name, dto.Description).Value)
-            .HasColumnName("transfer_details");
+            });
 
         builder.HasMany(v => v.AllOwnedPets)
             .WithOne(p => p.Volunteer)

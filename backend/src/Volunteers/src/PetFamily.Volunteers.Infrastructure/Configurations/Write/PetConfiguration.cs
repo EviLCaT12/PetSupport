@@ -141,7 +141,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
         builder.Property(p => p.PhotoList)
             .HasConversion(
                 photos => JsonSerializer.Serialize(photos, JsonSerializerOptions.Default),
-                json => JsonSerializer.Deserialize<IReadOnlyList<PetPhoto>>(json, JsonSerializerOptions.Default)!)
+                json => JsonSerializer.Deserialize<IReadOnlyList<Photo>>(json, JsonSerializerOptions.Default)!)
             .HasColumnName("photos")
             .HasColumnType("jsonb");
     }

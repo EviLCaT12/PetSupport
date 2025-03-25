@@ -25,6 +25,7 @@ public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(ReadDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
+        modelBuilder.HasDefaultSchema("species");
     }
     
     private ILoggerFactory CreateLoggerFactory() =>

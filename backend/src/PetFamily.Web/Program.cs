@@ -1,6 +1,13 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Presentation;
+using PetFamily.Core.Options;
+using PetFamily.Framework.Authorization;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
@@ -61,20 +68,60 @@ builder.Services
     .AddSpeciesApplication()
     .AddSpeciesInfrastructure(builder.Configuration)
     .AddSpeciesPresentation()
+    
     .AddVolunteerApplication()
     .AddVolunteerInfrastructure(builder.Configuration)
     .AddVolunteerPresentation()
+    
+    .AddAccountsApplication()
     .AddAccountsInfrastructure(builder.Configuration)
-    .AddAccountsApplication();
+    .AddAccountPresentation();
 
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultSignInScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultForbidScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        var jwtOptions = builder.Configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
+                         ?? throw new ApplicationException("Missing JWT configuration");
+        
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtOptions.Key)),
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
 
 builder.Services.AddAuthorization();
 
+
+
 var app = builder.Build();
+
+var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+
+await accountSeeder.SeedAsync();
 
 // await app.ApplyMigration(); 
 
-//app.UseExceptionMiddleware();
+//app.ExceptionMiddleware();
 
 app.UseSerilogRequestLogging();
 

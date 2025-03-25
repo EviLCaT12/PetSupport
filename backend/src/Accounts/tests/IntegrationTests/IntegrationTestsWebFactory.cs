@@ -9,6 +9,7 @@ using Npgsql;
 using NSubstitute;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.SharedKernel.Error;
 using PetFamily.Web;
 using Respawn;
@@ -37,10 +38,10 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
-        services.RemoveAll(typeof(AuthorizationDbContext));
+        services.RemoveAll(typeof(AccountsDbContext));
         
-        services.AddScoped<AuthorizationDbContext>(_ =>
-            new AuthorizationDbContext(DbContainer.GetConnectionString()));
+        services.AddScoped<AccountsDbContext>(_ =>
+            new AccountsDbContext(DbContainer.GetConnectionString()));
     }
     
     public async Task InitializeAsync() 
@@ -48,7 +49,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         await DbContainer.StartAsync();
         
         using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AuthorizationDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();

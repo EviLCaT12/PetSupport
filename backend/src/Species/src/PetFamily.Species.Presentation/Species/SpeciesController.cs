@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 using PetFamily.Species.Application.Commands.AddBreeds;
 using PetFamily.Species.Application.Commands.Create;
 using PetFamily.Species.Application.Commands.Remove;
@@ -14,6 +15,7 @@ namespace PetFamily.Species.Presentation.Species;
 [Authorize]
 public class SpeciesController : ApplicationController
 {
+    [Permission(Permissions.Species.CreateSpecies)]
     [HttpPost]
     public async Task<ActionResult<Guid>> Create(
         [FromBody] CreateRequest request,
@@ -29,6 +31,7 @@ public class SpeciesController : ApplicationController
         return Ok(createResult.Value);
     }
     
+    [Permission(Permissions.Species.CreateBreeds)]
     [HttpPost("{speciesId:guid}/breeds")]
     public async Task<ActionResult<IEnumerable<Guid>>> AddBreeds(
         [FromRoute] Guid speciesId,
@@ -45,6 +48,7 @@ public class SpeciesController : ApplicationController
         return Ok(addBreedsResult.Value);
     }
     
+    [Permission(Permissions.Species.DeleteSpecies)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> RemoveSpecies(
         [FromRoute] Guid id,
@@ -60,8 +64,9 @@ public class SpeciesController : ApplicationController
         return Ok(removeSpeciesResult.Value);
     }
     
+    [Permission(Permissions.Species.DeleteBreeds)]
     [HttpDelete("{speciesId:guid}/breeds/{breedId:guid}")]
-    public async Task<ActionResult> RemoveSpecies(
+    public async Task<ActionResult> RemoveBreeds(
         [FromRoute] Guid speciesId, Guid breedId,
         [FromServices] RemoveBreedHandler handler,
         CancellationToken cancellationToken)
@@ -75,7 +80,7 @@ public class SpeciesController : ApplicationController
         return Ok(removeSpeciesResult.Value);
     }
 
-    [AllowAnonymous]
+    [Permission(Permissions.Species.GetSpecies)]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetSpeciesWithPaginationRequest request,
@@ -89,7 +94,7 @@ public class SpeciesController : ApplicationController
         return Ok(result.Value);
     }
     
-    [AllowAnonymous]
+    [Permission(Permissions.Species.GetBreeds)]
     [HttpGet("{speciesId:guid}/breeds/")]
     public async Task<ActionResult> GetAllBreeds(
         [FromRoute] Guid speciesId,

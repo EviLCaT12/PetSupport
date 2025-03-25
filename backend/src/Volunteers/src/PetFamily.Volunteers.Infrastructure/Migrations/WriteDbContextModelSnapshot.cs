@@ -18,7 +18,8 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasDefaultSchema("volunteer")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -185,7 +186,7 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     b.HasIndex("volunteer_id")
                         .HasDatabaseName("ix_pets_volunteer_id");
 
-                    b.ToTable("pets", (string)null);
+                    b.ToTable("pets", "volunteer");
                 });
 
             modelBuilder.Entity("PetFamily.Volunteers.Domain.Entities.Volunteer", b =>
@@ -193,11 +194,6 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid")
                         .HasColumnName("id");
-
-                    b.Property<string>("SocialWebList")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("social_webs");
 
                     b.Property<int>("SumPetsTryFindHome")
                         .HasColumnType("integer")
@@ -210,11 +206,6 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     b.Property<int>("SumPetsWithHome")
                         .HasColumnType("integer")
                         .HasColumnName("sum_pets_with_home");
-
-                    b.Property<string>("TransferDetailsList")
-                        .IsRequired()
-                        .HasColumnType("jsonb")
-                        .HasColumnName("transfer_details");
 
                     b.Property<bool>("_isDeleted")
                         .HasColumnType("boolean")
@@ -241,7 +232,7 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                                 .HasColumnName("email");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("Fio", "PetFamily.Volunteers.Domain.Entities.Volunteer.Fio#VolunteerFio", b1 =>
+                    b.ComplexProperty<Dictionary<string, object>>("Fio", "PetFamily.Volunteers.Domain.Entities.Volunteer.Fio#Fio", b1 =>
                         {
                             b1.IsRequired();
 
@@ -275,19 +266,10 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                                 .HasColumnName("phone");
                         });
 
-                    b.ComplexProperty<Dictionary<string, object>>("YearsOfExperience", "PetFamily.Volunteers.Domain.Entities.Volunteer.YearsOfExperience#YearsOfExperience", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.Property<int>("Value")
-                                .HasColumnType("integer")
-                                .HasColumnName("years_of_experience");
-                        });
-
                     b.HasKey("Id")
                         .HasName("pk_volunteers");
 
-                    b.ToTable("volunteers", (string)null);
+                    b.ToTable("volunteers", "volunteer");
                 });
 
             modelBuilder.Entity("PetFamily.Volunteers.Domain.Entities.Pet", b =>

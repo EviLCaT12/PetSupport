@@ -38,16 +38,14 @@ public class VolunteerBaseTest : IClassFixture<TestsWebFactory>, IAsyncLifetime
     public async Task<Guid> SeedVolunteerAsync()
     {
         var id = VolunteerId.NewVolunteerId();
-        var fio = VolunteerFio.Create("string", "string", "string").Value;
+        var fio = Fio.Create("string", "string", "string").Value;
         var phone = Phone.Create("+7 (123) 123-12-21").Value;
         var email = Email.Create("email@email.com").Value;
         var description = Description.Create("description").Value;
-        var exp = YearsOfExperience.Create(12).Value;
-        IEnumerable<SocialWeb> socialWebsList = [];
         IEnumerable<TransferDetails> transferDetails = [];
         
         var volunteer = Volunteer
-            .Create(id, fio, phone, email, description, exp, socialWebsList, transferDetails).Value;
+            .Create(id, fio, phone, email, description, transferDetails).Value;
         
         await WriteContext.Volunteers.AddAsync(volunteer);
         await WriteContext.SaveChangesAsync(CancellationToken.None);
@@ -74,7 +72,7 @@ public class VolunteerBaseTest : IClassFixture<TestsWebFactory>, IAsyncLifetime
         var isVaccinated = true;
         var helpStatus = "SeekHome";
         IEnumerable<TransferDetails> transferDetailsList = [];
-        IEnumerable<PetPhoto> photoList = [];
+        IEnumerable<Photo> photoList = [];
         
         var pet = Pet.Create(
             id, name, classification, description, color, 

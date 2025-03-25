@@ -67,7 +67,7 @@ public class AddPetPhotosHandler : ICommandHandler<AddPetPhotosCommand>
                 return getPetResult.Error;
             }
     
-            List<PetPhoto> petPhotos = [];
+            List<Photo> petPhotos = [];
             List<FileData> filesData = [];
             foreach (var photo in command.Photos)
             {
@@ -75,7 +75,7 @@ public class AddPetPhotosHandler : ICommandHandler<AddPetPhotosCommand>
                 var path = Guid.NewGuid();
                 var filePath = FilePath.Create(path.ToString(), extension).Value;
     
-                var petPhoto = PetPhoto.Create(filePath).Value;
+                var petPhoto = Photo.Create(filePath).Value;
                 petPhotos.Add(petPhoto);
                 
                 var fileInfo = new FileInfo(filePath, BUCKET_NAME);

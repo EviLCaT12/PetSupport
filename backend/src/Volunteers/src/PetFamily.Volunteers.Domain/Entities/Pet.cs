@@ -50,9 +50,9 @@ public class Pet : Entity<PetId>
 
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-    private List<PetPhoto> _photos = [];
+    private List<Photo> _photos = [];
 
-    public IReadOnlyList<PetPhoto> PhotoList
+    public IReadOnlyList<Photo> PhotoList
     {
         get => _photos;
         private set => _photos = value.ToList(); 
@@ -77,7 +77,7 @@ public class Pet : Entity<PetId>
         bool isVaccinated,
         HelpStatus helpStatus,
         IEnumerable<TransferDetails> transferDetails,
-        IEnumerable<PetPhoto> photoList)
+        IEnumerable<Photo> photoList)
     {
         Id = id;
         Name = name;
@@ -111,7 +111,7 @@ public class Pet : Entity<PetId>
         bool isVaccinated,
         string helpStatus,
         IEnumerable<TransferDetails> transferDetailsList,
-        IEnumerable<PetPhoto> photoList)
+        IEnumerable<Photo> photoList)
     {
         var pet = new Pet(
             id,
@@ -170,10 +170,10 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
     
-    public void AddPhotos(IEnumerable<PetPhoto> photos) 
+    public void AddPhotos(IEnumerable<Photo> photos) 
         => _photos = photos.ToList();
 
-    public UnitResult<ErrorList> DeletePhotos(IEnumerable<PetPhoto> photos)
+    public UnitResult<ErrorList> DeletePhotos(IEnumerable<Photo> photos)
     {
         foreach (var photo in photos)
         {
@@ -188,20 +188,20 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
 
-    public UnitResult<ErrorList> SetMainPhoto(PetPhoto photo)
+    public UnitResult<ErrorList> SetMainPhoto(Photo photo)
     {
-        if (PetPhoto.CountMainPhoto > 0)
+        if (Photo.CountMainPhoto > 0)
         {
             var error = Error.Failure("invalid.pet.operation", 
                 $"Fail to set main to photo {photo.PathToStorage.Path}. Main Photo has already been set.");
             return new ErrorList([error]);
         }
     
-        var newPetPhotoList = new List<PetPhoto>();
+        var newPetPhotoList = new List<Photo>();
         newPetPhotoList.AddRange(_photos);
         newPetPhotoList.Remove(photo);
         
-        var newPhoto = PetPhoto.Create(photo.PathToStorage).Value;
+        var newPhoto = Photo.Create(photo.PathToStorage).Value;
         var result = newPhoto.SetMain();
         if (result.IsFailure)
             return result.Error;
@@ -209,21 +209,21 @@ public class Pet : Entity<PetId>
         newPetPhotoList.Insert(0, newPhoto);
         _photos = newPetPhotoList;
         
-        PetPhoto.CountMainPhoto += 1;
+        Photo.CountMainPhoto += 1;
         
         return Result.Success<ErrorList>();
     }
 
-    public UnitResult<ErrorList> RemoveMainPhoto(PetPhoto photo)
+    public UnitResult<ErrorList> RemoveMainPhoto(Photo photo)
     {
-        if (PetPhoto.CountMainPhoto == 0)
+        if (Photo.CountMainPhoto == 0)
         {
             var error = Error.Failure("invalid.pet.operation", 
                 $"Fail to remove main from photo {photo.PathToStorage.Path}. Main Photo hasn`t already been set.");
             return new ErrorList([error]);
         }
     
-        var newPetPhotoList = new List<PetPhoto>();
+        var newPetPhotoList = new List<Photo>();
         newPetPhotoList.AddRange(_photos);
         
         var result = photo.RemoveMain();
@@ -232,12 +232,12 @@ public class Pet : Entity<PetId>
         
         _photos = newPetPhotoList;
         
-        PetPhoto.CountMainPhoto -= 1;
+        Photo.CountMainPhoto -= 1;
         
         return Result.Success<ErrorList>();
     }
     
-    public Result<PetPhoto, ErrorList> GetPhotoByPath(FilePath path)
+    public Result<Photo, ErrorList> GetPhotoByPath(FilePath path)
     {
         var photo = _photos.FirstOrDefault(p => p.PathToStorage == path);
         if (photo == null)

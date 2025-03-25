@@ -84,9 +84,9 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
-        var photos = new List<PetPhoto> { photo1, photo2 };
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photos = new List<Photo> { photo1, photo2 };
 
         // Act
         pet.AddPhotos(photos);
@@ -100,14 +100,14 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
-        var photos = new List<PetPhoto> { photo1, photo2 };
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photos = new List<Photo> { photo1, photo2 };
 
         pet.AddPhotos(photos);
 
         // Act
-        var result = pet.DeletePhotos(new List<PetPhoto> { photo1 });
+        var result = pet.DeletePhotos(new List<Photo> { photo1 });
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -120,13 +120,13 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var nonExistentPhoto = PetPhoto.Create(FilePath.Create("nonexistent.jpg", null).Value).Value;
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var nonExistentPhoto = Photo.Create(FilePath.Create("nonexistent.jpg", null).Value).Value;
 
-        pet.AddPhotos(new List<PetPhoto> { photo1 });
+        pet.AddPhotos(new List<Photo> { photo1 });
 
         // Act
-        var result = pet.DeletePhotos(new List<PetPhoto> { nonExistentPhoto });
+        var result = pet.DeletePhotos(new List<Photo> { nonExistentPhoto });
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -139,10 +139,10 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
 
-        pet.AddPhotos(new List<PetPhoto> { photo1, photo2 });
+        pet.AddPhotos(new List<Photo> { photo1, photo2 });
         pet.SetMainPhoto(photo1);
 
         // Act
@@ -158,9 +158,9 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
 
-        pet.AddPhotos(new List<PetPhoto> { photo });
+        pet.AddPhotos(new List<Photo> { photo });
 
         // Act
         var result = pet.RemoveMainPhoto(photo);
@@ -175,9 +175,9 @@ public class PetTests
     {
         // Arrange
         var pet = CreatePet();
-        var photo = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
 
-        pet.AddPhotos(new List<PetPhoto> { photo });
+        pet.AddPhotos(new List<Photo> { photo });
 
         // Act
         var result = pet.GetPhotoByPath(photo.PathToStorage);
@@ -262,7 +262,7 @@ public class PetTests
         var isVaccinated = true;
         var helpStatus = "SeekHome";
         IEnumerable<TransferDetails> transferDetailsList = [];
-        IEnumerable<PetPhoto> photoList = [];
+        IEnumerable<Photo> photoList = [];
         
         var pet = Pet.Create(
             id, name, classification, description, color, 

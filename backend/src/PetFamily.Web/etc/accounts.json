@@ -1,0 +1,70 @@
+{
+  "Permissions": {
+    "Volunteer": [
+      "volunteer.create",
+      "volunteer.get",
+      "volunteer.update.main.info",
+      "volunteer.delete",
+      "volunteers.pets.create",
+      "volunteers.pets.update",
+      "volunteer.pets.get",
+      "volunteer.pets.delete",
+      "volunteer.pets.photo.create",
+      "volunteer.pets.photo.delete",
+      "volunteer.pets.main.photo.set",
+      "volunteer.pets.main.photo.remove",
+      "volunteer.pets.position.change",
+      "volunteer.pets.help.change"
+    ],
+    "Species": [
+      "species.create",
+      "species.delete",
+      "species.get",
+      "species.breeds.create",
+      "species.breeds.delete",
+      "species.breeds.get"
+    ]
+  },
+  "Roles": {
+    "Default" : [
+      "volunteer.get",
+      "volunteer.pets.get",
+      "species.get",
+      "species.breeds.get"
+    ],
+    "Volunteer" : [
+      "volunteers.pets.create",
+      "volunteers.pets.update",
+      "volunteer.pets.get",
+      "volunteer.pets.delete",
+      "volunteer.pets.photo.create",
+      "volunteer.pets.photo.delete",
+      "volunteer.pets.main.photo.set",
+      "volunteer.pets.main.photo.remove",
+      "volunteer.pets.position.change",
+      "volunteer.pets.help.change"
+    ],
+    "Admin": [
+      "volunteer.create",
+      "volunteer.get",
+      "volunteer.update.main.info",
+      "volunteer.delete",
+      "volunteers.pets.create",
+      "volunteers.pets.update",
+      "volunteer.pets.get",
+      "volunteer.pets.delete",
+      "volunteer.pets.photo.create",
+      "volunteer.pets.photo.delete",
+      "volunteer.pets.main.photo.set",
+      "volunteer.pets.main.photo.remove",
+      "volunteer.pets.position.change",
+      "volunteer.pets.help.change",
+      "species.create",
+      "species.delete",
+      "species.get",
+      "species.breeds.create",
+      "species.breeds.delete",
+      "species.breeds.get"
+    ]
+  }
+}

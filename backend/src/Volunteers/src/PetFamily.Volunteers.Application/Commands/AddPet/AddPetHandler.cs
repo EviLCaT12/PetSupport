@@ -81,7 +81,7 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
                 command.IsVaccinated,
                 command.HelpStatus,
                 transferDetailsList,
-                new List<PetPhoto>());
+                new List<Photo>());
             
             var volunteer = getVolunteerResult.Value;
             volunteer.AddPet(createPetResult.Value);

@@ -32,56 +32,19 @@ public class VolunteerTests
         //Arrange
         var volunteer = CreateVolunteerWithoutPet();
         
-        var newFio = VolunteerFio.Create("string1", "string1", "string1").Value;;
+        var newFio = Fio.Create("string1", "string1", "string1").Value;;
         var newPhone = Phone.Create("+7 (333) 123-12-21").Value;
         var newEmail = Email.Create("email@ema123il.com").Value;
         var newDescription = Description.Create("2222").Value;
-        var newYearsOfExperience = YearsOfExperience.Create(11).Value;
         
         //Act
-        volunteer.UpdateMainInfo(newFio, newPhone, newEmail, newDescription, newYearsOfExperience);
+        volunteer.UpdateMainInfo(newFio, newPhone, newEmail, newDescription);
         
         //Assert
         volunteer.Fio.Should().BeEquivalentTo(newFio);
         volunteer.Phone.Should().BeEquivalentTo(newPhone);
         volunteer.Email.Should().BeEquivalentTo(newEmail);
         volunteer.Description.Should().BeEquivalentTo(newDescription);
-        volunteer.YearsOfExperience.Should().BeEquivalentTo(newYearsOfExperience);
-    }
-
-    [Fact]
-    public void Update_socialWebList_Should_Be_Successful()
-    {
-        var volunteer = CreateVolunteerWithoutPet();
-        var newSocialWebs = new List<SocialWeb>
-        {
-            SocialWeb.Create("https://example.com", "Example").Value,
-            SocialWeb.Create("https://another.com", "Another").Value
-        };
-
-        // Act
-        volunteer.UpdateSocialWebList(newSocialWebs);
-
-        // Assert
-        volunteer.SocialWebList.Should().BeEquivalentTo(newSocialWebs);
-    }
-    
-    [Fact]
-    public void UpdateTransferDetailsList_Should_UpdateTransferDetails_When_NewTransferDetailsIsNotEmpty()
-    {
-        // Arrange
-        var volunteer = CreateVolunteerWithoutPet();
-        var newTransferDetails = new List<TransferDetails>
-        {
-            TransferDetails.Create("Name1", "Description1").Value,
-            TransferDetails.Create("Name2", "Description2").Value
-        };
-
-        // Act
-        volunteer.UpdateTransferDetailsList(newTransferDetails);
-
-        // Assert
-        volunteer.TransferDetailsList.Should().BeEquivalentTo(newTransferDetails);
     }
     
     [Fact]
@@ -262,9 +225,9 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
-        var photos = new List<PetPhoto> { photo1, photo2 };
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photos = new List<Photo> { photo1, photo2 };
 
         // Act
         volunteer.AddPetPhotos(pet.Id, photos);
@@ -281,14 +244,14 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
-        var photos = new List<PetPhoto> { photo1, photo2 };
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photos = new List<Photo> { photo1, photo2 };
 
         volunteer.AddPetPhotos(pet.Id, photos);
 
         // Act
-        var result = volunteer.DeletePetPhotos(pet.Id, new List<PetPhoto> { photo1 });
+        var result = volunteer.DeletePetPhotos(pet.Id, new List<Photo> { photo1 });
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -304,16 +267,16 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo1 = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        var photo2 = PetPhoto.Create(FilePath.Create("path2.jpg", null).Value).Value;
-        var photos = new List<PetPhoto> { photo1 };
+        var photo1 = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        var photo2 = Photo.Create(FilePath.Create("path2.jpg", null).Value).Value;
+        var photos = new List<Photo> { photo1 };
 
         volunteer.AddPetPhotos(pet.Id, photos);
 
-        var nonExistentPhoto = PetPhoto.Create(FilePath.Create("nonexistent.jpg", null).Value).Value;
+        var nonExistentPhoto = Photo.Create(FilePath.Create("nonexistent.jpg", null).Value).Value;
 
         // Act
-        var result = volunteer.DeletePetPhotos(pet.Id, new List<PetPhoto> { nonExistentPhoto });
+        var result = volunteer.DeletePetPhotos(pet.Id, new List<Photo> { nonExistentPhoto });
 
         // Assert
         result.IsFailure.Should().BeTrue();
@@ -508,7 +471,7 @@ public class VolunteerTests
         volunteer.AddPet(pet);
 
         var filePath = FilePath.Create("path1.jpg", null).Value;
-        var photo = PetPhoto.Create(filePath).Value;
+        var photo = Photo.Create(filePath).Value;
 
         // Act
         var result = volunteer.SetPetMainPhoto(pet, photo);
@@ -528,8 +491,8 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        pet.AddPhotos(new List<PetPhoto> { photo });
+        var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
+        pet.AddPhotos(new List<Photo> { photo });
         photo.SetMain();
 
         // Act
@@ -548,8 +511,8 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value);
-        pet.AddPhotos(new List<PetPhoto> { photo.Value });
+        var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value);
+        pet.AddPhotos(new List<Photo> { photo.Value });
 
         // Act
         var result = volunteer.RemovePetMainPhoto(pet, photo.Value);
@@ -567,8 +530,8 @@ public class VolunteerTests
         var pet = CreatePet();
         volunteer.AddPet(pet);
 
-        var photo = PetPhoto.Create(FilePath.Create("path1.jpg", null).Value);
-        pet.AddPhotos(new List<PetPhoto> { photo.Value });
+        var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value);
+        pet.AddPhotos(new List<Photo> { photo.Value });
 
         // Act
         var result = volunteer.GetPetPhoto(pet, photo.Value.PathToStorage);
@@ -599,16 +562,14 @@ public class VolunteerTests
     private Volunteer CreateVolunteerWithoutPet()
     {
         var id = VolunteerId.NewVolunteerId();
-        var fio = VolunteerFio.Create("string", "string", "string").Value;
+        var fio = Fio.Create("string", "string", "string").Value;
         var phone = Phone.Create("+7 (123) 123-12-21").Value;
         var email = Email.Create("email@email.com").Value;
         var description = Description.Create("description").Value;
-        var exp = YearsOfExperience.Create(12).Value;
-        IEnumerable<SocialWeb> socialWebsList = [];
         IEnumerable<TransferDetails> transferDetails = [];
         
         var volunteer = Volunteer
-            .Create(id, fio, phone, email, description, exp, socialWebsList, transferDetails);
+            .Create(id, fio, phone, email, description, transferDetails);
         
         return volunteer.Value;
     }
@@ -629,7 +590,7 @@ public class VolunteerTests
         var isVaccinated = true;
         var helpStatus = "SeekHome";
         IEnumerable<TransferDetails> transferDetailsList = [];
-        IEnumerable<PetPhoto> photoList = [];
+        IEnumerable<Photo> photoList = [];
         
         var pet = Pet.Create(
             id, name, classification, description, color, 

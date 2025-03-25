@@ -78,7 +78,7 @@ public class SpeciesBaseTest : IClassFixture<IntegrationTestsWebFactory>, IAsync
         var isVaccinated = true;
         var helpStatus = "SeekHome";
         IEnumerable<TransferDetails> transferDetailsList = [];
-        IEnumerable<PetPhoto> photoList = [];
+        IEnumerable<Photo> photoList = [];
         
         var pet = Pet.Create(
             id, name, classification, description, color, 

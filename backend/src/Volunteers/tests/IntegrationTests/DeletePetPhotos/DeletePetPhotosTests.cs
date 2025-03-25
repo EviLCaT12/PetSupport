@@ -27,7 +27,7 @@ public class DeletePetPhotosTests : VolunteerBaseTest
         var petId = await SeedPetAsync(volunteer!);
         var pet = volunteer!.AllOwnedPets.FirstOrDefault(p => p.Id.Value == petId);
         
-        var photoToDelete = PetPhoto.Create(FilePath.Create("photo.jpg", null).Value).Value;
+        var photoToDelete = Photo.Create(FilePath.Create("photo.jpg", null).Value).Value;
         
         pet!.AddPhotos([photoToDelete]);
         await WriteContext.SaveChangesAsync(CancellationToken.None);
