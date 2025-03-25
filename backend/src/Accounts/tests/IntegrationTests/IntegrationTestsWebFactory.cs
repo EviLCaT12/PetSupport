@@ -10,6 +10,7 @@ using NSubstitute;
 using PetFamily.Accounts.Domain;
 using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Contexts;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.SharedKernel.Error;
 using PetFamily.Web;
 using Respawn;
@@ -38,10 +39,16 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
-        services.RemoveAll(typeof(AccountsDbContext));
+        services
+            .RemoveAll(typeof(AccountsDbContext))
+            .RemoveAll(typeof(AccountsSeeder));
+            
         
-        services.AddScoped<AccountsDbContext>(_ =>
-            new AccountsDbContext(DbContainer.GetConnectionString()));
+        
+        services
+            .AddScoped<AccountsDbContext>(_ =>
+                new AccountsDbContext(DbContainer.GetConnectionString()))
+            .AddSingleton<AccountsSeeder>();
     }
     
     public async Task InitializeAsync() 
@@ -50,9 +57,11 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
+        var seeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
         
-        await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
+        DotNetEnv.Env.Load();
+        await seeder.SeedAsync();
         
         _dbConnection = new NpgsqlConnection(DbContainer.GetConnectionString());
         await InitializeRespawnerAsync();
@@ -63,12 +72,17 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         await _dbConnection.OpenAsync();
         _respawner = await Respawner.CreateAsync(
             _dbConnection,
-            new RespawnerOptions { DbAdapter = DbAdapter.Postgres, SchemasToInclude = ["public"] });
+            new RespawnerOptions { DbAdapter = DbAdapter.Postgres});
     }
 
     public async Task ResetDatabaseAsync()
     {
         await _respawner.ResetAsync(_dbConnection);
+
+        using var scope = Services.CreateScope();
+        var accountSeeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
+        DotNetEnv.Env.Load();
+        await accountSeeder.SeedAsync();
     }
 
     public new async Task DisposeAsync()

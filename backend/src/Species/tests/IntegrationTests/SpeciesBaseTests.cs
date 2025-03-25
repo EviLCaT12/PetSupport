@@ -49,10 +49,7 @@ public class SpeciesBaseTest : IClassFixture<IntegrationTestsWebFactory>, IAsync
             fio, 
             phone, 
             email,
-            description,
-            exp,
-            socialWebsList,
-            transferDetails);
+            description);
         
         var id = await Contract.AddVolunteer(request, CancellationToken.None);
         return id.Value;

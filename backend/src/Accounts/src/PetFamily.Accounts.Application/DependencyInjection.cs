@@ -1,4 +1,5 @@
 using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 
@@ -8,7 +9,9 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddAccountsApplication(this IServiceCollection services)
     {
-        services.AddCommands();
+        services
+            .AddCommands()
+            .AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         
         return services;
     }

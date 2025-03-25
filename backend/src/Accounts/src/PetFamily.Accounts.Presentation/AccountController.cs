@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PetFamily.Accounts.Application.Commands.CreateVolunteerAccount;
+using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.LoginUser;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Contracts.Requests;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Accounts.Presentation;
     
@@ -47,18 +50,18 @@ public class AccountController : ApplicationController
         return Ok(result.Value);
     }
     
+    [Authorize(Permissions.Volunteers.CreateVolunteer)]
     [HttpPost("registration/volunteer")]
     public async Task<IActionResult> RegisterVolunteer(
         [FromBody] CreateVolunteerAccountRequest request,
-        [FromServices] CreateVolunteerAccountHandler handler,
+        [FromServices] EnrollVolunteerHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new CreateVolunteerAccountCommand(
-            request.UserName,
+        var command = new EnrollVolunteerCommand(
             request.Email,
-            request.Fio,
-            request.Password,
-            request.Experience);
+            request.Experience,
+            request.PhoneNumber,
+            request.Description);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 

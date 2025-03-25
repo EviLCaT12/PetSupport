@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PetFamily.Accounts.Application.AccountManagers;
@@ -8,6 +9,7 @@ using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Infrastructure.Configurations;
 using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
+using PetFamily.Core.Abstractions;
 using PetFamily.Framework;
 using PetFamily.SharedKernel.SharedVO;
 
@@ -20,7 +22,8 @@ public class AccountsSeederService(
     RolePermissionManager rolePermissionManager,
     IAccountManager accountManager,
     IOptions<AdminOptions> adminOptions,
-    ILogger<AccountsSeederService> logger)
+    ILogger<AccountsSeederService> logger,
+    [FromKeyedServices(ModuleKey.Account)] IUnitOfWork unitOfWork)
 {
     private readonly AdminOptions _adminOptions = adminOptions.Value;
     
@@ -42,31 +45,47 @@ public class AccountsSeederService(
 
     private async Task SeedAdminAccount()
     {
-        var isAdminExist = await userManager.FindByEmailAsync(adminOptions.Value.Email);
-        if (isAdminExist is not null)
-            return;
-        
-        var adminRole = await roleManager.FindByNameAsync(AdminAccount.Admin)
-                        ?? throw new ApplicationException("Could not find admin role");
+        var transaction = await unitOfWork.BeginTransactionAsync();
 
-        var fio = Fio.Create(
-            _adminOptions.UserName,
-            _adminOptions.UserName, 
-            _adminOptions.UserName).Value;
+        try
+        {
+            var isAdminExist = await userManager.FindByEmailAsync(adminOptions.Value.Email);
+            if (isAdminExist is not null)
+                return;
         
-        var adminUser = User.CreateAdmin(
-            _adminOptions.UserName,
-            _adminOptions.Email,
-            fio,
-            adminRole).Value;
-        
-        await userManager.CreateAsync(adminUser, _adminOptions.Password);
+            var adminRole = await roleManager.FindByNameAsync(AdminAccount.Admin)
+                            ?? throw new ApplicationException("Could not find admin role");
 
-        var adminAccount = new AdminAccount(adminUser);
-
-        await accountManager.CreateAdminAccountAsync(adminAccount);
+            var fio = Fio.Create(
+                _adminOptions.UserName,
+                _adminOptions.UserName, 
+                _adminOptions.UserName).Value;
         
-        logger.LogInformation("Admin account created");
+            var adminUser = User.CreateAdmin(
+                _adminOptions.UserName,
+                _adminOptions.Email,
+                fio,
+                adminRole).Value;
+        
+            await userManager.CreateAsync(adminUser, _adminOptions.Password);
+
+            var adminAccount = new AdminAccount(adminUser);
+
+            await accountManager.CreateAdminAccountAsync(adminAccount);
+
+            await unitOfWork.SaveChangesAsync();
+            transaction.Commit();
+        
+            logger.LogInformation("Admin account created");
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            logger.LogError(e, "Failed to create admin account");
+            throw;
+        }
+        
+
     }
     
     private async Task SeedRolePermissions(RolePermissionConfig seedData)

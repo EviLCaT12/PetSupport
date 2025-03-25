@@ -38,8 +38,7 @@ public class Volunteer : Entity<VolunteerId>
         Fio fio,
         Phone phoneNumber,
         Email email,
-        Description description,
-        IEnumerable<TransferDetails> transferDetails
+        Description description
     )
     {
         Id = id;
@@ -57,16 +56,14 @@ public class Volunteer : Entity<VolunteerId>
         Fio fio,
         Phone phoneNumber,
         Email email,
-        Description description,
-        IEnumerable<TransferDetails> transferDetailsList)
+        Description description)
     {
         var volunteer = new Volunteer(
             id,
             fio,
             phoneNumber,
             email,
-            description,
-            transferDetailsList);
+            description);
         
         return volunteer;
     }

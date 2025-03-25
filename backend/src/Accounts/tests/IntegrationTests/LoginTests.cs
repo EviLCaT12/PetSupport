@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.LoginUser;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.VolunteerDto;
 
 namespace IntegrationTests;
 
@@ -19,8 +20,9 @@ public class LoginTests : AccountBaseTests
         var email = Guid.NewGuid() + "@test.com";
         var name = Guid.NewGuid() + ".";
         var password = "A" + Guid.NewGuid() ;
+        var fioDto = new FioDto("string", "string", "string");
         
-        var commandForRegister = new RegisterUserCommand(email, name, password);
+        var commandForRegister = new RegisterUserCommand(email, name, fioDto ,password);
         var register = Scope.ServiceProvider.GetRequiredService<ICommandHandler<RegisterUserCommand>>();
         await register.HandleAsync(commandForRegister, CancellationToken.None);
         

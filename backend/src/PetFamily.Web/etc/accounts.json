@@ -32,7 +32,10 @@
       "species.get",
       "species.breeds.get"
     ],
-    "Volunteer" : [
+    "Volunteer" : [     
+      "volunteer.get",
+      "species.get",
+      "species.breeds.get",
       "volunteers.pets.create",
       "volunteers.pets.update",
       "volunteer.pets.get",

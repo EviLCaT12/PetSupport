@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.AccountManagers;
 using PetFamily.Accounts.Domain.Entities;
@@ -15,60 +16,80 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountManager _accountManager;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterUserHandler> _logger;
 
     public RegisterUserHandler(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountManager accountManager,
+        [FromKeyedServices(ModuleKey.Account)] IUnitOfWork unitOfWork,
         ILogger<RegisterUserHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _accountManager = accountManager;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(
         RegisterUserCommand command,
         CancellationToken cancellationToken)
     {
-        var existedUser = await _userManager.FindByEmailAsync(command.Email);
-        if (existedUser != null)
-        {
-            return Errors.General.AlreadyExist(command.Email).ToErrorList();
-        }
+        var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        var fio = Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName);
-        if (fio.IsFailure)
+        try
         {
-            return Errors.General.ValueIsInvalid(fio.Error.Code).ToErrorList();
-        }
-        
-        var role = await _roleManager.FindByNameAsync(ParticipantAccount.Participant);
+            var existedUser = await _userManager.FindByEmailAsync(command.Email);
+            if (existedUser != null)
+            {
+                return Errors.General.AlreadyExist(command.Email).ToErrorList();
+            }
 
-        var participantUser = User.CreateParticipant(
-            command.UserName,
-            command.Email,
-            fio.Value,
-            role!).Value;
+            var fio = Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName);
+            if (fio.IsFailure)
+            {
+                return Errors.General.ValueIsInvalid(fio.Error.Code).ToErrorList();
+            }
         
-        var result = await _userManager.CreateAsync(participantUser, command.Password);
-        if (result.Succeeded == false)
-        {
-            _logger.LogError("User creation failed.");
-            var errors = result.Errors
-                .Select(e => Error.Failure(e.Code, e.Description))
-                .ToList();
+            var role = await _roleManager.FindByNameAsync(ParticipantAccount.Participant);
+
+            var participantUser = User.CreateParticipant(
+                command.UserName,
+                command.Email,
+                fio.Value,
+                role!).Value;
+        
+            var result = await _userManager.CreateAsync(participantUser, command.Password);
+            if (result.Succeeded == false)
+            {
+                _logger.LogError("User creation failed.");
+                var errors = result.Errors
+                    .Select(e => Error.Failure(e.Code, e.Description))
+                    .ToList();
             
-            return new ErrorList(errors);
-        }
+                return new ErrorList(errors);
+            }
 
-        var participantAccount = new ParticipantAccount(participantUser);
+            var participantAccount = new ParticipantAccount(participantUser);
         
-        await _accountManager.CreateParticipantAccountAsync(participantAccount);
+            await _accountManager.CreateParticipantAccountAsync(participantAccount);
         
-        await _userManager.AddToRoleAsync(participantUser, role!.Name!);
+            await _userManager.AddToRoleAsync(participantUser, role!.Name!);
+            
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            
+            transaction.Commit();
         
-        return Result.Success<ErrorList>();
+            return Result.Success<ErrorList>();
+        }
+        catch (Exception e)
+        {
+            transaction.Rollback();
+            _logger.LogError(e, "Failure during transaction at user creation");
+            return Error.Failure("server.internal.failure",
+                "Failure during transaction at user creation").ToErrorList();
+        }
+        
     }
 }

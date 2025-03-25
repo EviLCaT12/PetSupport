@@ -42,10 +42,7 @@ public class VolunteersController : ApplicationController
             request.Fio,
             request.PhoneNumber,
             request.Email,
-            request.Description,
-            request.YearsOfExperience,
-            request.SocialWebDto,
-            request.TransferDetailDto);
+            request.Description);
         
         var result = await handler.HandleAsync(
             command,

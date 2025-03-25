@@ -45,19 +45,13 @@ public class CreateVolunteerHandler(
 
             var descriptionCreateResult = Description.Create(createVolunteerCommand.Description).Value;
             
-            List<TransferDetails> transferDetails = [];
-            transferDetails.AddRange(createVolunteerCommand.TransferDetailDto
-                .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
-                .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
-            var transferDetailsList = new List<TransferDetails>(transferDetails);
         
             var validVolunteer = Volunteers.Domain.Entities.Volunteer.Create(
                 volunteerId,
                 fioCreateResult,
                 phoneNumberCreateResult,
                 emailCreateResult,
-                descriptionCreateResult,
-                transferDetailsList
+                descriptionCreateResult
             );
         
         await volunteersRepository.AddAsync(validVolunteer.Value, cancellationToken);

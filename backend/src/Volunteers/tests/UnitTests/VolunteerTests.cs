@@ -566,10 +566,9 @@ public class VolunteerTests
         var phone = Phone.Create("+7 (123) 123-12-21").Value;
         var email = Email.Create("email@email.com").Value;
         var description = Description.Create("description").Value;
-        IEnumerable<TransferDetails> transferDetails = [];
         
         var volunteer = Volunteer
-            .Create(id, fio, phone, email, description, transferDetails);
+            .Create(id, fio, phone, email, description);
         
         return volunteer.Value;
     }
