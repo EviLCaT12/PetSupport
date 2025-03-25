@@ -24,10 +24,7 @@ public class VolunteerContract : IVolunteerContract
                 request.Fio,
                 request.PhoneNumber,
                 request.Email,
-                request.Description,
-                request.YearsOfExperience,
-                request.SocialWebDto,
-                request.TransferDetailDto),
+                request.Description),
             cancellation);
 
         if (volunteer.IsFailure)

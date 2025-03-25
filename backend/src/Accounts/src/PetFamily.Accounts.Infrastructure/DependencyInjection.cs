@@ -9,6 +9,7 @@ using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Providers;
 using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Core.Abstractions;
 using PetFamily.Core.Options;
 using PetFamily.SharedKernel.Constants;
 namespace PetFamily.Accounts.Infrastructure;
@@ -24,12 +25,13 @@ public static class DependencyInjection
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
             .AddProviders()
-            .AddIdentity();
+            .AddIdentity()
+            .AddUnitOfWork();
         
         return services;
     }
     
-    private static void AddIdentity(this IServiceCollection services)
+    private static IServiceCollection AddIdentity(this IServiceCollection services)
     {
         services
             .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
@@ -39,6 +41,14 @@ public static class DependencyInjection
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
         services.AddScoped<IAccountManager, AccountManager>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
+    {
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(ModuleKey.Account);
+        return services;
     }
 
     private static IServiceCollection AddProviders(this IServiceCollection services)

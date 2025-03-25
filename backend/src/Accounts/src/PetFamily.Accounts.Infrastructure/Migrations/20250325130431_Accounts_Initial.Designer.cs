@@ -13,8 +13,8 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(AccountsDbContext))]
-    [Migration("20250324144446_txdfchvbn")]
-    partial class txdfchvbn
+    [Migration("20250325130431_Accounts_Initial")]
+    partial class Accounts_Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -209,6 +209,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.Property<string>("TransferDetails")
                         .HasColumnType("jsonb")
                         .HasColumnName("requisites");
+
+                    b.Property<Guid>("VolunteerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("volunteer_id");
 
                     b.Property<Guid?>("user_id")
                         .HasColumnType("uuid")

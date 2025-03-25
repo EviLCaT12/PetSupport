@@ -16,6 +16,7 @@ public class AccountBaseTests : IClassFixture<IntegrationTestsWebFactory>, IAsyn
     {
         Factory = factory;
         Scope = factory.Services.CreateScope();
+        
         WriteContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
         Fixture = new Fixture();
     }

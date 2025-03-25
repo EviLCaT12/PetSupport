@@ -16,6 +16,7 @@ public class VolunteerAccount
     }
     public Guid Id { get; set; }
     
+    public Guid VolunteerId { get; set; }
     public User User { get; set; }
     public YearsOfExperience Experience { get; set; } 
     public IReadOnlyList<TransferDetails>? TransferDetails { get; set; } = [];

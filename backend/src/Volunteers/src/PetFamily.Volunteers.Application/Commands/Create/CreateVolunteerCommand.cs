@@ -8,7 +8,4 @@ public record CreateVolunteerCommand(
     FioDto Fio,
     string PhoneNumber, 
     string Email,
-    string Description,
-    int YearsOfExperience,
-    List<SocialWebDto> SocialWebDto,
-    List<TransferDetailDto> TransferDetailDto) : ICommand;
+    string Description) : ICommand;

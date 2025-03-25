@@ -42,10 +42,9 @@ public class VolunteerBaseTest : IClassFixture<TestsWebFactory>, IAsyncLifetime
         var phone = Phone.Create("+7 (123) 123-12-21").Value;
         var email = Email.Create("email@email.com").Value;
         var description = Description.Create("description").Value;
-        IEnumerable<TransferDetails> transferDetails = [];
         
         var volunteer = Volunteer
-            .Create(id, fio, phone, email, description, transferDetails).Value;
+            .Create(id, fio, phone, email, description).Value;
         
         await WriteContext.Volunteers.AddAsync(volunteer);
         await WriteContext.SaveChangesAsync(CancellationToken.None);

@@ -207,6 +207,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("jsonb")
                         .HasColumnName("requisites");
 
+                    b.Property<Guid>("VolunteerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("volunteer_id");
+
                     b.Property<Guid?>("user_id")
                         .HasColumnType("uuid")
                         .HasColumnName("user_id");

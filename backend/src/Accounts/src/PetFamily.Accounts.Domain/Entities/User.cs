@@ -46,24 +46,6 @@ public class User : IdentityUser<Guid>
             _roles = [role]
         };
     }
-    
-    public static Result<User, ErrorList> CreateVolunteer(
-        string userName,
-        string email,
-        Fio fio,
-        Role role)
-    {
-        if (role.Name != VolunteerAccount.Volunteer)
-            return Errors.General.ValueIsInvalid(nameof(role)).ToErrorList();
-        
-        return new User
-        {
-            UserName = userName,
-            Email = email,
-            FullName = fio,
-            _roles = [role]
-        };
-    }
 
     public static Result<User, ErrorList> CreateAdmin(
         string userName,
