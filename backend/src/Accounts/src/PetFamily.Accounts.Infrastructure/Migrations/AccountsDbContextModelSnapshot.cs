@@ -256,6 +256,42 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.ToTable("permissions", "account");
                 });
 
+            modelBuilder.Entity("PetFamily.Accounts.Domain.Entities.RefreshSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<DateTime>("ExpiresIn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_in");
+
+                    b.Property<Guid>("Jti")
+                        .HasColumnType("uuid")
+                        .HasColumnName("jti");
+
+                    b.Property<Guid>("RefreshToken")
+                        .HasColumnType("uuid")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_sessions");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_refresh_sessions_user_id");
+
+                    b.ToTable("refresh_sessions", "account");
+                });
+
             modelBuilder.Entity("PetFamily.Accounts.Domain.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -499,6 +535,18 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .WithOne("VolunteerAccount")
                         .HasForeignKey("PetFamily.Accounts.Domain.Entities.AccountEntitites.VolunteerAccount", "user_id")
                         .HasConstraintName("fk_volunteer_accounts_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PetFamily.Accounts.Domain.Entities.RefreshSession", b =>
+                {
+                    b.HasOne("PetFamily.Accounts.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_sessions_user_user_id");
 
                     b.Navigation("User");
                 });

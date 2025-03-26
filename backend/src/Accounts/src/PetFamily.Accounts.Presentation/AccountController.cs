@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.LoginUser;
+using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Domain.Entities;
@@ -62,6 +63,23 @@ public class AccountController : ApplicationController
             request.Experience,
             request.PhoneNumber,
             request.Description);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
+    }
+    
+    
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshTokens(
+        [FromBody] RefreshTokenRequest request,
+        [FromServices] RefreshTokensHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RefreshTokensCommand(request.AccessToken, request.RefreshToken);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 
