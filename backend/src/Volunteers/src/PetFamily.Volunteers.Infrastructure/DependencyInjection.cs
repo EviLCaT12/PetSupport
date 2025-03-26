@@ -10,6 +10,7 @@ using PetFamily.Core.Files;
 using PetFamily.Core.Messaging;
 using PetFamily.Core.Providers;
 using PetFamily.Volunteer.Infrastructure.BackgroundServices;
+using PetFamily.Volunteer.Infrastructure.DeleteServices;
 using PetFamily.Volunteer.Infrastructure.Files;
 using PetFamily.Volunteer.Infrastructure.MessageQueues;
 using PetFamily.Volunteer.Infrastructure.Providers;
@@ -27,7 +28,7 @@ public static class DependencyInjection
             .AddRepositories()
             .AddUnitOfWork()
             .AddMinio(configuration)
-            .AddHostedServices()
+            .AddHostedServices(configuration)
             .AddMessageQueue()
             .AddServices();
         return services;
@@ -79,9 +80,13 @@ public static class DependencyInjection
         return services;
     }
     
-    private static IServiceCollection AddHostedServices(this IServiceCollection services)
+    private static IServiceCollection AddHostedServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<ExpiredEntitiesCleanerOption>(
+            configuration.GetSection(ExpiredEntitiesCleanerOption.ExpiredEntitiesDeleteRemoveService));
+        
         services.AddHostedService<PhotoCleanerBackgroundService>();
+        services.AddHostedService<ExpiredPetCleanerBackgroundService>();
         return services;
     }
     
@@ -94,6 +99,7 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IFileCleanerService, FilesCleanerService>();;
+        services.AddScoped<DeleteExpiredPetServices>();;
         return services;
     }
 }

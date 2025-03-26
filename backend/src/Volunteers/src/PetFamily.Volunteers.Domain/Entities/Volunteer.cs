@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using PetFamily.Core.Abstractions;
+using PetFamily.SharedKernel.Constants;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
@@ -150,6 +151,13 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         {
             pet.Restore();
         }
+    }
+
+    public void DeleteExpiredPets(int daysBeforeDelete)
+    {
+        _pets.RemoveAll(p => p.DeletedOn != null 
+                             && DateTime.UtcNow > p.DeletedOn.Value
+                                 .AddDays(daysBeforeDelete));
     }
 
     public UnitResult<ErrorList> AddPet(Pet pet)

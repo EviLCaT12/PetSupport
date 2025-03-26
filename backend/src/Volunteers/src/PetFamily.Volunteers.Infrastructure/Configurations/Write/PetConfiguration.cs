@@ -131,12 +131,15 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
             .HasDefaultValue(DateTime.MinValue)
             .IsRequired()
             .HasColumnName("created_at");
-        
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
+
+        builder.Property(p => p.IsDeleted)
             .HasColumnName("is_deleted");
         
-        builder.HasQueryFilter(p => EF.Property<bool>(p, "_isDeleted") == false);
+        builder.Property(p => p.DeletedOn)
+            .IsRequired(false)
+            .HasColumnName("deleted_on");
+        
+        builder.HasQueryFilter(p => p.IsDeleted == false);
 
         builder.Property(p => p.PhotoList)
             .HasConversion(

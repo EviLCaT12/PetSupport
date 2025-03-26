@@ -68,10 +68,10 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteers.Domain
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired();
         
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
-            .HasColumnName("is_deleted");
+        builder.Property(v => v.DeletedOn)
+            .IsRequired(false)
+            .HasColumnName("deleted_on");
         
-        builder.HasQueryFilter(v => EF.Property<bool>(v, "_isDeleted") == false);
+        builder.HasQueryFilter(v => v.IsDeleted == false);
     }
 }
