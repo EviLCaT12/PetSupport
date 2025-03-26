@@ -1,22 +1,17 @@
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
-using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Application.AccountManagers;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Accounts.Infrastructure.Managers;
+using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Accounts.Infrastructure.Providers;
+using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Core.Abstractions;
 using PetFamily.Core.Options;
-using PetFamily.Framework;
-using PetFamily.Framework.Authorization;
 using PetFamily.SharedKernel.Constants;
-
 namespace PetFamily.Accounts.Infrastructure;
 
 public static class DependencyInjection
@@ -30,12 +25,13 @@ public static class DependencyInjection
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
             .AddProviders()
-            .AddIdentity();
+            .AddIdentity()
+            .AddUnitOfWork();
         
         return services;
     }
     
-    private static void AddIdentity(this IServiceCollection services)
+    private static IServiceCollection AddIdentity(this IServiceCollection services)
     {
         services
             .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
@@ -44,6 +40,15 @@ public static class DependencyInjection
 
         services.AddScoped<PermissionManager>();
         services.AddScoped<RolePermissionManager>();
+        services.AddScoped<IAccountManager, AccountManager>();
+        
+        return services;
+    }
+
+    private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
+    {
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(ModuleKey.Account);
+        return services;
     }
 
     private static IServiceCollection AddProviders(this IServiceCollection services)
@@ -56,12 +61,14 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
+        services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
         return services;
     }
     
     private static IServiceCollection AddSeeding(this IServiceCollection services)
     {
         services.AddSingleton<AccountsSeeder>();
+        services.AddScoped<AccountsSeederService>();
         return services;
     }
     

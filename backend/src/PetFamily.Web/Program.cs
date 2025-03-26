@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Infrastructure;
+using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Core.Options;
 using PetFamily.Framework.Authorization;
@@ -16,6 +17,9 @@ using PetFamily.Volunteer.Infrastructure;
 using PetFamily.Volunteers.Application;
 using Serilog;
 using Serilog.Events;
+
+
+DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,9 +119,9 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+//var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
-await accountSeeder.SeedAsync();
+//await accountSeeder.SeedAsync();
 
 // await app.ApplyMigration(); 
 

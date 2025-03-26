@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Accounts.Domain.Entitues.AccountEntitites;
+using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.SharedVO;
@@ -20,6 +20,7 @@ public class VolunteerAccountConfiguration : IEntityTypeConfiguration<VolunteerA
         });
         
         builder.Property(va => va.TransferDetails)
+            .IsRequired(false)
             .Json1DeepLvlVoCollectionConverter(
                 transferDetails => new TransferDetailDto(transferDetails.Name, transferDetails.Description),
                 dto => TransferDetails.Create(dto.Name, dto.Description).Value)

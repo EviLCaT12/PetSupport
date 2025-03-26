@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Error;
 
-namespace PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
+namespace PetFamily.SharedKernel.SharedVO;
 
 public record Email
 {
@@ -13,7 +13,7 @@ public record Email
         Value = value;
     }
 
-    public static Result<Email, Error> Create(string email)
+    public static Result<Email, Error.Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             return Errors.General.ValueIsRequired(nameof(Email));

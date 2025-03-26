@@ -7,9 +7,6 @@ public record CreateVolunteerRequest(
     FioDto Fio,
     string PhoneNumber,
     string Email,
-    string Description,
-    int YearsOfExperience,
-    List<SocialWebDto> SocialWebDto,
-    List<TransferDetailDto> TransferDetailDto
+    string Description
 );
     

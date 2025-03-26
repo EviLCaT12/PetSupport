@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace PetFamily.Accounts.Domain.Entitues;
+namespace PetFamily.Accounts.Domain.Entities;
 
 public class Role : IdentityRole<Guid>
 {
-    public List<User> Users { get; set; }
     public List<RolePermission> RolePermissions { get; set; }
 }

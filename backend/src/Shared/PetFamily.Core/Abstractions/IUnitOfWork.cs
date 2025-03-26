@@ -12,5 +12,6 @@ public interface IUnitOfWork
 public enum ModuleKey
 {
     Volunteer,
-    Species
+    Species,
+    Account
 }

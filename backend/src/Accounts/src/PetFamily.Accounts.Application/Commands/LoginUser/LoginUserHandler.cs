@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Domain;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 

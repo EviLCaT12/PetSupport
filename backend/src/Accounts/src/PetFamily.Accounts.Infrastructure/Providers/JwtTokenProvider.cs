@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PetFamily.Accounts.Application;
-using PetFamily.Accounts.Domain.Entitues;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Core.Models;
 using PetFamily.Core.Options;
@@ -31,7 +31,7 @@ public class JwtTokenProvider : ITokenProvider
             .Include(u => u.Roles)
             .Where(u => u.Id == user.Id)
             .SelectMany(u => u.Roles)
-            .Select(r => new Claim(ClaimTypes.Role, r.Name))
+            .Select(r => new Claim(ClaimTypes.Role, r.Name ?? string.Empty))
             .ToListAsync();
         
         Claim[] claims = [

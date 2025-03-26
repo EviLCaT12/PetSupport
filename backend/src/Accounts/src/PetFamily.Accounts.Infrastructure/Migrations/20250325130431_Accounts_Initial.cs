@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Account_Initial : Migration
+    public partial class Accounts_Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,11 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_photo = table.Column<string>(type: "text", nullable: true),
+                    social_webs = table.Column<string>(type: "jsonb", nullable: true),
+                    first_name = table.Column<string>(type: "text", nullable: false),
+                    last_name = table.Column<string>(type: "text", nullable: false),
+                    surname = table.Column<string>(type: "text", nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -125,18 +130,17 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_admin_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "fk_admin_accounts_user_user_id",
+                        name: "fk_admin_accounts_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "account",
                         principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -145,45 +149,17 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_participant_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "fk_participant_accounts_user_user_id",
+                        name: "fk_participant_accounts_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "account",
                         principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "role_user",
-                schema: "account",
-                columns: table => new
-                {
-                    roles_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    users_id = table.Column<Guid>(type: "uuid", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_role_user", x => new { x.roles_id, x.users_id });
-                    table.ForeignKey(
-                        name: "fk_role_user_role_roles_id",
-                        column: x => x.roles_id,
-                        principalSchema: "account",
-                        principalTable: "roles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "fk_role_user_user_users_id",
-                        column: x => x.users_id,
-                        principalSchema: "account",
-                        principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -286,20 +262,20 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    requisites = table.Column<string>(type: "jsonb", nullable: false),
+                    volunteer_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    requisites = table.Column<string>(type: "jsonb", nullable: true),
                     experience = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_volunteer_accounts", x => x.id);
                     table.ForeignKey(
-                        name: "fk_volunteer_accounts_user_user_id",
+                        name: "fk_volunteer_accounts_users_user_id",
                         column: x => x.user_id,
                         principalSchema: "account",
                         principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -334,12 +310,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 schema: "account",
                 table: "role_Permissions",
                 column: "permission_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_role_user_users_id",
-                schema: "account",
-                table: "role_user",
-                column: "users_id");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -404,10 +374,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "role_Permissions",
-                schema: "account");
-
-            migrationBuilder.DropTable(
-                name: "role_user",
                 schema: "account");
 
             migrationBuilder.DropTable(

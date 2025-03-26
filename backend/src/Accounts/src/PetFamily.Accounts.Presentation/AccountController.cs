@@ -1,8 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.LoginUser;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Contracts.Requests;
+using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Framework;
+using PetFamily.Framework.Authorization;
 
 namespace PetFamily.Accounts.Presentation;
     
@@ -17,6 +21,7 @@ public class AccountController : ApplicationController
         var command = new RegisterUserCommand(
             request.Email,
             request.UserName,
+            request.Fio,
             request.Password);
         
         var result = await handler.HandleAsync(command, cancellationToken);
@@ -43,5 +48,26 @@ public class AccountController : ApplicationController
             return result.Error.ToResponse();
         
         return Ok(result.Value);
+    }
+    
+    [Authorize(Permissions.Volunteers.CreateVolunteer)]
+    [HttpPost("registration/volunteer")]
+    public async Task<IActionResult> RegisterVolunteer(
+        [FromBody] CreateVolunteerAccountRequest request,
+        [FromServices] EnrollVolunteerHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new EnrollVolunteerCommand(
+            request.Email,
+            request.Experience,
+            request.PhoneNumber,
+            request.Description);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
     }
 }
