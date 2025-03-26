@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
@@ -6,12 +7,8 @@ using PetFamily.Volunteers.Domain.ValueObjects.VolunteerVO;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class Volunteer : Entity<VolunteerId>
+public class Volunteer : SoftDeletableEntity<VolunteerId>
 {
-    private bool _isDeleted = false;
-    
-    public bool IsDeleted => _isDeleted;
-    
     public VolunteerId Id { get; private set; }
     
     public Fio Fio { get; private set; }
@@ -136,18 +133,19 @@ public class Volunteer : Entity<VolunteerId>
         return Result.Success<ErrorList>();
     }
     
-    public void Delete()
+    public override void Delete()
     {
-        _isDeleted = true;
+        base.Delete();
+        
         foreach (var pet in _pets)
         {
             pet.Delete();
         }
     }
     
-    public void Restore()
+    public override void Restore()
     {
-        _isDeleted = false;
+        base.Restore();
         foreach (var pet in _pets)
         {
             pet.Restore();

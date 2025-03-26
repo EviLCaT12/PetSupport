@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Species.Domain.ValueObjects.BreedVO;
@@ -6,7 +7,7 @@ using PetFamily.Species.Domain.ValueObjects.SpeciesVO;
 
 namespace PetFamily.Species.Domain.Entities;
 
-public class Species : Entity<SpeciesId>
+public class Species : SoftDeletableEntity<SpeciesId>
 {
     public SpeciesId Id { get; private set; }
     
@@ -54,5 +55,23 @@ public class Species : Entity<SpeciesId>
     public void RemoveBreed(Breed breed)
     {
         _breeds.Remove(breed);
+    }
+
+    public override void Delete()
+    {
+        base.Delete();
+        foreach (var breed in _breeds)
+        {
+            breed.Delete();
+        }
+    }
+
+    public override void Restore()
+    {
+        base.Restore();
+        foreach (var breed in _breeds)
+        {
+            breed.Restore();
+        }
     }
 }

@@ -4,7 +4,6 @@ using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.LoginUser;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Contracts.Requests;
-using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 
