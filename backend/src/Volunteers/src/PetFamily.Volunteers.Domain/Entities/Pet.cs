@@ -1,15 +1,13 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
 
 namespace PetFamily.Volunteers.Domain.Entities;
 
-public class Pet : Entity<PetId>
+public class Pet : SoftDeletableEntity<PetId>
 {
-    private bool _isDeleted = false;
-    
-    public bool IsDeleted => _isDeleted;
     public PetId Id { get; private set; }
     
     public Volunteer Volunteer { get; private set; } = null!;
@@ -132,17 +130,11 @@ public class Pet : Entity<PetId>
 
         return pet;
     }
-    
-    public void Delete() 
-        => _isDeleted = true;
-    
-    public void Restore() 
-        => _isDeleted = false;
 
-    public void SetPosition(Position position) 
+    internal void SetPosition(Position position) 
         => Position = position;
 
-    public UnitResult<ErrorList> MoveForward(int minNumber ,int maxNumber)
+    internal UnitResult<ErrorList> MoveForward(int minNumber ,int maxNumber)
     {
         var newPosition = Position.Forward(minNumber ,maxNumber);
         if (newPosition.IsFailure)
@@ -156,7 +148,7 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
     
-    public UnitResult<ErrorList> MoveBackward(int minNumber, int maxNumber)
+    internal UnitResult<ErrorList> MoveBackward(int minNumber, int maxNumber)
     {
         var newPosition = Position.Backward(minNumber, maxNumber);
         if (newPosition.IsFailure)
@@ -170,10 +162,10 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
     
-    public void AddPhotos(IEnumerable<Photo> photos) 
+    internal void AddPhotos(IEnumerable<Photo> photos) 
         => _photos = photos.ToList();
 
-    public UnitResult<ErrorList> DeletePhotos(IEnumerable<Photo> photos)
+    internal UnitResult<ErrorList> DeletePhotos(IEnumerable<Photo> photos)
     {
         foreach (var photo in photos)
         {
@@ -188,7 +180,7 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
 
-    public UnitResult<ErrorList> SetMainPhoto(Photo photo)
+    internal UnitResult<ErrorList> SetMainPhoto(Photo photo)
     {
         if (Photo.CountMainPhoto > 0)
         {
@@ -214,7 +206,7 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
 
-    public UnitResult<ErrorList> RemoveMainPhoto(Photo photo)
+    internal UnitResult<ErrorList> RemoveMainPhoto(Photo photo)
     {
         if (Photo.CountMainPhoto == 0)
         {
@@ -237,7 +229,7 @@ public class Pet : Entity<PetId>
         return Result.Success<ErrorList>();
     }
     
-    public Result<Photo, ErrorList> GetPhotoByPath(FilePath path)
+    internal Result<Photo, ErrorList> GetPhotoByPath(FilePath path)
     {
         var photo = _photos.FirstOrDefault(p => p.PathToStorage == path);
         if (photo == null)
@@ -249,7 +241,7 @@ public class Pet : Entity<PetId>
         return photo;
     }
 
-    public void Update(
+    internal void Update(
         Name? name,
         PetClassification classification,
         Description? description,
@@ -279,7 +271,7 @@ public class Pet : Entity<PetId>
         if (transferDetails != null) _transferDetails = transferDetails.ToList();
     }
     
-    public void ChangeHelpStatus(HelpStatus helpStatus)
+    internal void ChangeHelpStatus(HelpStatus helpStatus)
         => HelpStatus = helpStatus;
 }
 

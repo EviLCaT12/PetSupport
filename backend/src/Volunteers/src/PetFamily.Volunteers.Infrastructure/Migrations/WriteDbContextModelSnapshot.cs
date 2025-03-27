@@ -40,6 +40,10 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_of_birth");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_on");
+
                     b.Property<string>("HelpStatus")
                         .IsRequired()
                         .HasColumnType("text")
@@ -48,6 +52,10 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     b.Property<bool>("IsCastrate")
                         .HasColumnType("boolean")
                         .HasColumnName("is_castrate");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
 
                     b.Property<bool>("IsVaccinated")
                         .HasColumnType("boolean")
@@ -62,10 +70,6 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("jsonb")
                         .HasColumnName("transfer_details");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.Property<Guid>("volunteer_id")
                         .HasColumnType("uuid")
@@ -195,6 +199,14 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
+                    b.Property<DateTime?>("DeletedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_on");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
                     b.Property<int>("SumPetsTryFindHome")
                         .HasColumnType("integer")
                         .HasColumnName("sum_pets_try_find_home");
@@ -206,10 +218,6 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     b.Property<int>("SumPetsWithHome")
                         .HasColumnType("integer")
                         .HasColumnName("sum_pets_with_home");
-
-                    b.Property<bool>("_isDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
 
                     b.ComplexProperty<Dictionary<string, object>>("Description", "PetFamily.Volunteers.Domain.Entities.Volunteer.Description#Description", b1 =>
                         {

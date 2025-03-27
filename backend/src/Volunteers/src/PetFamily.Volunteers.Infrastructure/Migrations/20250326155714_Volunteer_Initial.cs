@@ -23,13 +23,14 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     sum_pets_with_home = table.Column<int>(type: "integer", nullable: false),
                     sum_pets_try_find_home = table.Column<int>(type: "integer", nullable: false),
                     sum_pets_under_treatment = table.Column<int>(type: "integer", nullable: false),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     description = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
                     email = table.Column<string>(type: "text", nullable: false),
                     first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     surname = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    phone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false)
+                    phone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    deleted_on = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -50,7 +51,6 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     transfer_details = table.Column<string>(type: "jsonb", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)),
                     photos = table.Column<string>(type: "jsonb", nullable: false),
-                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     city = table.Column<string>(type: "text", nullable: false),
                     house_number = table.Column<string>(type: "text", nullable: false),
                     street = table.Column<string>(type: "text", nullable: false),
@@ -63,7 +63,9 @@ namespace PetFamily.Volunteer.Infrastructure.Migrations
                     health_info = table.Column<string>(type: "character varying(4000)", maxLength: 4000, nullable: false),
                     name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     owner_phone = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    position = table.Column<int>(type: "integer", nullable: false)
+                    position = table.Column<int>(type: "integer", nullable: false),
+                    is_deleted = table.Column<bool>(type: "boolean", nullable: false),
+                    deleted_on = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {

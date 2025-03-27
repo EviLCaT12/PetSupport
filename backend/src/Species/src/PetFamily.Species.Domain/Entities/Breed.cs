@@ -1,11 +1,12 @@
 using CSharpFunctionalExtensions;
+using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Species.Domain.ValueObjects.BreedVO;
 
 namespace PetFamily.Species.Domain.Entities;
 
-public class Breed : Entity<BreedId>
+public class Breed : SoftDeletableEntity<BreedId>
 {
     public BreedId Id { get; private set; }
     
