@@ -9,6 +9,11 @@ public static class Errors
             var text = propertyName ?? "value";
             return Error.Validation("value.is.required", $"{text} is required");
         }
+        
+        public static Error Failure(string? propertyName = null)
+        {
+            return Error.Failure("failure", "Failure");
+        }
 
         public static Error ValueIsInvalid(string? propertyName = null)
         {
@@ -34,6 +39,18 @@ public static class Errors
                 ? "Record already exists"
                 : $"Record {propertyName} already exists";
             return Error.Validation("record.already.exists", $"{text}");
+        }
+    }
+    
+    public static class Tokens
+    {
+        public static ErrorList ExpiredToken()
+        {
+            return Error.Validation("token.is.expired", "Token is expired").ToErrorList();
+        }
+        public static ErrorList InvalidToken()
+        {
+            return Error.Validation("token.is.invalid", "Token is invalid").ToErrorList();
         }
     }
 

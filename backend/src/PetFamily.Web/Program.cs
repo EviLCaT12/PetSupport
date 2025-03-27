@@ -8,6 +8,7 @@ using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Core.Options;
+using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.Species.Application;
 using PetFamily.Species.Infrastructure;
@@ -95,19 +96,8 @@ builder.Services
     {
         var jwtOptions = builder.Configuration.GetSection(JwtOptions.JWT).Get<JwtOptions>()
                          ?? throw new ApplicationException("Missing JWT configuration");
-        
-        options.TokenValidationParameters = new TokenValidationParameters()
-        {
-            ValidIssuer = jwtOptions.Issuer,
-            ValidAudience = jwtOptions.Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(jwtOptions.Key)),
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
-        };
+
+        options.TokenValidationParameters = TokenValidationParametersFactory.CreateWithLifeTime(jwtOptions);
     });
 
 builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
@@ -119,9 +109,9 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-//var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
-//await accountSeeder.SeedAsync();
+await accountSeeder.SeedAsync();
 
 // await app.ApplyMigration(); 
 
