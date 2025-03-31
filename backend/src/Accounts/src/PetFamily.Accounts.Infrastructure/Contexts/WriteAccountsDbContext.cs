@@ -7,7 +7,7 @@ using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 
 namespace PetFamily.Accounts.Infrastructure.Contexts;
 
-public class AccountsDbContext(string connectionString) 
+public class WriteAccountsDbContext(string connectionString) 
     : IdentityDbContext<User, Role, Guid>
 {
     public DbSet<User> Users => Set<User>();
@@ -50,14 +50,13 @@ public class AccountsDbContext(string connectionString)
         
         builder.Entity<IdentityUserRole<Guid>>()
             .ToTable("user_roles");
-
-        builder.Entity<ParticipantAccount>()
-            .ToTable("participant_accounts");
         
         builder.Entity<AdminAccount>()
             .ToTable("admin_accounts");
         
-        builder.ApplyConfigurationsFromAssembly(typeof(AccountsDbContext).Assembly);
+        builder.ApplyConfigurationsFromAssembly(
+            typeof(WriteAccountsDbContext).Assembly,
+            type => type.FullName?.Contains("Configurations.Write") ?? false);
         
         builder.HasDefaultSchema("account");
     }

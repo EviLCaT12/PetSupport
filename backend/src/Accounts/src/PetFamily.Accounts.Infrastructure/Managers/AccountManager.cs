@@ -5,7 +5,7 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class AccountManager(AccountsDbContext context) : IAccountManager
+public class AccountManager(WriteAccountsDbContext context) : IAccountManager
 {
     public async Task CreateParticipantAccountAsync(ParticipantAccount participantAccount)
     {

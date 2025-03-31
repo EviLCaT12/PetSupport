@@ -7,6 +7,7 @@ using PetFamily.Accounts.Application.AccountManagers;
 using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Infrastructure.Configurations;
+using PetFamily.Accounts.Infrastructure.Configurations.Write;
 using PetFamily.Accounts.Infrastructure.Managers;
 using PetFamily.Accounts.Infrastructure.Options;
 using PetFamily.Core.Abstractions;

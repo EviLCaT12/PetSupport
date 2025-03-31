@@ -5,6 +5,8 @@ namespace PetFamily.Accounts.Domain.ValueObjects;
 
 public record YearsOfExperience
 {
+    private YearsOfExperience() { }
+    
     private YearsOfExperience(int value)
     {
         Value = value;

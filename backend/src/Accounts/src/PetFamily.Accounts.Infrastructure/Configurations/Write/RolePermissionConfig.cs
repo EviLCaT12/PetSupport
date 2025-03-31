@@ -1,4 +1,4 @@
-namespace PetFamily.Accounts.Infrastructure.Configurations;
+namespace PetFamily.Accounts.Infrastructure.Configurations.Write;
 
 public class RolePermissionConfig
 {

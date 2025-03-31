@@ -40,14 +40,14 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
         services
-            .RemoveAll(typeof(AccountsDbContext))
+            .RemoveAll(typeof(WriteAccountsDbContext))
             .RemoveAll(typeof(AccountsSeeder));
             
         
         
         services
-            .AddScoped<AccountsDbContext>(_ =>
-                new AccountsDbContext(DbContainer.GetConnectionString()))
+            .AddScoped<WriteAccountsDbContext>(_ =>
+                new WriteAccountsDbContext(DbContainer.GetConnectionString()))
             .AddSingleton<AccountsSeeder>();
     }
     
@@ -56,7 +56,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         await DbContainer.StartAsync();
         
         using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<WriteAccountsDbContext>();
         var seeder = scope.ServiceProvider.GetRequiredService<AccountsSeeder>();
         
         await dbContext.Database.EnsureCreatedAsync();

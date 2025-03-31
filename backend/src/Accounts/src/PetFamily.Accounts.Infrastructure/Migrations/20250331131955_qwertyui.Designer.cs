@@ -12,9 +12,9 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
-    [DbContext(typeof(AccountsDbContext))]
-    [Migration("20250326120758_Account_Initial")]
-    partial class Account_Initial
+    [DbContext(typeof(WriteAccountsDbContext))]
+    [Migration("20250331131955_qwertyui")]
+    partial class qwertyui
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -8,7 +8,7 @@ namespace IntegrationTests;
 public class AccountBaseTests : IClassFixture<IntegrationTestsWebFactory>, IAsyncLifetime
 {
     protected readonly Fixture Fixture;
-    protected readonly AccountsDbContext WriteContext;
+    protected readonly WriteAccountsDbContext WriteContext;
     protected readonly IServiceScope Scope;
     protected readonly IntegrationTestsWebFactory Factory;
     
@@ -17,7 +17,7 @@ public class AccountBaseTests : IClassFixture<IntegrationTestsWebFactory>, IAsyn
         Factory = factory;
         Scope = factory.Services.CreateScope();
         
-        WriteContext = Scope.ServiceProvider.GetRequiredService<AccountsDbContext>();
+        WriteContext = Scope.ServiceProvider.GetRequiredService<WriteAccountsDbContext>();
         Fixture = new Fixture();
     }
 

@@ -1,3 +1,5 @@
+using PetFamily.Core.Dto.Shared;
+
 namespace PetFamily.Core.Dto.PetDto;
 
 public class PetDto
@@ -47,9 +49,4 @@ public class PetDto
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
     public PhotoDto[] Photos { get; init; }
-}
-
-public class PhotoDto
-{
-    public string PathToStorage { get; set; } = string.Empty;
 }

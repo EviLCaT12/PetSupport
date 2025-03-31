@@ -4,7 +4,7 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class RolePermissionManager(AccountsDbContext context)
+public class RolePermissionManager(WriteAccountsDbContext context)
 {
     
     public async Task AddRangeIfExist(Guid roleId, IEnumerable<string> permissions)

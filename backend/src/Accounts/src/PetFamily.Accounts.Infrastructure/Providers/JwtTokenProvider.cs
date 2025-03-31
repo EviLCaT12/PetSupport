@@ -20,16 +20,16 @@ namespace PetFamily.Accounts.Infrastructure.Providers;
 
 public class JwtTokenProvider : ITokenProvider
 {
-    private readonly AccountsDbContext _context;
+    private readonly WriteAccountsDbContext _context;
     private readonly IUnitOfWork _unitOfWork;
     private readonly JwtOptions _jwtOptions;
 
     public JwtTokenProvider(
         IOptions<JwtOptions> options, 
-        AccountsDbContext accountsDbContext,
+        WriteAccountsDbContext writeAccountsDbContext,
         [FromKeyedServices(ModuleKey.Account)] IUnitOfWork unitOfWork)
     {
-        _context = accountsDbContext;
+        _context = writeAccountsDbContext;
         _unitOfWork = unitOfWork;
         _jwtOptions = options.Value;
     }

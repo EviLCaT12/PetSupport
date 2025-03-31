@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application;
 using PetFamily.Accounts.Application.AccountManagers;
+using PetFamily.Accounts.Application.DataBase;
 using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Accounts.Infrastructure.Managers;
@@ -35,7 +36,7 @@ public static class DependencyInjection
     {
         services
             .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
-            .AddEntityFrameworkStores<AccountsDbContext>()
+            .AddEntityFrameworkStores<WriteAccountsDbContext>()
             .AddDefaultTokenProviders();
 
         services.AddScoped<PermissionManager>();
@@ -75,9 +76,12 @@ public static class DependencyInjection
     
     private static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<AccountsDbContext>(_ =>
-            new AccountsDbContext(configuration.GetConnectionString(VolunteerConstant.DATABASE)!));
+        services.AddScoped<WriteAccountsDbContext>(_ =>
+            new WriteAccountsDbContext(configuration.GetConnectionString(VolunteerConstant.DATABASE)!));
         
+        services.AddScoped<IReadDbContext, ReadAccountsDbContext>(_ =>
+            new ReadAccountsDbContext(configuration.GetConnectionString(VolunteerConstant.DATABASE)!));
+
         return services;
     }
     

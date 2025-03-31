@@ -5,7 +5,7 @@ using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.SharedVO;
 
-namespace PetFamily.Accounts.Infrastructure.Configurations;
+namespace PetFamily.Accounts.Infrastructure.Configurations.Write;
 
 public class VolunteerAccountConfiguration : IEntityTypeConfiguration<VolunteerAccount>
 {

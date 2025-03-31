@@ -7,7 +7,7 @@ using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class RefreshSessionManager(AccountsDbContext context) : IRefreshSessionManager
+public class RefreshSessionManager(WriteAccountsDbContext context) : IRefreshSessionManager
 {
     public async Task<Result<RefreshSession, ErrorList>> GetByRefreshToken(
         Guid refreshToken, CancellationToken cancellationToken)

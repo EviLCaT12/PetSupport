@@ -5,7 +5,7 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 
 namespace PetFamily.Accounts.Infrastructure.Managers;
 
-public class PermissionManager(AccountsDbContext context)
+public class PermissionManager(WriteAccountsDbContext context)
 {
     public async Task<Permission?> FindByCode(string code)
     {

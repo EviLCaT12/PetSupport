@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
-using PetFamily.Core.Dto.PetDto;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.SharedVO;
 
-namespace PetFamily.Accounts.Infrastructure.Configurations;
+namespace PetFamily.Accounts.Infrastructure.Configurations.Write;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

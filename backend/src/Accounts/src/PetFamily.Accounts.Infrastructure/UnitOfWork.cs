@@ -7,9 +7,9 @@ namespace PetFamily.Accounts.Infrastructure;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly AccountsDbContext _dbContext;
+    private readonly WriteAccountsDbContext _dbContext;
 
-    public UnitOfWork(AccountsDbContext dbContext)
+    public UnitOfWork(WriteAccountsDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -23,4 +23,4 @@ public class UnitOfWork : IUnitOfWork
     {
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
-}
+}  
