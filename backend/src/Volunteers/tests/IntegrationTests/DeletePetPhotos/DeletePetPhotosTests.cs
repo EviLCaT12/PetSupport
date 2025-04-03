@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
-using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
-
 namespace IntegrationTests.DeletePetPhotos;
 
 public class DeletePetPhotosTests : VolunteerBaseTest

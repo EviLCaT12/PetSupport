@@ -1,9 +1,9 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Core.Dto.PetDto;
 using PetFamily.Core.Dto.Shared;
-using PetFamily.Core.Dto.VolunteerDto;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteer.Infrastructure.Configurations.Read;
 

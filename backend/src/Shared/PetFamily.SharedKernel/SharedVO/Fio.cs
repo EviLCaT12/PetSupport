@@ -6,6 +6,8 @@ namespace PetFamily.SharedKernel.SharedVO;
 
 public record Fio
 {
+    private Fio() { }
+    
     public string FirstName { get;}
     public string LastName { get;}
     public string Surname { get;}

@@ -1,10 +1,9 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.VolunteerDto;
 using PetFamily.SharedKernel.Error;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteers.Application.Queries.GetVolunteerById;
 

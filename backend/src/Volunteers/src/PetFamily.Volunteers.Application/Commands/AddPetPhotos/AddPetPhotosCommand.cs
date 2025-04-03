@@ -1,5 +1,5 @@
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.PetDto;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
 
 namespace PetFamily.Volunteers.Application.Commands.AddPetPhotos;
 

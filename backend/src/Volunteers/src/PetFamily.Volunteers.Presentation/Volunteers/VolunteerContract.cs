@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Error;
-using PetFamily.Species.Infrastructure.DbContexts;
 using PetFamily.Volunteers.Application.Commands.Create;
 using PetFamily.Volunteers.Contracts;
 using PetFamily.Volunteers.Contracts.Requests.Volunteer.CreateVolunteer;

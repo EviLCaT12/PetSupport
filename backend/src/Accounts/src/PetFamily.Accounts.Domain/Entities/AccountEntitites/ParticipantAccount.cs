@@ -14,5 +14,5 @@ public class ParticipantAccount
     
     public User User { get; set; }
     
-    private List<Guid>? FavoritePets { get; set; } = [];
+    public List<Guid>? FavoritePets { get; set; } = [];
 }

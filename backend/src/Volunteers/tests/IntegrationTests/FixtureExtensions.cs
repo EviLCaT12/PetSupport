@@ -1,12 +1,12 @@
 using System.Globalization;
 using AutoFixture;
-using PetFamily.Core.Dto.PetDto;
-using PetFamily.Core.Dto.VolunteerDto;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.AddPetPhotos;
 using PetFamily.Volunteers.Application.Commands.Create;
 using PetFamily.Volunteers.Application.Commands.UpdateMainInfo;
 using PetFamily.Volunteers.Application.Commands.UpdatePet;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace IntegrationTests;
 

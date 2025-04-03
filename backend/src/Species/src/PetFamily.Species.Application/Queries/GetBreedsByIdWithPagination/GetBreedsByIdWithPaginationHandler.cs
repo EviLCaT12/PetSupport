@@ -1,10 +1,9 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.BreedDto;
 using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 using PetFamily.SharedKernel.Error;
+using PetFamily.Species.Contracts.Dto.BreedDto;
 
 namespace PetFamily.Species.Application.Queries.GetBreedsByIdWithPagination;
 

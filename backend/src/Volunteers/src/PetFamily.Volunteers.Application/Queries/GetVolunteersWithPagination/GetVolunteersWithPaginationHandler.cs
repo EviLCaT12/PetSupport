@@ -1,10 +1,9 @@
 using CSharpFunctionalExtensions;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.VolunteerDto;
 using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 using PetFamily.SharedKernel.Error;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteers.Application.Queries.GetVolunteersWithPagination;
 

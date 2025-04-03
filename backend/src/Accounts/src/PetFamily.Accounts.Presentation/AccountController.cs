@@ -4,6 +4,7 @@ using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.LoginUser;
 using PetFamily.Accounts.Application.Commands.RefreshTokens;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
+using PetFamily.Accounts.Application.Queries.GerUserById;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
@@ -86,5 +87,21 @@ public class AccountController : ApplicationController
             return result.Error.ToResponse();
         
         return Ok();
+    }
+    
+    [HttpGet("{userId:guid}")]
+    public async Task<IActionResult> GetUserById(
+        [FromRoute] Guid userId,
+        [FromServices] GetUserByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetUserByIdQuery(userId);
+        
+        var result = await handler.HandleAsync(query, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
 }

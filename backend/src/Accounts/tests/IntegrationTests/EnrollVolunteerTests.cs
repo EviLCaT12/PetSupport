@@ -5,7 +5,7 @@ using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.VolunteerDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace IntegrationTests;
 

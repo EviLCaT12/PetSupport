@@ -8,11 +8,11 @@ using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.VolunteerDto;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Contracts;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 using PetFamily.Volunteers.Contracts.Requests.Volunteer.CreateVolunteer;
 
 namespace PetFamily.Accounts.Application.Commands.EnrollVolunteer;
