@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using PetFamily.SharedKernel.Error;
 using PetFamily.VolunteerRequest.Domain.Enums;
 using PetFamily.VolunteerRequest.Domain.ValueObjects;
 
@@ -39,5 +40,42 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
     public RejectionComment? RejectionComment { get; private set; } = null;
 
 
+    //Взять заявку в рассмотрение
+    public VolunteerRequest TakeRequestOnReview()
+    {
+        Status = Status.OnReview;
 
+        return this;
+    }
+
+    //Отправить на доработку
+    public VolunteerRequest SendForRevision(RejectionComment comment)
+    {
+        //Проверка на нул не требуется, так как заявка и коммент никогда нул не будут в силу методов их создания
+        Status = Status.RevisionRequired;
+        
+        RejectionComment = comment;
+
+        return this;
+    }
+
+    //Отменить заявку
+    public VolunteerRequest RejectRequest(RejectionComment? comment)
+    {
+        if (comment is not null)
+            RejectionComment = comment;
+        
+        Status = Status.Rejected;
+        
+        return this;
+    }
+
+    //Утвердить заявку
+    public VolunteerRequest ApproveRequest()
+    {
+        Status = Status.Approved;
+        
+        return this;
+    }
+    
 }
