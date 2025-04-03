@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using PetFamily.SharedKernel.Error;
 
-namespace PetFamily.Accounts.Domain.ValueObjects;
+namespace PetFamily.SharedKernel.SharedVO;
 
 public record YearsOfExperience
 {
@@ -14,7 +14,7 @@ public record YearsOfExperience
     
     public int Value { get;}
 
-    public static Result<YearsOfExperience, Error> Create(int years)
+    public static Result<YearsOfExperience, Error.Error> Create(int years)
     {
         if (years < 0)
             return Errors.General.ValueIsInvalid(nameof(YearsOfExperience));

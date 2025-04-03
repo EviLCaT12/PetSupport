@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.SharedKernel.SharedVO;
 
-public record Description 
+public class Description : ValueObject 
 {
     public string Value { get; }
     
@@ -21,5 +21,10 @@ public record Description
         var validDescription = new Description(description);
         
         return validDescription;
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

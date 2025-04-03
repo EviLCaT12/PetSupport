@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.SharedKernel.SharedVO;
 
-public record Email
+public class Email : ValueObject
 {
     public string Value { get;}
 
@@ -28,5 +28,10 @@ public record Email
 
         return validEmail;
 
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Value;
     }
 }

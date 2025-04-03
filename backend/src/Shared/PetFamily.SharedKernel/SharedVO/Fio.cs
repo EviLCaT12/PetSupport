@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.SharedKernel.SharedVO;
 
-public record Fio
+public record Fio : IComparable
 {
     private Fio() { }
     
@@ -37,5 +37,29 @@ public record Fio
         var validFio = new Fio(firstName, lastName, surname);
         
         return validFio;
+    }
+
+    public int CompareTo(Fio? other)
+    {
+        if (other is null)
+            return 1;
+        
+        var lastNameComparison = string.Compare(LastName, other.LastName, StringComparison.Ordinal);
+        if (lastNameComparison != 0)
+            return lastNameComparison;
+        
+        var firstNameComparison = string.Compare(FirstName, other.FirstName, StringComparison.Ordinal);
+        if (firstNameComparison != 0)
+            return firstNameComparison;
+        
+        return string.Compare(Surname, other.Surname, StringComparison.Ordinal);
+    }
+
+    public int CompareTo(object? obj)
+    {
+        if (obj is not Fio other)
+            throw new ArgumentException($"Object must be of type {nameof(Fio)}");
+
+        return CompareTo(other);
     }
 }
