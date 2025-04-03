@@ -1,8 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using PetFamily.Core.Dto.AccountDto;
-using PetFamily.Core.Dto.PetDto;
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Dto.Shared;
 
 namespace PetFamily.Accounts.Infrastructure.Configurations.Read;

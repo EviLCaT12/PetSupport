@@ -1,6 +1,6 @@
 using PetFamily.Core.Dto.Shared;
 
-namespace PetFamily.Core.Dto.PetDto;
+namespace PetFamily.Volunteers.Contracts.Dto.PetDto;
 
 public class PetDto
 {

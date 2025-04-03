@@ -2,8 +2,8 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.DataBase;
+using PetFamily.Accounts.Contracts.Dto;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.AccountDto;
 using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.Accounts.Application.Queries.GerUserById;

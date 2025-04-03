@@ -1,11 +1,10 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Core;
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.SpeciesDto;
 using PetFamily.Core.Extensions;
 using PetFamily.Core.Models;
 using PetFamily.SharedKernel.Error;
+using PetFamily.Species.Contracts.Dto.SpeciesDto;
 
 namespace PetFamily.Species.Application.Queries.GetSpeciesWithPagination;
 

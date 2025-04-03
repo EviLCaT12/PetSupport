@@ -1,5 +1,3 @@
-using PetFamily.Core.Dto.VolunteerDto;
-
 namespace PetFamily.Accounts.Contracts.Requests;
 
 public record CreateVolunteerAccountRequest(

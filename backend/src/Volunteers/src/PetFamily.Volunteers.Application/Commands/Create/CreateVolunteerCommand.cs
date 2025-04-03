@@ -1,6 +1,5 @@
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.Shared;
-using PetFamily.Core.Dto.VolunteerDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteers.Application.Commands.Create;
 

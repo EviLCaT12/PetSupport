@@ -1,4 +1,4 @@
-namespace PetFamily.Core.Dto.AccountDto;
+namespace PetFamily.Accounts.Contracts.Dto;
 
 public class ParticipantAccountDto
 {

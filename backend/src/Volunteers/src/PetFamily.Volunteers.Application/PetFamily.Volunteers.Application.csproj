@@ -10,6 +10,7 @@
       <ProjectReference Include="..\..\..\Shared\PetFamily.Core\PetFamily.Core.csproj" />
       <ProjectReference Include="..\..\..\Species\PetFamily.Species.Contracts\PetFamily.Species.Contracts.csproj" />
       <ProjectReference Include="..\..\..\Species\src\PetFamily.Species.Contracts\PetFamily.Species.Contracts.csproj" />
+      <ProjectReference Include="..\PetFamily.Volunteers.Contracts\PetFamily.Volunteers.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.Volunteers.Domain\PetFamily.Volunteers.Domain.csproj" />
     </ItemGroup>
 

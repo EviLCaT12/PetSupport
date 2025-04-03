@@ -1,4 +1,4 @@
-using PetFamily.Core.Dto.VolunteerDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteers.Contracts.Requests.Volunteer.UpdateVolunteer;
 

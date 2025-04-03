@@ -1,4 +1,4 @@
-using PetFamily.Core.Dto.AccountDto;
+using PetFamily.Accounts.Contracts.Dto;
 
 namespace PetFamily.Accounts.Application.DataBase;
 

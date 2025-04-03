@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PetFamily.Accounts.Application.DataBase;
-using PetFamily.Core.Dto.AccountDto;
+using PetFamily.Accounts.Contracts.Dto;
 
 namespace PetFamily.Accounts.Infrastructure.Contexts;
 

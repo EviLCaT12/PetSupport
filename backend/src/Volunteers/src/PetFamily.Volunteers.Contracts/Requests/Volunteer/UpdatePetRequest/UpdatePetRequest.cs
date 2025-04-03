@@ -1,5 +1,5 @@
-using PetFamily.Core.Dto.PetDto;
 using PetFamily.Core.Dto.Shared;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
 
 namespace PetFamily.Volunteers.Contracts.Requests.Volunteer.UpdatePetRequest;
 

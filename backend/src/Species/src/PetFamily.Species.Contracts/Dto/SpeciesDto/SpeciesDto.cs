@@ -1,4 +1,4 @@
-namespace PetFamily.Core.Dto.SpeciesDto;
+namespace PetFamily.Species.Contracts.Dto.SpeciesDto;
 
 public class SpeciesDto
 {

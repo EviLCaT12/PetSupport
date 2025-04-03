@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using PetFamily.Core.Dto.PetDto;
 using PetFamily.Volunteers.Application;
 using PetFamily.Volunteers.Contracts;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
 
 namespace PetFamily.Volunteer.Api.Pets;
 

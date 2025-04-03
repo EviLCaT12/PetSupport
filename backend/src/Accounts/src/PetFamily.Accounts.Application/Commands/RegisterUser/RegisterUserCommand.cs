@@ -1,5 +1,5 @@
 using PetFamily.Core.Abstractions;
-using PetFamily.Core.Dto.VolunteerDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Accounts.Application.Commands.RegisterUser;
 

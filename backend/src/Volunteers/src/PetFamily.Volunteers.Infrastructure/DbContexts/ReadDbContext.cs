@@ -1,11 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetFamily.Core;
-using PetFamily.Core.Dto.BreedDto;
-using PetFamily.Core.Dto.PetDto;
-using PetFamily.Core.Dto.SpeciesDto;
-using PetFamily.Core.Dto.VolunteerDto;
 using PetFamily.Volunteers.Application;
+using PetFamily.Volunteers.Contracts.Dto.PetDto;
+using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Volunteer.Infrastructure.DbContexts;
 
