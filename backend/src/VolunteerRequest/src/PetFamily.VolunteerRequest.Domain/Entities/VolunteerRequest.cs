@@ -77,5 +77,12 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
         
         return this;
     }
+
+    //Пока самый простой метод сугубо для тестов
+    public VolunteerRequest AddRejectionComment(RejectionComment comment)
+    {
+        RejectionComment = comment;
+        return this;
+    }
     
 }
