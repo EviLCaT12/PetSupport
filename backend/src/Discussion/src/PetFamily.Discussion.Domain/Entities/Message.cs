@@ -5,6 +5,16 @@ namespace PetFamily.Discussion.Domain.Entities;
 
 public class Message : Entity<MessageId>
 {
+    public Message(
+        MessageId id,
+        Guid userId,
+        Text text)
+    {
+        Id = id;
+        UserId = userId;
+        Text = text;
+    }
+    
     internal MessageId Id { get; private set; }
 
     internal Guid UserId { get; private set; }

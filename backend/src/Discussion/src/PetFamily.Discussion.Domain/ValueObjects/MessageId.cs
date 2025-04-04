@@ -24,7 +24,7 @@ public class MessageId : ValueObject
 
     public static MessageId Empty() => new (Guid.Empty);
 
-    public static MessageId NewId => new (Guid.NewGuid());
+    public static MessageId NewId() => new (Guid.NewGuid());
     
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {

@@ -24,7 +24,7 @@ public class DiscussionsId : ValueObject
 
     public static DiscussionsId Empty() => new (Guid.Empty);
 
-    public static DiscussionsId NewId => new (Guid.NewGuid());
+    public static DiscussionsId NewId() => new (Guid.NewGuid());
     
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
