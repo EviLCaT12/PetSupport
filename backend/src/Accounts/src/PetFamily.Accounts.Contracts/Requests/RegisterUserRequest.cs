@@ -1,3 +1,4 @@
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace PetFamily.Accounts.Contracts.Requests;

@@ -23,6 +23,10 @@
       "species.breeds.create",
       "species.breeds.delete",
       "species.breeds.get"
+    ],
+    "VolunteerRequest": [
+      "volunteer.request.create",
+      "volunteer.request.take.onReview"
     ]
   },
   "Roles": {
@@ -30,7 +34,8 @@
       "volunteer.get",
       "volunteer.pets.get",
       "species.get",
-      "species.breeds.get"
+      "species.breeds.get",
+      "volunteer.request.create"
     ],
     "Volunteer" : [     
       "volunteer.get",
@@ -62,6 +67,7 @@
       "volunteer.pets.main.photo.remove",
       "volunteer.pets.position.change",
       "volunteer.pets.help.change",
+      "volunteer.request.take.onReview",
       "species.create",
       "species.delete",
       "species.get",

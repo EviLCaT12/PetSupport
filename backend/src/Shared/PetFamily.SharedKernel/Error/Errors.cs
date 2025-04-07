@@ -40,6 +40,11 @@ public static class Errors
                 : $"Record {propertyName} already exists";
             return Error.Validation("record.already.exists", $"{text}");
         }
+
+        public static ErrorList ErrorDuringTransaction()
+        {
+            return Error.Failure("error.during.transaction", "Unexpected error during transaction").ToErrorList();
+        }
     }
     
     public static class Tokens
@@ -59,6 +64,19 @@ public static class Errors
         public static Error InvalidCredentials()
         {
             return Error.Validation("credentials.is.invalid", "Invalid credentials");
+        }
+    }
+
+    public static class VolunteerRequest
+    {
+        public static ErrorList UserAlreadyVolunteer()
+        {
+            return Error.Validation("user.already.volunteer", "User is already volunteer").ToErrorList();
+        }
+        
+        public static ErrorList RequestAlreadyOnReview()
+        {
+            return Error.Validation("request.already.onReview", "Request is already on review").ToErrorList();
         }
     }
 }

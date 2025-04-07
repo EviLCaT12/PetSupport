@@ -8,6 +8,7 @@ using PetFamily.Accounts.Domain.Entities;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Accounts.Domain.ValueObjects;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Core.Extensions;
 using PetFamily.SharedKernel.Error;
 using PetFamily.SharedKernel.SharedVO;

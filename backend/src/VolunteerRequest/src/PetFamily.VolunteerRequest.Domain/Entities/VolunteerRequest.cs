@@ -11,41 +11,44 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
 
     public VolunteerRequest(
         VolunteerRequestId id,
-        Guid adminId,
         Guid userId,
-        Guid discussionId,
         VolunteerInfo volunteerInfo)
     {
         Id = id;
-        AdminId = adminId;
         UserId = userId;
-        DiscussionId = discussionId;
         VolunteerInfo = volunteerInfo;
     }
     
     public VolunteerRequestId Id { get; private set; }
     
-    public Guid AdminId { get; private set; }
+    public Guid? AdminId { get; private set; }
     
     public Guid UserId { get; private set; }
     
-    public Guid DiscussionId { get; private set; }
+    public Guid? DiscussionId { get; private set; }
     
     public VolunteerInfo VolunteerInfo { get; private set; }
 
     public Status Status { get; private set; } = Status.Submitted;
     
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    
+    public DateTime? RejectionDate { get; }
 
-    public RejectionComment? RejectionComment { get; private set; } = null;
+    public RejectionComment? RejectionComment { get; private set; }
 
 
     //Взять заявку в рассмотрение
-    public VolunteerRequest TakeRequestOnReview()
+    public UnitResult<ErrorList> TakeRequestOnReview(Guid adminId, Guid discussionId)
     {
+        if (Status == Status.OnReview)
+            return Errors.VolunteerRequest.RequestAlreadyOnReview();
+            
+        AdminId = adminId;
+        DiscussionId = discussionId;
         Status = Status.OnReview;
 
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Отправить на доработку

@@ -11,13 +11,11 @@ public class VolunteerInfo : ValueObject
         Fio fullName,
         Description description,
         Email email,
-        Photo photo,
         YearsOfExperience experience)
     {
         FullName = fullName;
         Description = description;
         Email = email;
-        Photo = photo;
         Experience = experience;
     }
     
@@ -26,8 +24,6 @@ public class VolunteerInfo : ValueObject
     public Description Description { get; }
     
     public Email Email { get; }
-    
-    public Photo Photo { get; }
     
     public YearsOfExperience Experience { get; }
     

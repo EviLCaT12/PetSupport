@@ -8,6 +8,7 @@ using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Core.Options;
+using PetFamily.Discussion.Presentation;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.Species.Application;
@@ -15,6 +16,8 @@ using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
 using PetFamily.Volunteer.Api;
 using PetFamily.Volunteer.Infrastructure;
+using PetFamily.VolunteerRequest.Application;
+using PetFamily.VolunteerRequest.Infrastructure;
 using PetFamily.Volunteers.Application;
 using Serilog;
 using Serilog.Events;
@@ -73,14 +76,20 @@ builder.Services
     .AddSpeciesApplication()
     .AddSpeciesInfrastructure(builder.Configuration)
     .AddSpeciesPresentation()
-    
+
     .AddVolunteerApplication()
     .AddVolunteerInfrastructure(builder.Configuration)
     .AddVolunteerPresentation()
-    
+
     .AddAccountsApplication()
     .AddAccountsInfrastructure(builder.Configuration)
-    .AddAccountPresentation();
+    .AddAccountPresentation()
+
+    .AddVolunteerRequestApplication()
+    .AddVolunteerRequestInfrastructure(builder.Configuration)
+    
+    .AddDiscussionPresentation();
+
 
 builder.Services
     .AddAuthentication(options =>
@@ -113,7 +122,7 @@ var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
 await accountSeeder.SeedAsync();
 
-// await app.ApplyMigration(); 
+//await app.ApplyMigration(); 
 
 //app.ExceptionMiddleware();
 

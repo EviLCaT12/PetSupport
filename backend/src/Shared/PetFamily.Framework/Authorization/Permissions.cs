@@ -30,4 +30,10 @@ public static class Permissions
         public const string ChangePetPosition = "volunteer.pets.position.change";
         public const string ChangePetHelpStatus = "volunteer.pets.help.change";
     }
+
+    public static class VolunteerRequests
+    {
+        public const string CreateVolunteerRequest = "volunteer.request.create";
+        public const string TakeRequestOnReview = "volunteer.request.take.onReview";
+    }
 }

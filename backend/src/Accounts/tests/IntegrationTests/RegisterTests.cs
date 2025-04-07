@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Domain;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace IntegrationTests;

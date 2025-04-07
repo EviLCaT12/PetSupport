@@ -13,5 +13,6 @@ public enum ModuleKey
 {
     Volunteer,
     Species,
-    Account
+    Account,
+    VolunteerRequest
 }
