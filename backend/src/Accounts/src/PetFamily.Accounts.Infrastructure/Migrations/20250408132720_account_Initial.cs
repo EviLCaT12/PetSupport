@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Accounts_Initial : Migration
+    public partial class account_Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -151,6 +151,7 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    ban_for_sending_request_until = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     favorite_pets = table.Column<List<Guid>>(type: "uuid[]", nullable: true)
                 },
                 constraints: table =>

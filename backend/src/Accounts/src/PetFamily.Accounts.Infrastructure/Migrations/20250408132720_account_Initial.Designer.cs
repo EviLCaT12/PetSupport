@@ -13,8 +13,8 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteAccountsDbContext))]
-    [Migration("20250407074453_Accounts_Initial")]
-    partial class Accounts_Initial
+    [Migration("20250408132720_account_Initial")]
+    partial class account_Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -184,6 +184,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<DateTime>("BanForSendingRequestUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ban_for_sending_request_until");
 
                     b.PrimitiveCollection<List<Guid>>("FavoritePets")
                         .HasColumnType("uuid[]")

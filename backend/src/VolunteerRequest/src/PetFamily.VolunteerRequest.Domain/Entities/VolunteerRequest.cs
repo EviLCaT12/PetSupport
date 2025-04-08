@@ -33,7 +33,7 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
     
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     
-    public DateTime? RejectionDate { get; }
+    public DateTime? RejectionDate{ get; private set; }
 
     public RejectionComment? RejectionComment { get; private set; }
 
@@ -63,14 +63,18 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
     }
 
     //Отменить заявку
-    public VolunteerRequest RejectRequest(RejectionComment? comment)
+    public UnitResult<ErrorList> RejectRequest(RejectionComment comment)
     {
-        if (comment is not null)
-            RejectionComment = comment;
+        if (Status == Status.Rejected)
+            return Errors.VolunteerRequest.RequestAlreadyRejected();
+        
+        RejectionDate = DateTime.UtcNow;
+        
+        RejectionComment = comment;
         
         Status = Status.Rejected;
         
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Утвердить заявку

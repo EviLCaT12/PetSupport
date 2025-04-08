@@ -78,5 +78,14 @@ public static class Errors
         {
             return Error.Validation("request.already.onReview", "Request is already on review").ToErrorList();
         }
+        
+        public static ErrorList RequestAlreadyRejected()
+        {
+            return Error.Validation("request.already.rejected", "Request is already rejected").ToErrorList();
+        }
+        public static ErrorList UserInTimeBan()
+        {
+            return Error.Conflict("user.is.banned", "User has been banned").ToErrorList();
+        }
     }
 }

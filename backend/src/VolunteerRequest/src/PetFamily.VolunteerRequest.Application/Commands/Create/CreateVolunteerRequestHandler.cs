@@ -49,6 +49,16 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
             if (isAlreadyVolunteer)
                 return Errors.VolunteerRequest.UserAlreadyVolunteer();
             
+            //Проверям, что у пользователя нет временного бана на отправку запросов
+            var isUserInBan = await _accountContract
+                .IsUserCanSendVolunteerRequests(command.UserId, cancellationToken);
+            
+            if (isUserInBan.IsFailure)
+                return isUserInBan.Error;
+
+            if (isUserInBan.Value == false)
+                return Errors.VolunteerRequest.UserInTimeBan();
+            
             var volunteerRequest = CreateVolunteerRequest(command);
             
             await _repository.AddVolunteerRequestAsync(volunteerRequest, cancellationToken);

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.VolunteerRequest.Application.Commands.Create;
+using PetFamily.VolunteerRequest.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequest.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequest.Contracts.Requests;
 
@@ -12,7 +13,7 @@ namespace PetFamily.VolunteerRequest.Presentation;
 public class VolunteerRequestController : ApplicationController
 {
     [Authorize(Permissions.VolunteerRequests.CreateVolunteerRequest)]
-    [HttpPost("{userId:guid}")]
+    [HttpPost("submitting-application/{userId:guid}")]
     public async Task<ActionResult> CreateVolunteerRequest(
         [FromRoute] Guid userId,
         [FromBody] CreateVolunteerRequestRequest request,
@@ -35,13 +36,31 @@ public class VolunteerRequestController : ApplicationController
     }
     
     [Authorize(Permissions.VolunteerRequests.TakeRequestOnReview)]
-    [HttpPost("{requestId:guid}/{adminId:guid}")]
+    [HttpPost("on-review/{requestId:guid}/{adminId:guid}")]
     public async Task<ActionResult> TakeRequestOnReview(
         [FromRoute] Guid requestId, Guid adminId,
         [FromServices] TakeRequestOnReviewHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new TakeRequestOnReviewCommand(requestId, adminId);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
+    }
+    
+    [Authorize(Permissions.VolunteerRequests.RejectRequest)]
+    [HttpPost("reject/{requestId:guid}")]
+    public async Task<ActionResult> RejectRequest(
+        [FromRoute] Guid requestId,
+        [FromBody] RejectRequestRequest request,
+        [FromServices] RejectRequestHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new RejectRequestCommand(requestId, request.Description);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 
