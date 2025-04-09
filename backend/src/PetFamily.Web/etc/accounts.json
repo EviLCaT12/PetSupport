@@ -27,7 +27,8 @@
     "VolunteerRequest": [
       "volunteer.request.create",
       "volunteer.request.take.onReview",
-      "volunteer.request.reject"
+      "volunteer.request.reject",
+      "volunteer.request.revision"
     ]
   },
   "Roles": {
@@ -70,6 +71,7 @@
       "volunteer.pets.help.change",
       "volunteer.request.take.onReview",
       "volunteer.request.reject",
+      "volunteer.request.revision",
       "species.create",
       "species.delete",
       "species.get",

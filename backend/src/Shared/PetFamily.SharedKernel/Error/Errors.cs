@@ -82,6 +82,11 @@ public static class Errors
         public static ErrorList RequestAlreadyRejected()
         {
             return Error.Validation("request.already.rejected", "Request is already rejected").ToErrorList();
+        }        
+        public static ErrorList RequestAlreadySendForRevision()
+        {
+            return Error.Validation("request.already.revision", "Request is already send to reve=ision")
+                .ToErrorList();
         }
         public static ErrorList UserInTimeBan()
         {

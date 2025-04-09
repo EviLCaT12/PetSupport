@@ -4,6 +4,7 @@ using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.VolunteerRequest.Application.Commands.Create;
 using PetFamily.VolunteerRequest.Application.Commands.RejectRequest;
+using PetFamily.VolunteerRequest.Application.Commands.SendRequestToRevision;
 using PetFamily.VolunteerRequest.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequest.Contracts.Requests;
 
@@ -13,7 +14,7 @@ namespace PetFamily.VolunteerRequest.Presentation;
 public class VolunteerRequestController : ApplicationController
 {
     [Authorize(Permissions.VolunteerRequests.CreateVolunteerRequest)]
-    [HttpPost("submitting-application/{userId:guid}")]
+    [HttpPost("{userId:guid}/submitting-application")]
     public async Task<ActionResult> CreateVolunteerRequest(
         [FromRoute] Guid userId,
         [FromBody] CreateVolunteerRequestRequest request,
@@ -36,7 +37,7 @@ public class VolunteerRequestController : ApplicationController
     }
     
     [Authorize(Permissions.VolunteerRequests.TakeRequestOnReview)]
-    [HttpPost("on-review/{requestId:guid}/{adminId:guid}")]
+    [HttpPost("{requestId:guid}/{adminId:guid}/on-review")]
     public async Task<ActionResult> TakeRequestOnReview(
         [FromRoute] Guid requestId, Guid adminId,
         [FromServices] TakeRequestOnReviewHandler handler,
@@ -53,7 +54,7 @@ public class VolunteerRequestController : ApplicationController
     }
     
     [Authorize(Permissions.VolunteerRequests.RejectRequest)]
-    [HttpPost("reject/{requestId:guid}")]
+    [HttpPost("{requestId:guid}/reject")]
     public async Task<ActionResult> RejectRequest(
         [FromRoute] Guid requestId,
         [FromBody] RejectRequestRequest request,
@@ -61,6 +62,24 @@ public class VolunteerRequestController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new RejectRequestCommand(requestId, request.Description);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
+    }
+    
+    [Authorize(Permissions.VolunteerRequests.SendToRevision)]
+    [HttpPost("{requestId:guid}/revision")]
+    public async Task<ActionResult> SendToRevision(
+        [FromRoute] Guid requestId,
+        [FromBody] RevisionRequest request,
+        [FromServices] SendRequestToRevisionHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new SendRequestToRevisionCommand(requestId, request.Description);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 

@@ -52,14 +52,17 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
     }
 
     //Отправить на доработку
-    public VolunteerRequest SendForRevision(RejectionComment comment)
+    public UnitResult<ErrorList> SendForRevision(RejectionComment comment)
     {
         //Проверка на нул не требуется, так как заявка и коммент никогда нул не будут в силу методов их создания
+        if (Status == Status.RevisionRequired)
+            return Errors.VolunteerRequest.RequestAlreadySendForRevision();
+        
         Status = Status.RevisionRequired;
         
         RejectionComment = comment;
 
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Отменить заявку
