@@ -14,6 +14,13 @@ public class VolunteerAccount
         User = user;
         Experience = yearsOfExperience;
     }
+    
+    public VolunteerAccount(User user, Guid volunteerId, YearsOfExperience yearsOfExperience)
+    {
+        Id = Guid.NewGuid();
+        User = user;
+        Experience = yearsOfExperience;
+    }
     public Guid Id { get; set; }
     
     public Guid VolunteerId { get; set; }

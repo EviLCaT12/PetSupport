@@ -79,6 +79,11 @@ public static class Errors
             return Error.Validation("request.already.onReview", "Request is already on review").ToErrorList();
         }
         
+        public static ErrorList RequestAlreadyApproved()
+        {
+            return Error.Validation("request.already.approved", "Request is already approved").ToErrorList();
+        }
+        
         public static ErrorList RequestAlreadyRejected()
         {
             return Error.Validation("request.already.rejected", "Request is already rejected").ToErrorList();

@@ -23,9 +23,9 @@ public class AccountManager(WriteAccountsDbContext context) : IAccountManager
         return account;
     }
 
-    public async Task CreateVolunteerAccountAsync(VolunteerAccount volunteerAccount)
+    public async Task CreateVolunteerAccountAsync(VolunteerAccount volunteerAccount, CancellationToken cancellationToken)
     {
-        await context.VolunteerAccounts.AddAsync(volunteerAccount);
+        await context.VolunteerAccounts.AddAsync(volunteerAccount, cancellationToken);
     }
 
     public async Task CreateAdminAccountAsync(AdminAccount adminAccount)

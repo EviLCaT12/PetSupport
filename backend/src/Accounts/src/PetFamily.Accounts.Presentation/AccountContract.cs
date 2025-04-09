@@ -3,6 +3,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PetFamily.Accounts.Application.Commands.BanUserForSendVolunteerRequest;
+using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Contracts;
 using PetFamily.Accounts.Contracts.Requests;
 using PetFamily.Accounts.Domain.Entities;
@@ -16,15 +17,18 @@ public class AccountContract : IAccountContract
     private readonly PermissionManager _permissionManager;
     private readonly UserManager<User> _userManager;
     private readonly BanUserForSendVolunteerRequestHandler _handler;
+    private readonly EnrollVolunteerHandler _enrollVolunteerHandler;
 
     public AccountContract(
         PermissionManager permissionManager, 
         UserManager<User> userManager,
-        BanUserForSendVolunteerRequestHandler handler)
+        BanUserForSendVolunteerRequestHandler handler,
+        EnrollVolunteerHandler enrollVolunteerHandler)
     {
         _permissionManager = permissionManager;
         _userManager = userManager;
         _handler = handler;
+        _enrollVolunteerHandler = enrollVolunteerHandler;
     }
     public async Task<HashSet<string>> GetUserPermissionCodes(Guid userId)
     {
@@ -70,5 +74,24 @@ public class AccountContract : IAccountContract
             return result.Error;
 
         return UnitResult.Success<ErrorList>();
+    }
+
+    /*
+     * Создаем аккаунт только что одобренному волонтёру
+     */
+    public async Task<Result<Guid, ErrorList>> CreateVolunteerAccount(ApproveRequestRequest request, CancellationToken cancellationToken = default)
+    {
+        var command = new EnrollVolunteerCommand(
+            request.UserId,
+            request.Experience,
+            request.PhoneNumber,
+            request.Description);
+        
+        var result = await _enrollVolunteerHandler.HandleAsync(command, cancellationToken);
+        
+        if (result.IsFailure)
+            return result.Error;
+
+        return result.Value;
     }
 }

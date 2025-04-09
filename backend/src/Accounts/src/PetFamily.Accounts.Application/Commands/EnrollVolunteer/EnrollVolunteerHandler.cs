@@ -18,7 +18,7 @@ using PetFamily.Volunteers.Contracts.Requests.Volunteer.CreateVolunteer;
 
 namespace PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 
-public class EnrollVolunteerHandler : ICommandHandler<EnrollVolunteerCommand>
+public class EnrollVolunteerHandler : ICommandHandler<Guid, EnrollVolunteerCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly IAccountManager _accountManager;
@@ -42,7 +42,7 @@ public class EnrollVolunteerHandler : ICommandHandler<EnrollVolunteerCommand>
         _validator = validator;
         _unitOfWork = unitOfWork;
     }
-    public async Task<UnitResult<ErrorList>> HandleAsync(EnrollVolunteerCommand command, 
+    public async Task<Result<Guid, ErrorList>> HandleAsync(EnrollVolunteerCommand command, 
         CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
@@ -53,7 +53,7 @@ public class EnrollVolunteerHandler : ICommandHandler<EnrollVolunteerCommand>
             if (validationResult.IsValid == false)
                 return validationResult.ToErrorList();
             
-            var isUserExist = await _userManager.FindByEmailAsync(command.Email);
+            var isUserExist = await _userManager.FindByIdAsync(command.UserId.ToString());
             if (isUserExist is null)
                 return Errors.General.ValueNotFound().ToErrorList();
             
@@ -82,7 +82,7 @@ public class EnrollVolunteerHandler : ICommandHandler<EnrollVolunteerCommand>
             
             var volunteerAccount = new VolunteerAccount(isUserExist, exp);
             
-            await _accountManager.CreateVolunteerAccountAsync(volunteerAccount);
+            await _accountManager.CreateVolunteerAccountAsync(volunteerAccount, cancellationToken);
 
             var volunteer = await _contract.AddVolunteer(
                 new CreateVolunteerRequest(
@@ -101,7 +101,7 @@ public class EnrollVolunteerHandler : ICommandHandler<EnrollVolunteerCommand>
 
             transaction.Commit();
 
-            return Result.Success<ErrorList>();
+            return volunteerAccount.Id;
 
         }
         catch (Exception e)

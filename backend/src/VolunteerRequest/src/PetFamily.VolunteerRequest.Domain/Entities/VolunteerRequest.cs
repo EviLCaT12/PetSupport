@@ -81,11 +81,14 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
     }
 
     //Утвердить заявку
-    public VolunteerRequest ApproveRequest()
+    public UnitResult<ErrorList> ApproveRequest()
     {
+        if (Status == Status.Approved)
+            return Errors.VolunteerRequest.RequestAlreadyApproved();
+        
         Status = Status.Approved;
         
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Пока самый простой метод сугубо для тестов

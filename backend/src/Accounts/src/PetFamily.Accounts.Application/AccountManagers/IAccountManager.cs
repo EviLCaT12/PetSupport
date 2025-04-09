@@ -10,7 +10,7 @@ public interface IAccountManager
     
     Task<ParticipantAccount?> GetParticipantAccountByUserIdAsync(Guid userId);
     
-    Task CreateVolunteerAccountAsync(VolunteerAccount volunteerAccount);
+    Task CreateVolunteerAccountAsync(VolunteerAccount volunteerAccount, CancellationToken cancellationToken);
     
     Task CreateAdminAccountAsync(AdminAccount adminAccount);
 }

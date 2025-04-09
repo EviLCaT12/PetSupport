@@ -52,14 +52,15 @@ public class AccountController : ApplicationController
     }
     
     [Authorize(Permissions.Volunteers.CreateVolunteer)]
-    [HttpPost("registration/volunteer")]
+    [HttpPost("registration/{userId:guid}/volunteer")]
     public async Task<IActionResult> RegisterVolunteer(
+        [FromRoute] Guid userId,
         [FromBody] CreateVolunteerAccountRequest request,
         [FromServices] EnrollVolunteerHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new EnrollVolunteerCommand(
-            request.Email,
+            userId,
             request.Experience,
             request.PhoneNumber,
             request.Description);

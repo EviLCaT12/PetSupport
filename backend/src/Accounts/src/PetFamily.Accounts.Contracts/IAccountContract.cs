@@ -16,5 +16,6 @@ public interface IAccountContract
     Task<UnitResult<ErrorList>> BanUserToSendVolunteerRequest(BanUserToSendVolunteerRequestRequest request,
         CancellationToken cancellationToken = default);
 
-
+    Task<Result<Guid, ErrorList>> CreateVolunteerAccount(ApproveRequestRequest request,
+        CancellationToken cancellationToken = default);
 }

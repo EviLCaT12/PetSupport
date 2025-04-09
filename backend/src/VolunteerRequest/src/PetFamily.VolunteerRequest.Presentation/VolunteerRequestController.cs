@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
+using PetFamily.VolunteerRequest.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequest.Application.Commands.Create;
 using PetFamily.VolunteerRequest.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequest.Application.Commands.SendRequestToRevision;
@@ -80,6 +81,24 @@ public class VolunteerRequestController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new SendRequestToRevisionCommand(requestId, request.Description);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok();
+    }
+    
+    [Authorize(Permissions.VolunteerRequests.ApproveRequest)]
+    [HttpPost("{requestId:guid}/approved")]
+    public async Task<ActionResult> ApproveRequest(
+        [FromRoute] Guid requestId,
+        [FromBody]  ApproveRequestRequest request,
+        [FromServices] ApproveRequestHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new ApproveRequestCommand(requestId, request.PhoneNumber);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 
