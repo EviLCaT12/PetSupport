@@ -13,8 +13,8 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteAccountsDbContext))]
-    [Migration("20250409155655_ggfdvscx")]
-    partial class ggfdvscx
+    [Migration("20250410111010_jhgbfvd")]
+    partial class jhgbfvd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

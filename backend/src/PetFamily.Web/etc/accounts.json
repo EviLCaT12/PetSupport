@@ -29,7 +29,8 @@
       "volunteer.request.take.onReview",
       "volunteer.request.reject",
       "volunteer.request.revision",
-      "volunteer.request.approve"
+      "volunteer.request.approve",
+      "volunteer.request.edit"
     ]
   },
   "Roles": {
@@ -38,7 +39,8 @@
       "volunteer.pets.get",
       "species.get",
       "species.breeds.get",
-      "volunteer.request.create"
+      "volunteer.request.create",
+      "volunteer.request.edit"
     ],
     "Volunteer" : [     
       "volunteer.get",
@@ -74,6 +76,7 @@
       "volunteer.request.reject",
       "volunteer.request.revision",
       "volunteer.request.approve",
+      "volunteer.request.edit",
       "species.create",
       "species.delete",
       "species.get",

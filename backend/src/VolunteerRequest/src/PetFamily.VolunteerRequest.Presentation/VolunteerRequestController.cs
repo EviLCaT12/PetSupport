@@ -4,6 +4,7 @@ using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 using PetFamily.VolunteerRequest.Application.Commands.ApproveRequest;
 using PetFamily.VolunteerRequest.Application.Commands.Create;
+using PetFamily.VolunteerRequest.Application.Commands.EditRequest;
 using PetFamily.VolunteerRequest.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequest.Application.Commands.SendRequestToRevision;
 using PetFamily.VolunteerRequest.Application.Commands.TakeRequestOnReview;
@@ -89,22 +90,45 @@ public class VolunteerRequestController : ApplicationController
         
         return Ok();
     }
-    
+
     [Authorize(Permissions.VolunteerRequests.ApproveRequest)]
     [HttpPost("{requestId:guid}/approved")]
     public async Task<ActionResult> ApproveRequest(
         [FromRoute] Guid requestId,
-        [FromBody]  ApproveRequestRequest request,
+        [FromBody] ApproveRequestRequest request,
         [FromServices] ApproveRequestHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new ApproveRequestCommand(requestId, request.PhoneNumber);
-        
+
         var result = await handler.HandleAsync(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
-        
+
         return Ok();
     }
+
+    [Authorize(Permissions.VolunteerRequests.EditVolunteerRequest)]
+        [HttpPost("{requestId:guid}/edit")]
+        public async Task<ActionResult> EditRequest(
+            [FromRoute] Guid requestId,
+            [FromBody]  EditRequestRequest request,
+            [FromServices] EditHandler handler,
+            CancellationToken cancellationToken)
+        {
+            var command = new EditCommand(
+                requestId,
+                request.Fio,
+                request.Description,
+                request.Email,
+                request.Experience);
+        
+            var result = await handler.HandleAsync(command, cancellationToken);
+
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+        
+            return Ok();
+        }
 }

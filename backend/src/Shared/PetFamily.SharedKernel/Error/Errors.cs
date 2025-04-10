@@ -97,5 +97,10 @@ public static class Errors
         {
             return Error.Conflict("user.is.banned", "User has been banned").ToErrorList();
         }
+
+        public static ErrorList RequestIsNotOnRevision()
+        {
+            return Error.Validation("request.is.not.revision", "Request is not on revision").ToErrorList();
+        }
     }
 }

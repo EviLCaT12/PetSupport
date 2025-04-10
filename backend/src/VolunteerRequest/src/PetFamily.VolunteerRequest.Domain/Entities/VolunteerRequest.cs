@@ -91,6 +91,18 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
         return UnitResult.Success<ErrorList>();
     }
 
+    public UnitResult<ErrorList> Edit(VolunteerInfo newVolunteerInfo)
+    {
+        if (Status != Status.RevisionRequired)
+            return Errors.VolunteerRequest.RequestIsNotOnRevision();
+        
+        VolunteerInfo = newVolunteerInfo;
+        
+        Status = Status.Submitted;
+        
+        return UnitResult.Success<ErrorList>();
+    }
+
     //Пока самый простой метод сугубо для тестов
     public VolunteerRequest AddRejectionComment(RejectionComment comment)
     {
