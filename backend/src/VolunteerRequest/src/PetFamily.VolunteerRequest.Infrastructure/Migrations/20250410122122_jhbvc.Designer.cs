@@ -6,15 +6,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
+using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
 #nullable disable
 
 namespace PetFamily.VolunteerRequest.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteContext))]
-    [Migration("20250406071428_vr_Initial")]
-    partial class vr_Initial
+    [Migration("20250410122122_jhbvc")]
+    partial class jhbvc
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.VolunteerRequest.Application.Abstractions;
 using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
-using PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
 using PetFamily.VolunteerRequest.Infrastructure.Repositories;
 
 namespace PetFamily.VolunteerRequest.Infrastructure;
@@ -25,6 +24,9 @@ public static class DependencyInjection
     {
         services.AddScoped<WriteContext>(_ =>
             new WriteContext(configuration.GetConnectionString(Constants.Database)!));
+        
+        services.AddScoped<IReadDbContext, ReadContext>(_ =>
+            new ReadContext(configuration.GetConnectionString(Constants.Database)!));
         
         return services;
     }

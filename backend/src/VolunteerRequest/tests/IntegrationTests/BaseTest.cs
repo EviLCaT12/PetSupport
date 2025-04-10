@@ -4,7 +4,7 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.VolunteerRequest.Domain.Entities;
 using PetFamily.VolunteerRequest.Domain.ValueObjects;
-using PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
+using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
 namespace IntegrationTests;
 

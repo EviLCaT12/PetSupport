@@ -1,19 +1,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using PetFamily.Volunteers.Application;
-using PetFamily.Volunteers.Contracts.Dto.PetDto;
-using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
+using PetFamily.VolunteerRequest.Application.Abstractions;
+using PetFamily.VolunteerRequest.Contracts.Dto;
 
-namespace PetFamily.Volunteer.Infrastructure.DbContexts;
+namespace PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
-public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
+public class ReadContext(string connectionString) : DbContext, IReadDbContext
 {
-    public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
-    public IQueryable<PetDto> Pets => Set<PetDto>();    
-
+    public IQueryable<VolunteerRequestDto> VolunteerRequests => Set<VolunteerRequestDto>();
+    
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(connectionString);
+        optionsBuilder.UseNpgsql(connectionString); 
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
         
@@ -23,9 +21,10 @@ public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(ReadDbContext).Assembly,
+            typeof(ReadContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
-        modelBuilder.HasDefaultSchema("volunteer");
+        
+        modelBuilder.HasDefaultSchema("volunteer_request");
     }
     
     private ILoggerFactory CreateLoggerFactory() =>

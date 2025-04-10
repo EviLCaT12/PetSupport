@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
+namespace PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
 public class WriteContext(string connectionString) : DbContext
 {

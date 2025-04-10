@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetFamily.VolunteerRequest.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class vr_Initial : Migration
+    public partial class jhbvc : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

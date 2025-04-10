@@ -39,5 +39,6 @@ public static class Permissions
         public const string SendToRevision = "volunteer.request.revision";
         public const string ApproveRequest = "volunteer.request.approve";
         public const string EditVolunteerRequest = "volunteer.request.edit";
+        public const string GetAllSubmittedVolunteerRequest = "volunteer.request.all.submitted";
     }
 }

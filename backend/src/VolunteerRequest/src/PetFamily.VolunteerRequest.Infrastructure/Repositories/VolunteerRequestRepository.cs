@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PetFamily.VolunteerRequest.Application.Abstractions;
 using PetFamily.VolunteerRequest.Domain.ValueObjects;
-using PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
+using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
 namespace PetFamily.VolunteerRequest.Infrastructure.Repositories;
 

@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.EntityFrameworkCore.Storage;
 using PetFamily.Core.Abstractions;
-using PetFamily.VolunteerRequest.Infrastructure.DbContexts.WriteContext;
+using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 
 namespace PetFamily.VolunteerRequest.Infrastructure;
 
