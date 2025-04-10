@@ -9,6 +9,7 @@ using PetFamily.VolunteerRequest.Application.Commands.RejectRequest;
 using PetFamily.VolunteerRequest.Application.Commands.SendRequestToRevision;
 using PetFamily.VolunteerRequest.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequest.Application.Queries.GetAllSubmittedRequestsWithPagination;
+using PetFamily.VolunteerRequest.Application.Queries.GetRequestsForCurrentAdmin;
 using PetFamily.VolunteerRequest.Contracts.Requests;
 
 namespace PetFamily.VolunteerRequest.Presentation;
@@ -141,6 +142,28 @@ public class VolunteerRequestController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new GetAllSubmittedRequestQuery(request.Page, request.PageSize);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Authorize(Permissions.VolunteerRequests.GetRequestsForCurrentAdmin)]
+    [HttpGet("{adminId:guid}")]
+    public async Task<ActionResult> GetRequestsForCurrentAdmin(
+        [FromRoute] Guid adminId,
+        [FromQuery]  GetRequestsForCurrentAdminRequest request,
+        [FromServices] GetRequestsForCurrentAdminHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetRequestsForCurrentAdminQuery(
+            adminId,
+            request.Status,
+            request.Page,
+            request.PageSize);
         
         var result = await handler.HandleAsync(command, cancellationToken);
 

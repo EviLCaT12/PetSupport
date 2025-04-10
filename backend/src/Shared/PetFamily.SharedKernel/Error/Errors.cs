@@ -102,5 +102,9 @@ public static class Errors
         {
             return Error.Validation("request.is.not.revision", "Request is not on revision").ToErrorList();
         }
+        public static ErrorList InvalidStatus()
+        {
+            return Error.Validation("request.status.invalid", "Invalid request status").ToErrorList();
+        }
     }
 }

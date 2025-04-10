@@ -31,7 +31,8 @@
       "volunteer.request.revision",
       "volunteer.request.approve",
       "volunteer.request.edit",
-      "volunteer.request.all.submitted"
+      "volunteer.request.all.submitted",
+      "volunteer.request.all.admin"
     ]
   },
   "Roles": {
@@ -79,6 +80,7 @@
       "volunteer.request.approve",
       "volunteer.request.edit",
       "volunteer.request.all.submitted",
+      "volunteer.request.all.admin",
       "species.create",
       "species.delete",
       "species.get",
