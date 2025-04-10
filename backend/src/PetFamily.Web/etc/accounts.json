@@ -32,7 +32,8 @@
       "volunteer.request.approve",
       "volunteer.request.edit",
       "volunteer.request.all.submitted",
-      "volunteer.request.all.admin"
+      "volunteer.request.all.admin",
+      "volunteer.request.all.user"
     ]
   },
   "Roles": {
@@ -42,7 +43,8 @@
       "species.get",
       "species.breeds.get",
       "volunteer.request.create",
-      "volunteer.request.edit"
+      "volunteer.request.edit",
+      "volunteer.request.all.user"
     ],
     "Volunteer" : [     
       "volunteer.get",
@@ -81,6 +83,7 @@
       "volunteer.request.edit",
       "volunteer.request.all.submitted",
       "volunteer.request.all.admin",
+      "volunteer.request.all.user",
       "species.create",
       "species.delete",
       "species.get",

@@ -41,5 +41,6 @@ public static class Permissions
         public const string EditVolunteerRequest = "volunteer.request.edit";
         public const string GetAllSubmittedVolunteerRequest = "volunteer.request.all.submitted";
         public const string GetRequestsForCurrentAdmin = "volunteer.request.all.admin";
+        public const string GetRequestsForCurrentUser = "volunteer.request.all.user";
     }
 }

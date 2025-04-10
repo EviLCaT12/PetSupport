@@ -10,6 +10,7 @@ using PetFamily.VolunteerRequest.Application.Commands.SendRequestToRevision;
 using PetFamily.VolunteerRequest.Application.Commands.TakeRequestOnReview;
 using PetFamily.VolunteerRequest.Application.Queries.GetAllSubmittedRequestsWithPagination;
 using PetFamily.VolunteerRequest.Application.Queries.GetRequestsForCurrentAdmin;
+using PetFamily.VolunteerRequest.Application.Queries.GetRequestsForCurrentUser;
 using PetFamily.VolunteerRequest.Contracts.Requests;
 
 namespace PetFamily.VolunteerRequest.Presentation;
@@ -152,7 +153,7 @@ public class VolunteerRequestController : ApplicationController
     }
     
     [Authorize(Permissions.VolunteerRequests.GetRequestsForCurrentAdmin)]
-    [HttpGet("{adminId:guid}")]
+    [HttpGet("/requests-admin/{adminId:guid}")]
     public async Task<ActionResult> GetRequestsForCurrentAdmin(
         [FromRoute] Guid adminId,
         [FromQuery]  GetRequestsForCurrentAdminRequest request,
@@ -161,6 +162,28 @@ public class VolunteerRequestController : ApplicationController
     {
         var command = new GetRequestsForCurrentAdminQuery(
             adminId,
+            request.Status,
+            request.Page,
+            request.PageSize);
+        
+        var result = await handler.HandleAsync(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
+    }
+    
+    [Authorize(Permissions.VolunteerRequests.GetRequestsForCurrentUser)]
+    [HttpGet("/requests-user/{userId:guid}")]
+    public async Task<ActionResult> GetRequestsForCurrentUser(
+        [FromRoute] Guid userId,
+        [FromQuery]  GetRequestsForCurrentUserRequest request,
+        [FromServices] GetRequestsForCurrentUserHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new GetRequestsForCurrentUserQuery(
+            userId,
             request.Status,
             request.Page,
             request.PageSize);
