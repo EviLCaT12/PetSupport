@@ -3,8 +3,8 @@ using PetFamily.VolunteerRequest.Domain.Enums;
 
 namespace UnitTests;
 
-public class VolunteerRequestTests
-{
+public class VolunteerRequestTests 
+{ 
     [Fact]
     public void Take_Request_On_Review_Should_Be_Success()
     {
@@ -12,10 +12,11 @@ public class VolunteerRequestTests
         var request = Utilities.CreateVolunteerRequestWithoutRejectionComment(1).First();
         
         //Act
-        var result = request.TakeRequestOnReview();
+        var result = request.TakeRequestOnReview(Guid.NewGuid(), Guid.NewGuid());
 
         //Assert
-        result.Status.Should().Be(Status.OnReview);
+        result.IsSuccess.Should().BeTrue();
+        request.Status.Should().Be(Status.OnReview);
     }
 
     [Fact]
@@ -30,8 +31,9 @@ public class VolunteerRequestTests
         var result = request.SendForRevision(comment);
 
         //Assert
-        result.Status.Should().Be(Status.RevisionRequired);
-        result.RejectionComment.Should().NotBeNull();
+        result.IsSuccess.Should().BeTrue();
+        request.Status.Should().Be(Status.RevisionRequired);
+        request.RejectionComment.Should().NotBeNull();
     }
     
     [Fact]
@@ -46,8 +48,9 @@ public class VolunteerRequestTests
         var result = request.RejectRequest(comment);
 
         //Assert
-        result.Status.Should().Be(Status.Rejected);
-        result.RejectionComment.Should().NotBeNull();
+        result.IsSuccess.Should().BeTrue();
+        request.Status.Should().Be(Status.Rejected);
+        request.RejectionComment.Should().NotBeNull();
     }
     
     [Fact]
@@ -60,6 +63,7 @@ public class VolunteerRequestTests
         var result = request.ApproveRequest();
 
         //Assert
-        result.Status.Should().Be(Status.Approved);
+        result.IsSuccess.Should().BeTrue();
+        request.Status.Should().Be(Status.Approved);
     }
 }

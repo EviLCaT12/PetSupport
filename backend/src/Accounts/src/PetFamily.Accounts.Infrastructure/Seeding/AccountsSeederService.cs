@@ -57,7 +57,7 @@ public class AccountsSeederService(
             var adminRole = await roleManager.FindByNameAsync(AdminAccount.Admin)
                             ?? throw new ApplicationException("Could not find admin role");
 
-            var fio = Fio.Create(
+                var fio = Fio.Create(
                 _adminOptions.UserName,
                 _adminOptions.UserName, 
                 _adminOptions.UserName).Value;
