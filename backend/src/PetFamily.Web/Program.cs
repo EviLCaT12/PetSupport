@@ -8,6 +8,8 @@ using PetFamily.Accounts.Infrastructure;
 using PetFamily.Accounts.Infrastructure.Seeding;
 using PetFamily.Accounts.Presentation;
 using PetFamily.Core.Options;
+using PetFamily.Discussion.Application;
+using PetFamily.Discussion.Infrastructure;
 using PetFamily.Discussion.Presentation;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
@@ -89,6 +91,8 @@ builder.Services
     .AddVolunteerRequestApplication()
     .AddVolunteerRequestInfrastructure(builder.Configuration)
     
+    .AddDiscussionApplication()
+    .AddDiscussionInfrastructure(builder.Configuration)
     .AddDiscussionPresentation();
 
 

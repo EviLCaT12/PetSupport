@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Contracts;
+using Contracts.Requests;
 using CSharpFunctionalExtensions;
 using DotNetEnv;
 using Microsoft.AspNetCore.Hosting;
@@ -88,7 +89,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     public void SetupSuccessCreateDiscussionForVolunteerRequest()
     {
         _discussionContractMock
-            .CreateDiscussionForVolunteerRequest(Arg.Any<Guid>(), Arg.Any<IEnumerable<Guid>>())
+            .CreateDiscussionForVolunteerRequest(Arg.Any<CreateDiscussionRequest>(), Arg.Any<CancellationToken>())
             .Returns(Guid.NewGuid());
     }
     

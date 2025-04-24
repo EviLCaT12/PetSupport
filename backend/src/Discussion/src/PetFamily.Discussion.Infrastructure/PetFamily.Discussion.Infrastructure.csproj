@@ -7,10 +7,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Shared\PetFamily.Framework\PetFamily.Framework.csproj" />
+      <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\PetFamily.Discussion.Application\PetFamily.Discussion.Application.csproj" />
-      <ProjectReference Include="..\PetFamily.Discussion.Contracts\PetFamily.Discussion.Contracts.csproj" />
       <ProjectReference Include="..\PetFamily.Discussion.Domain\PetFamily.Discussion.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Configurations\Read\" />
     </ItemGroup>
 
 </Project>

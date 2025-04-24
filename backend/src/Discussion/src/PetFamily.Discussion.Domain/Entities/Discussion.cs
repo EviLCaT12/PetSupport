@@ -16,16 +16,16 @@ public class Discussion : Entity<DiscussionsId>
     {
         Id = id;
         RelationId = relationId;
-        _users = users.ToList();
+        _members = users.ToList();
     }
     
     public DiscussionsId Id { get; private set; }
     
     public Guid RelationId { get; private set; }
 
-    private List<Guid> _users = [];
+    private List<Guid> _members = [];
     
-    public IReadOnlyList<Guid> Users => _users;
+    public IReadOnlyList<Guid> Members => _members;
     
     private List<Message> _messages = [];
     
@@ -50,49 +50,27 @@ public class Discussion : Entity<DiscussionsId>
 
     public Result<bool, Error> IsUserInDiscussion(Guid userId)
     {
-        var isUserInDiscussion = _users.Contains(userId);
+        var isUserInDiscussion = _members.Contains(userId);
         if (isUserInDiscussion == false)
             return Errors.General.ValueIsInvalid("User does not belong to this discussion");
 
         return isUserInDiscussion;
     }
 
-    public UnitResult<Error> AddComment(Message comment, Guid userId)
+    public void AddComment(Message comment)
     {
-        var isUserInDiscussion = IsUserInDiscussion(userId);
-        if (isUserInDiscussion.IsFailure)
-            return isUserInDiscussion.Error;
-        
         _messages.Add(comment);
-
-        return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> DeleteComment(Message comment, Guid userId)
+    public UnitResult<Error> DeleteComment(Message comment)
     {
-        var isUserInDiscussion = IsUserInDiscussion(userId);
-        if (isUserInDiscussion.IsFailure)
-            return isUserInDiscussion.Error;
-        
-        var isCommentBelongToUser = IsCommentBelongToUser(comment, userId);
-        if (isCommentBelongToUser.IsFailure)
-            return isCommentBelongToUser.Error;
-        
         _messages.Remove(comment);
         
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> EditComment(Message comment, Text newText, Guid userId)
+    public UnitResult<Error> EditComment(Message comment, Text newText)
     {
-        var isMessageInDiscussion = IsMessageInDiscussion(comment);
-        if (isMessageInDiscussion.IsFailure)
-            return isMessageInDiscussion.Error;
-        
-        var isCommentBelongToUser = IsCommentBelongToUser(comment, userId);
-        if (isCommentBelongToUser.IsFailure)
-            return isCommentBelongToUser.Error;
-        
         comment.Edit(newText);
         
         return UnitResult.Success<Error>();

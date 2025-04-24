@@ -5,6 +5,7 @@ namespace PetFamily.Discussion.Domain.Entities;
 
 public class Message : Entity<MessageId>
 {
+    private Message() { }
     public Message(
         MessageId id,
         Guid userId,
@@ -15,15 +16,17 @@ public class Message : Entity<MessageId>
         Text = text;
     }
     
-    internal MessageId Id { get; private set; }
+    public MessageId Id { get; private set; }
 
-    internal Guid UserId { get; private set; }
+    public Discussion Discussion { get; private set; } = null!;
 
-    internal Text Text { get; private set; }
+    public Guid UserId { get; private set; }
 
-    internal DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public Text Text { get; private set; }
 
-    internal bool IsEdited { get; private set; } = false;
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+
+    public bool IsEdited { get; private set; } = false;
 
     internal void Edit(Text text)
     {

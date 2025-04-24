@@ -14,5 +14,6 @@ public enum ModuleKey
     Volunteer,
     Species,
     Account,
-    VolunteerRequest
+    VolunteerRequest,
+    Discussion
 }
