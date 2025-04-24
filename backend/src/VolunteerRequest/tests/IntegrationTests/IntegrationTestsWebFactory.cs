@@ -142,7 +142,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            SchemasToInclude = ["account", "volunteer_request"] //FIXME: Добавить позже discussion 
+            SchemasToInclude = ["account", "volunteer_request", "discussion"]
         });
     }
 
