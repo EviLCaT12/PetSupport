@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using PetFamily.Accounts.Infrastructure.Seeding;
+using PetFamily.Discussion.Application.Database;
 using PetFamily.Discussion.Infrastructure.Contexts;
 using PetFamily.Web;
 using Respawn;
@@ -43,12 +44,21 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         var writeDbContext = services.SingleOrDefault(s =>
             s.ServiceType == typeof(WriteDbContext));
         
+        var readDbContext = services.SingleOrDefault(s => 
+            s.ServiceType == typeof(ReadDbContext));
+        
         if(writeDbContext is not null)
             services.Remove(writeDbContext);
+        
+        if(readDbContext is not null)
+            services.Remove(readDbContext);
         
 
         services.AddScoped<WriteDbContext>(_ =>
             new WriteDbContext(_dbContainer.GetConnectionString()));
+        
+        services.AddScoped<IReadDbContext, ReadDbContext>(_ => 
+            new ReadDbContext(_dbContainer.GetConnectionString()));
 
         services.AddDbContext<WriteDbContext>(options =>
         {
