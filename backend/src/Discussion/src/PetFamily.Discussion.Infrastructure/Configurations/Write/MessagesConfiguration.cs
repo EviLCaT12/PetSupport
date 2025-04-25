@@ -24,7 +24,8 @@ public class MessagesConfiguration : IEntityTypeConfiguration<Message>
         builder.ComplexProperty(m => m.Text, tb =>
         {
             tb.Property(t => t.Value)
-                .IsRequired();
+                .IsRequired()
+                .HasColumnName("text");
         });
         
         builder.Property(m => m.CreatedAt)

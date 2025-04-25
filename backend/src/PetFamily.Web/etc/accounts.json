@@ -39,7 +39,8 @@
       "discussion.close",
       "discussion.message.chat",
       "discussion.message.edit",
-      "discussion.message.delete"
+      "discussion.message.delete",
+      "discussion.get"
     ]
   },
   "Roles": {
@@ -76,6 +77,7 @@
       "discussion.message.chat",
       "discussion.message.edit",
       "discussion.message.delete",
+      "discussion.get",
       "volunteer.create",
       "volunteer.get",
       "volunteer.update.main.info",

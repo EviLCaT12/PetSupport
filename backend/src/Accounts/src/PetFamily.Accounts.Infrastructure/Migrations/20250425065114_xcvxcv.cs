@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class hyrgfdbvc : Migration
+    public partial class xcvxcv : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

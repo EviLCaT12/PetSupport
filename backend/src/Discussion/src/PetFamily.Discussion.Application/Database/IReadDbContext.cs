@@ -1,6 +1,10 @@
+using Contracts.Dtos;
+
 namespace PetFamily.Discussion.Application.Database;
 
-public class IReadDbContext
+public interface IReadDbContext
 {
+    IQueryable<DiscussionDto> Discussions { get; }
     
+    IQueryable<MessageDto> Messages { get; }
 }

@@ -51,5 +51,6 @@ public static class Permissions
         public const string ChatMessage = "discussion.message.chat";
         public const string EditMessage = "discussion.message.edit";
         public const string DeleteMessage = "discussion.message.delete";
+        public const string GetDiscussion = "discussion.get";
     }
 }

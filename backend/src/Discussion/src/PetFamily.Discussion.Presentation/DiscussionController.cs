@@ -1,3 +1,4 @@
+using Contracts.Dtos;
 using Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 using PetFamily.Core.Abstractions;
@@ -5,6 +6,7 @@ using PetFamily.Discussion.Application.Commands.ChatMessage;
 using PetFamily.Discussion.Application.Commands.Close;
 using PetFamily.Discussion.Application.Commands.DeleteMessage;
 using PetFamily.Discussion.Application.Commands.EditMessage;
+using PetFamily.Discussion.Application.Queries.GetDiscussionWIthAllMsgByRelationId;
 using PetFamily.Framework;
 using PetFamily.Framework.Authorization;
 
@@ -77,5 +79,21 @@ public class DiscussionController : ApplicationController
             return result.Error.ToResponse();
         
         return Ok();
+    }
+
+    [Permission(Permissions.Discussions.GetDiscussion)]
+    [HttpGet("{discussionId:guid}")]
+    public async Task<ActionResult> GetDiscussionWithAllMsgByRelationId(
+        [FromRoute] Guid discussionId,
+        [FromServices] IQueryHandler<DiscussionDto, GetDiscussionWithAllMsgByRelationIdQuery> handler,
+        CancellationToken cancellationToken)
+    {
+        var query = new GetDiscussionWithAllMsgByRelationIdQuery(discussionId);
+        
+        var result = await handler.HandleAsync(query, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+        
+        return Ok(result.Value);
     }
 }
