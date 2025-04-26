@@ -37,44 +37,37 @@ public class CreateVolunteerRequestHandler : ICommandHandler<Guid, CreateVolunte
         CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            //Проверяем валидность введенных данных
-            var validationResult = await _commandValidator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            //Проверям, что пользователь с заявки не является волонтером 
-            var isAlreadyVolunteer = await _accountContract.IsUserAlreadyVolunteer(command.UserId, cancellationToken);
-            if (isAlreadyVolunteer)
-                return Errors.VolunteerRequest.UserAlreadyVolunteer();
-            
-            //Проверям, что у пользователя нет временного бана на отправку запросов
-            var isUserInBan = await _accountContract
-                .IsUserCanSendVolunteerRequests(command.UserId, cancellationToken);
-            
-            if (isUserInBan.IsFailure)
-                return isUserInBan.Error;
 
-            if (isUserInBan.Value == false)
-                return Errors.VolunteerRequest.UserInTimeBan();
-            
-            var volunteerRequest = CreateVolunteerRequest(command);
-            
-            await _repository.AddVolunteerRequestAsync(volunteerRequest, cancellationToken);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-            
-            return volunteerRequest.Id.Value;
-        }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Error during create volunteer request");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        //Проверяем валидность введенных данных
+        var validationResult = await _commandValidator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        //Проверям, что пользователь с заявки не является волонтером 
+        var isAlreadyVolunteer = await _accountContract.IsUserAlreadyVolunteer(command.UserId, cancellationToken);
+        if (isAlreadyVolunteer)
+            return Errors.VolunteerRequest.UserAlreadyVolunteer();
+        
+        //Проверям, что у пользователя нет временного бана на отправку запросов
+        var isUserInBan = await _accountContract
+            .IsUserCanSendVolunteerRequests(command.UserId, cancellationToken);
+        
+        if (isUserInBan.IsFailure)
+            return isUserInBan.Error;
+
+        if (isUserInBan.Value == false)
+            return Errors.VolunteerRequest.UserInTimeBan();
+        
+        var volunteerRequest = CreateVolunteerRequest(command);
+        
+        await _repository.AddVolunteerRequestAsync(volunteerRequest, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+        
+        return volunteerRequest.Id.Value;
+
     }
 
     private Domain.Entities.VolunteerRequest CreateVolunteerRequest(CreateVolunteerRequestCommand command)

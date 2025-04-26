@@ -33,7 +33,7 @@ public class EnrollVolunteerTests : AccountBaseTests
         await register.HandleAsync(commandForRegister, CancellationToken.None);
 
         var commandForEnroll = new EnrollVolunteerCommand(
-            email,
+            Guid.NewGuid(), 
             exp,
             phone,
             description);

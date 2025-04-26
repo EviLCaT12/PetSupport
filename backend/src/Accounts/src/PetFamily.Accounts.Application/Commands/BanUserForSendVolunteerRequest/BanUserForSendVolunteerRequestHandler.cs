@@ -28,31 +28,22 @@ public class BanUserForSendVolunteerRequestHandler : ICommandHandler<BanUserForS
     public async Task<UnitResult<ErrorList>> HandleAsync(BanUserForSendVolunteerRequestCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        try
+        
+        var user = await _userManager.Users
+            .Include(u => u.ParticipantAccount)
+            .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
+        if (user is null)
         {
-            var user = await _userManager.Users
-                .Include(u => u.ParticipantAccount)
-                .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
-            if (user is null)
-            {
-                _logger.LogError($"User with id {command.UserId} was not found");
-                return Errors.General.ValueNotFound(command.UserId).ToErrorList();
-            }
-            
-            user.ParticipantAccount!.BanForSendingRequestUntil = DateTime.UtcNow.AddDays(7);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
+            _logger.LogError($"User with id {command.UserId} was not found");
+            return Errors.General.ValueNotFound(command.UserId).ToErrorList();
+        }
+        
+        user.ParticipantAccount!.BanForSendingRequestUntil = DateTime.UtcNow.AddDays(7);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
 
-            return UnitResult.Success<ErrorList>();
-        }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "An error occured during transaction");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        return UnitResult.Success<ErrorList>();
     }
 }

@@ -36,42 +36,34 @@ public class TakeRequestOnReviewHandler : ICommandHandler<TakeRequestOnReviewCom
     public async Task<UnitResult<ErrorList>> HandleAsync(TakeRequestOnReviewCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        try
-        {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var requestId = VolunteerRequestId.Create(command.RequestId).Value;
-            var request = await _repository
-                .GetVolunteerRequestByIdAsync(requestId, cancellationToken);
-            if (request == null)
-                return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
+        
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var requestId = VolunteerRequestId.Create(command.RequestId).Value;
+        var request = await _repository
+            .GetVolunteerRequestByIdAsync(requestId, cancellationToken);
+        if (request == null)
+            return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
 
 
-            var members = new List<Guid>() { request.UserId, command.AdminId };
-            var discussion = _contract.CreateDiscussionForVolunteerRequest(
-                request.Id.Value,
-                members);
-            if (discussion.IsFailure)
-                return discussion.Error;
+        var members = new List<Guid>() { request.UserId, command.AdminId };
+        var discussion = _contract.CreateDiscussionForVolunteerRequest(
+            request.Id.Value,
+            members);
+        if (discussion.IsFailure)
+            return discussion.Error;
 
-            var result = request.TakeRequestOnReview(command.AdminId, discussion.Value);
-            if (result.IsFailure)
-                return result.Error;
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
+        var result = request.TakeRequestOnReview(command.AdminId, discussion.Value);
+        if (result.IsFailure)
+            return result.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
 
-            return UnitResult.Success<ErrorList>();
-        }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Unexpected error occured during take request on review.");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        return UnitResult.Success<ErrorList>();
+        
     }
 }

@@ -33,36 +33,28 @@ public class SendRequestToRevisionHandler : ICommandHandler<SendRequestToRevisio
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        try
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var requestId = VolunteerRequestId.Create(command.RequestId).Value;
+        var request = await _repository.GetVolunteerRequestByIdAsync(requestId, cancellationToken);
+        if (request is null)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
+            _logger.LogError($"Request with id: {requestId} not found");
+            return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
+        }
             
-            var requestId = VolunteerRequestId.Create(command.RequestId).Value;
-            var request = await _repository.GetVolunteerRequestByIdAsync(requestId, cancellationToken);
-            if (request is null)
-            {
-                _logger.LogError($"Request with id: {requestId} not found");
-                return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
-            }
-                
-            var comment = new RejectionComment(Description.Create(command.Discription).Value);
-            var result = request.SendForRevision(comment);
-            if (result.IsFailure)
-                return result.Error;
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
+        var comment = new RejectionComment(Description.Create(command.Discription).Value);
+        var result = request.SendForRevision(comment);
+        if (result.IsFailure)
+            return result.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
 
-            return UnitResult.Success<ErrorList>();
-        }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Unexpected error occured while sending request to revision");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        return UnitResult.Success<ErrorList>();
+        
     }
 }

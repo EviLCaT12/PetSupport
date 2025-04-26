@@ -27,7 +27,7 @@ public class SetMainPhotoTests : VolunteerBaseTest
         
         var photo = Photo.Create(FilePath.Create("photo.jpg", null).Value).Value;
         
-        pet!.AddPhotos([photo]);
+        volunteer.AddPetPhotos(PetId.Create(petId).Value, [photo]);
         await WriteContext.SaveChangesAsync(CancellationToken.None);
         
         var command = new PetMainPhotoCommand(volunteerId, petId, photo.PathToStorage.Path);
@@ -39,6 +39,6 @@ public class SetMainPhotoTests : VolunteerBaseTest
         var result = await sut!.HandleAsync(command, CancellationToken.None);
         
         result.IsSuccess.Should().BeTrue();
-        pet.GetPhotoByPath(photo.PathToStorage).Value.IsMain.Should().BeTrue();
+        volunteer.GetPetPhoto(pet!, photo.PathToStorage).Value.IsMain.Should().BeTrue();
     }
 }

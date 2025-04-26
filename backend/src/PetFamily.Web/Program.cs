@@ -19,6 +19,7 @@ using PetFamily.Volunteer.Infrastructure;
 using PetFamily.VolunteerRequest.Application;
 using PetFamily.VolunteerRequest.Infrastructure;
 using PetFamily.Volunteers.Application;
+using PetFamily.Web.Middlewares;
 using Serilog;
 using Serilog.Events;
 
@@ -118,13 +119,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-//var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
-//await accountSeeder.SeedAsync();
+await accountSeeder.SeedAsync();
 
 //await app.ApplyMigration(); 
 
-//app.ExceptionMiddleware();
+app.UseExceptionMiddleware();
 
 app.UseSerilogRequestLogging();
 

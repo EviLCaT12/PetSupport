@@ -32,43 +32,35 @@ public class EditHandler : ICommandHandler<EditCommand>
     public async Task<UnitResult<ErrorList>> HandleAsync(EditCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
+        
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var request = await _repository.GetVolunteerRequestByIdAsync(
+            VolunteerRequestId.Create(command.RequestId).Value,
+            cancellationToken);
+        if (request is null)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var request = await _repository.GetVolunteerRequestByIdAsync(
-                VolunteerRequestId.Create(command.RequestId).Value,
-                cancellationToken);
-            if (request is null)
-            {
-                _logger.LogError($"Request with id: {command.RequestId} not found");
-                return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
-            }
-
-            var newVolunteerInfo = new VolunteerInfo(
-                Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName).Value,
-                Description.Create(command.Description).Value,
-                Email.Create(command.Email).Value,
-                YearsOfExperience.Create(command.Experience).Value);
-
-            var result = request.Edit(newVolunteerInfo);
-            if (result.IsFailure)
-                return result.Error;
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-
-            return UnitResult.Success<ErrorList>();
-
+            _logger.LogError($"Request with id: {command.RequestId} not found");
+            return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
         }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Unexpected error occured during edit volunteer request");
-            return Errors.General.ErrorDuringTransaction();
-        }
+
+        var newVolunteerInfo = new VolunteerInfo(
+            Fio.Create(command.Fio.FirstName, command.Fio.LastName, command.Fio.SurName).Value,
+            Description.Create(command.Description).Value,
+            Email.Create(command.Email).Value,
+            YearsOfExperience.Create(command.Experience).Value);
+
+        var result = request.Edit(newVolunteerInfo);
+        if (result.IsFailure)
+            return result.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+
+        return UnitResult.Success<ErrorList>();
+        
     }
 }

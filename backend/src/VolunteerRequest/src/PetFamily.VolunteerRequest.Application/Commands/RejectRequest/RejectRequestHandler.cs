@@ -38,45 +38,37 @@ public class RejectRequestHandler : ICommandHandler<RejectRequestCommand>
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        try
+       
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+
+        var id = VolunteerRequestId.Create(command.RequestId).Value;
+        var request = await _repository.GetVolunteerRequestByIdAsync(id, cancellationToken);
+        if (request is null)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-
-            var id = VolunteerRequestId.Create(command.RequestId).Value;
-            var request = await _repository.GetVolunteerRequestByIdAsync(id, cancellationToken);
-            if (request is null)
-            {
-                _logger.LogError($"Request with id: {id} not found");
-                return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
-            }
-
-            var description = Description.Create(command.Description).Value;
-            var rejectComment = new RejectionComment(description);
-            
-            var result = request.RejectRequest(rejectComment);
-            if (result.IsFailure)
-                return result.Error;
-
-            //Баним отправку пользователю на 7 дней
-            var banUserResult = await _accountContract.BanUserToSendVolunteerRequest(
-                new BanUserToSendVolunteerRequestRequest(request.UserId),
-                cancellationToken);
-            if (banUserResult.IsFailure)
-                return banUserResult.Error;
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-
-            return UnitResult.Success<ErrorList>();
+            _logger.LogError($"Request with id: {id} not found");
+            return Errors.General.ValueNotFound(command.RequestId).ToErrorList();
         }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Unexpected error occured during transaction");
-            return Errors.General.ErrorDuringTransaction();
-        }
+
+        var description = Description.Create(command.Description).Value;
+        var rejectComment = new RejectionComment(description);
+        
+        var result = request.RejectRequest(rejectComment);
+        if (result.IsFailure)
+            return result.Error;
+
+        //Баним отправку пользователю на 7 дней
+        var banUserResult = await _accountContract.BanUserToSendVolunteerRequest(
+            new BanUserToSendVolunteerRequestRequest(request.UserId),
+            cancellationToken);
+        if (banUserResult.IsFailure)
+            return banUserResult.Error;
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+
+        return UnitResult.Success<ErrorList>();
     }
 }
