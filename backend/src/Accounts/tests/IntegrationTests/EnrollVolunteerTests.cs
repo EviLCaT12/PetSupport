@@ -5,6 +5,7 @@ using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
 using PetFamily.Core.Abstractions;
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
 
 namespace IntegrationTests;
@@ -32,7 +33,7 @@ public class EnrollVolunteerTests : AccountBaseTests
         await register.HandleAsync(commandForRegister, CancellationToken.None);
 
         var commandForEnroll = new EnrollVolunteerCommand(
-            email,
+            Guid.NewGuid(), 
             exp,
             phone,
             description);

@@ -38,71 +38,56 @@ public class AddPetHandler : ICommandHandler<Guid, AddPetCommand>
     public async Task<Result<Guid, ErrorList>> HandleAsync(AddPetCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        { 
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var getVolunteerResult = await _volunteersRepository
-                .GetByIdAsync(VolunteerId.Create(command.VolunteerId).Value, cancellationToken);
-            if (getVolunteerResult.IsFailure)
-                return getVolunteerResult.Error;
-            
-            var speciesId = command.Classification.SpeciesId;
-            var breedId = command.Classification.BreedId;
-            
-            var isSpeciesHasBreed = await _contract.IsSpeciesHasBreed(
-                speciesId,
-                breedId,
-                cancellationToken);
-
-            if (isSpeciesHasBreed.IsFailure)
-                return isSpeciesHasBreed.Error;
-            
-            List<TransferDetails> transferDetails = [];
-            transferDetails.AddRange(command.TransferDetailDto
-                .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
-                .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
-            var transferDetailsList = new List<TransferDetails>(transferDetails);
-    
-            var createPetResult = Pet.Create(
-                PetId.NewPetId(),
-                Name.Create(command.Name).Value,
-                PetClassification.Create(speciesId, breedId).Value,
-                Description.Create(command.Description).Value,
-                Color.Create(command.Color).Value,
-                HealthInfo.Create(command.HealthInfo).Value,
-                Address.Create(command.Address.City, command.Address.Street, command.Address.HouseNumber).Value,
-                Dimensions.Create(command.Dimensions.Height, command.Dimensions.Weight).Value,
-                Phone.Create(command.OwnerPhone).Value,
-                command.IsCastrate,
-                command.DateOfBirth,
-                command.IsVaccinated,
-                command.HelpStatus,
-                transferDetailsList,
-                new List<Photo>());
-            
-            var volunteer = getVolunteerResult.Value;
-            volunteer.AddPet(createPetResult.Value);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-            
-            return createPetResult.Value.Id.Value;
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e,
-                "Fail to add pet to volunteer {volunteerId} in transaction", command.VolunteerId);
-            
-            transaction.Rollback();
-            
-            var error = Error.Failure("volunteer.pet.failure", "Error during add pet to volunteer transaction");
-
-            return new ErrorList([error]);
-        }
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
         
+        var getVolunteerResult = await _volunteersRepository
+            .GetByIdAsync(VolunteerId.Create(command.VolunteerId).Value, cancellationToken);
+        if (getVolunteerResult.IsFailure)
+            return getVolunteerResult.Error;
+        
+        var speciesId = command.Classification.SpeciesId;
+        var breedId = command.Classification.BreedId;
+        
+        var isSpeciesHasBreed = await _contract.IsSpeciesHasBreed(
+            speciesId,
+            breedId,
+            cancellationToken);
+
+        if (isSpeciesHasBreed.IsFailure)
+            return isSpeciesHasBreed.Error;
+        
+        List<TransferDetails> transferDetails = [];
+        transferDetails.AddRange(command.TransferDetailDto
+            .Select(transferDetail => TransferDetails.Create(transferDetail.Name, transferDetail.Description))
+            .Select(transferDetailsCreateResult => transferDetailsCreateResult.Value));
+        var transferDetailsList = new List<TransferDetails>(transferDetails);
+
+        var createPetResult = Pet.Create(
+            PetId.NewPetId(),
+            Name.Create(command.Name).Value,
+            PetClassification.Create(speciesId, breedId).Value,
+            Description.Create(command.Description).Value,
+            Color.Create(command.Color).Value,
+            HealthInfo.Create(command.HealthInfo).Value,
+            Address.Create(command.Address.City, command.Address.Street, command.Address.HouseNumber).Value,
+            Dimensions.Create(command.Dimensions.Height, command.Dimensions.Weight).Value,
+            Phone.Create(command.OwnerPhone).Value,
+            command.IsCastrate,
+            command.DateOfBirth,
+            command.IsVaccinated,
+            command.HelpStatus,
+            transferDetailsList,
+            new List<Photo>());
+        
+        var volunteer = getVolunteerResult.Value;
+        volunteer.AddPet(createPetResult.Value);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+        
+        return createPetResult.Value.Id.Value;
     }
 }

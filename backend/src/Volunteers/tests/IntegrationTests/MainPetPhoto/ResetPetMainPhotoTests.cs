@@ -27,8 +27,8 @@ public class ResetPetMainPhotoTests : VolunteerBaseTest
         
         var photo = Photo.Create(FilePath.Create("photo.jpg", null).Value).Value;
         
-        pet!.AddPhotos([photo]);
-        pet.SetMainPhoto(photo);
+        volunteer.AddPetPhotos(PetId.Create(petId).Value, [photo]);
+        volunteer.SetPetMainPhoto(pet!, photo);
         
         await WriteContext.SaveChangesAsync(CancellationToken.None);
         
@@ -41,6 +41,6 @@ public class ResetPetMainPhotoTests : VolunteerBaseTest
         var result = await sut!.HandleAsync(command, CancellationToken.None);
         
         result.IsSuccess.Should().BeTrue();
-        pet.GetPhotoByPath(photo.PathToStorage).Value.IsMain.Should().BeFalse();
+        volunteer.GetPetPhoto(pet!, photo.PathToStorage).Value.IsMain.Should().BeFalse();
     }
 }

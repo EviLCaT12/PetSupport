@@ -14,5 +14,6 @@ public class ParticipantAccount
     
     public User User { get; set; }
     
+    public DateTime BanForSendingRequestUntil { get; set; }
     public List<Guid>? FavoritePets { get; set; } = [];
 }

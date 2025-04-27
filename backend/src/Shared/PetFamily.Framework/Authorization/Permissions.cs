@@ -30,4 +30,17 @@ public static class Permissions
         public const string ChangePetPosition = "volunteer.pets.position.change";
         public const string ChangePetHelpStatus = "volunteer.pets.help.change";
     }
+
+    public static class VolunteerRequests
+    {
+        public const string CreateVolunteerRequest = "volunteer.request.create";
+        public const string TakeRequestOnReview = "volunteer.request.take.onReview";
+        public const string RejectRequest = "volunteer.request.reject";
+        public const string SendToRevision = "volunteer.request.revision";
+        public const string ApproveRequest = "volunteer.request.approve";
+        public const string EditVolunteerRequest = "volunteer.request.edit";
+        public const string GetAllSubmittedVolunteerRequest = "volunteer.request.all.submitted";
+        public const string GetRequestsForCurrentAdmin = "volunteer.request.all.admin";
+        public const string GetRequestsForCurrentUser = "volunteer.request.all.user";
+    }
 }

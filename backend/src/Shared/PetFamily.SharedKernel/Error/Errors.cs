@@ -40,6 +40,11 @@ public static class Errors
                 : $"Record {propertyName} already exists";
             return Error.Validation("record.already.exists", $"{text}");
         }
+
+        public static ErrorList ErrorDuringTransaction()
+        {
+            return Error.Failure("error.during.transaction", "Unexpected error during transaction").ToErrorList();
+        }
     }
     
     public static class Tokens
@@ -59,6 +64,47 @@ public static class Errors
         public static Error InvalidCredentials()
         {
             return Error.Validation("credentials.is.invalid", "Invalid credentials");
+        }
+    }
+
+    public static class VolunteerRequest
+    {
+        public static ErrorList UserAlreadyVolunteer()
+        {
+            return Error.Validation("user.already.volunteer", "User is already volunteer").ToErrorList();
+        }
+        
+        public static ErrorList RequestAlreadyOnReview()
+        {
+            return Error.Validation("request.already.onReview", "Request is already on review").ToErrorList();
+        }
+        
+        public static ErrorList RequestAlreadyApproved()
+        {
+            return Error.Validation("request.already.approved", "Request is already approved").ToErrorList();
+        }
+        
+        public static ErrorList RequestAlreadyRejected()
+        {
+            return Error.Validation("request.already.rejected", "Request is already rejected").ToErrorList();
+        }        
+        public static ErrorList RequestAlreadySendForRevision()
+        {
+            return Error.Validation("request.already.revision", "Request is already send to reve=ision")
+                .ToErrorList();
+        }
+        public static ErrorList UserInTimeBan()
+        {
+            return Error.Conflict("user.is.banned", "User has been banned").ToErrorList();
+        }
+
+        public static ErrorList RequestIsNotOnRevision()
+        {
+            return Error.Validation("request.is.not.revision", "Request is not on revision").ToErrorList();
+        }
+        public static ErrorList InvalidStatus()
+        {
+            return Error.Validation("request.status.invalid", "Invalid request status").ToErrorList();
         }
     }
 }

@@ -23,14 +23,11 @@ public class Utilities
                 Fio.Create(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString()).Value,
                 Description.Create(Guid.NewGuid().ToString()).Value,
                 Email.Create("email" + Guid.NewGuid() + "@email.com").Value,
-                Photo.Create(FilePath.Create("file.pdf", null).Value).Value,
                 YearsOfExperience.Create(5).Value);
 
             var request = new VolunteerRequest(
                 requestId,
-                adminId,
                 userId,
-                discussionId,
                 info);
             
             requests.Add(request);
@@ -45,10 +42,7 @@ public class Utilities
         
         for (var i = 0; i < count; i++)
         {
-            var comment = RejectionComment.Create(
-                Guid.NewGuid(),
-                Guid.NewGuid(),
-                Description.Create(Guid.NewGuid().ToString()).Value).Value;
+            var comment = new RejectionComment(Description.Create(Guid.NewGuid().ToString()).Value);
             
             var request = CreateVolunteerRequestWithoutRejectionComment(
                 1,
@@ -73,10 +67,7 @@ public class Utilities
         
         var validDescription = description ?? Description.Create(Guid.NewGuid().ToString()).Value;
         
-        var comment = RejectionComment.Create(
-            admin,
-            user,
-            validDescription).Value;
+        var comment = new RejectionComment(validDescription);
 
         return comment;
     }

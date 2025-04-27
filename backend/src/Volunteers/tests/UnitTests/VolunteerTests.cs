@@ -492,7 +492,7 @@ public class VolunteerTests
         volunteer.AddPet(pet);
 
         var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value).Value;
-        pet.AddPhotos(new List<Photo> { photo });
+        volunteer.AddPetPhotos(pet.Id, [photo]);
         photo.SetMain();
 
         // Act
@@ -512,7 +512,7 @@ public class VolunteerTests
         volunteer.AddPet(pet);
 
         var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value);
-        pet.AddPhotos(new List<Photo> { photo.Value });
+        volunteer.AddPetPhotos(pet.Id, [photo.Value]);
 
         // Act
         var result = volunteer.RemovePetMainPhoto(pet, photo.Value);
@@ -531,7 +531,7 @@ public class VolunteerTests
         volunteer.AddPet(pet);
 
         var photo = Photo.Create(FilePath.Create("path1.jpg", null).Value);
-        pet.AddPhotos(new List<Photo> { photo.Value });
+        volunteer.AddPetPhotos(pet.Id, [photo.Value]);
 
         // Act
         var result = volunteer.GetPetPhoto(pet, photo.Value.PathToStorage);

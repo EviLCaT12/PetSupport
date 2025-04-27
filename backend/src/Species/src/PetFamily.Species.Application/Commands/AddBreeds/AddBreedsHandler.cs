@@ -34,45 +34,36 @@ public class AddBreedsHandler : ICommandHandler<List<Guid>, AddBreedsCommand>
     public async Task<Result<List<Guid>, ErrorList>> HandleAsync(AddBreedsCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
 
-            var speciesId = SpeciesId.Create(command.SpeciesId);
-            var getSpeciesResult = await _repository.GetByIdAsync(speciesId.Value, cancellationToken);
-            if (getSpeciesResult.IsFailure)
-            {
-                _logger.LogError($"Species with id: {speciesId} not found");
-                return getSpeciesResult.Error;
-            }
-            
-            var species = getSpeciesResult.Value;
-            
-            List<Breed> breeds = [];
-            foreach (var name in command.Names)
-            {
-                var breedId = BreedId.NewBreedId();
-                var breedName = Name.Create(name).Value;
-                var breed = Breed.Create(breedId, breedName).Value;
-                breeds.Add(breed);
-            }
-            
-            species.AddBreeds(breeds);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            transaction.Commit();
-            
-            return breeds.Select(bred => bred.Id.Value).ToList();
-        }
-        catch (Exception e)
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+
+        var speciesId = SpeciesId.Create(command.SpeciesId);
+        var getSpeciesResult = await _repository.GetByIdAsync(speciesId.Value, cancellationToken);
+        if (getSpeciesResult.IsFailure)
         {
-            var msg = "An error occured while adding breeds";
-            _logger.LogError(e, msg);
-            transaction.Rollback();
-            var error = Error.Failure("server.error", msg);
-            return new ErrorList([error]);
+            _logger.LogError($"Species with id: {speciesId} not found");
+            return getSpeciesResult.Error;
         }
+        
+        var species = getSpeciesResult.Value;
+        
+        List<Breed> breeds = [];
+        foreach (var name in command.Names)
+        {
+            var breedId = BreedId.NewBreedId();
+            var breedName = Name.Create(name).Value;
+            var breed = Breed.Create(breedId, breedName).Value;
+            breeds.Add(breed);
+        }
+        
+        species.AddBreeds(breeds);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        transaction.Commit();
+        
+        return breeds.Select(bred => bred.Id.Value).ToList();
+
     }
 }

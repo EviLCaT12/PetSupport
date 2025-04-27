@@ -9,7 +9,7 @@ namespace PetFamily.Volunteer.Infrastructure.DbContexts;
 public class ReadDbContext(string connectionString) : DbContext, IReadDbContext
 {
     public IQueryable<VolunteerDto> Volunteers => Set<VolunteerDto>();
-    public IQueryable<PetDto> Pets => Set<PetDto>();
+    public IQueryable<PetDto> Pets => Set<PetDto>();    
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

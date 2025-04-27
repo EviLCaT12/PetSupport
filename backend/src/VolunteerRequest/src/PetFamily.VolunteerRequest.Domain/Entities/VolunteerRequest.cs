@@ -11,71 +11,96 @@ public class VolunteerRequest : Entity <VolunteerRequestId>
 
     public VolunteerRequest(
         VolunteerRequestId id,
-        Guid adminId,
         Guid userId,
-        Guid discussionId,
         VolunteerInfo volunteerInfo)
     {
         Id = id;
-        AdminId = adminId;
         UserId = userId;
-        DiscussionId = discussionId;
         VolunteerInfo = volunteerInfo;
     }
     
     public VolunteerRequestId Id { get; private set; }
     
-    public Guid AdminId { get; private set; }
+    public Guid? AdminId { get; private set; }
     
     public Guid UserId { get; private set; }
     
-    public Guid DiscussionId { get; private set; }
+    public Guid? DiscussionId { get; private set; }
     
     public VolunteerInfo VolunteerInfo { get; private set; }
 
     public Status Status { get; private set; } = Status.Submitted;
     
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    
+    public DateTime? RejectionDate{ get; private set; }
 
-    public RejectionComment? RejectionComment { get; private set; } = null;
+    public RejectionComment? RejectionComment { get; private set; }
 
 
     //Взять заявку в рассмотрение
-    public VolunteerRequest TakeRequestOnReview()
+    public UnitResult<ErrorList> TakeRequestOnReview(Guid adminId, Guid discussionId)
     {
+        if (Status == Status.OnReview)
+            return Errors.VolunteerRequest.RequestAlreadyOnReview();
+            
+        AdminId = adminId;
+        DiscussionId = discussionId;
         Status = Status.OnReview;
 
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Отправить на доработку
-    public VolunteerRequest SendForRevision(RejectionComment comment)
+    public UnitResult<ErrorList> SendForRevision(RejectionComment comment)
     {
         //Проверка на нул не требуется, так как заявка и коммент никогда нул не будут в силу методов их создания
+        if (Status == Status.RevisionRequired)
+            return Errors.VolunteerRequest.RequestAlreadySendForRevision();
+        
         Status = Status.RevisionRequired;
         
         RejectionComment = comment;
 
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Отменить заявку
-    public VolunteerRequest RejectRequest(RejectionComment? comment)
+    public UnitResult<ErrorList> RejectRequest(RejectionComment comment)
     {
-        if (comment is not null)
-            RejectionComment = comment;
+        if (Status == Status.Rejected)
+            return Errors.VolunteerRequest.RequestAlreadyRejected();
+        
+        RejectionDate = DateTime.UtcNow;
+        
+        RejectionComment = comment;
         
         Status = Status.Rejected;
         
-        return this;
+        return UnitResult.Success<ErrorList>();
     }
 
     //Утвердить заявку
-    public VolunteerRequest ApproveRequest()
+    public UnitResult<ErrorList> ApproveRequest()
     {
+        if (Status == Status.Approved)
+            return Errors.VolunteerRequest.RequestAlreadyApproved();
+        
         Status = Status.Approved;
         
-        return this;
+        return UnitResult.Success<ErrorList>();
+    }
+
+    public UnitResult<ErrorList> Edit(VolunteerInfo newVolunteerInfo)
+    {
+        if (Status != Status.RevisionRequired)
+            return Errors.VolunteerRequest.RequestIsNotOnRevision();
+        
+        VolunteerInfo = newVolunteerInfo;
+        
+        Status = Status.Submitted;
+        
+        return UnitResult.Success<ErrorList>();
     }
 
     //Пока самый простой метод сугубо для тестов

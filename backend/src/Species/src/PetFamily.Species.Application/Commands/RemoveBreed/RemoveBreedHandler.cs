@@ -35,52 +35,42 @@ public class RemoveBreedHandler : ICommandHandler<Guid, RemoveBreedCommand>
     public async Task<Result<Guid, ErrorList>> HandleAsync(RemoveBreedCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
+        
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var speciesId = SpeciesId.Create(command.SpeciesId).Value;
+        var getSpeciesResult = await _repository.GetByIdAsync(speciesId, cancellationToken);
+        if (getSpeciesResult.IsFailure)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var speciesId = SpeciesId.Create(command.SpeciesId).Value;
-            var getSpeciesResult = await _repository.GetByIdAsync(speciesId, cancellationToken);
-            if (getSpeciesResult.IsFailure)
-            {
-                _logger.LogError($"Species with id: {speciesId} not found");
-                return getSpeciesResult.Error;
-            }
-            var species = getSpeciesResult.Value;
-
-
-            var breedId = BreedId.Create(command.BreedId).Value;
-            var isBreedAttachSpecies = species.GetBreedById(breedId);
-            if (isBreedAttachSpecies.IsFailure)
-                return isBreedAttachSpecies.Error;
-            
-            var petWithBreed = await _petContract.IsPetHasBreed(breedId.Value, cancellationToken);
-            if (petWithBreed != null)
-            {
-                var msg = "Breed with id: " + command.BreedId + 
-                          "cannot be removed. Pet with id:" + petWithBreed.Id + "has this species.";
-                _logger.LogError(msg);
-                var error = Errors.General.ValueIsInvalid(nameof(SpeciesId));
-                return new ErrorList([error]);
-            }
-            
-            species.RemoveBreed(isBreedAttachSpecies.Value);
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            transaction.Commit();
-
-            return breedId.Value;
-
+            _logger.LogError($"Species with id: {speciesId} not found");
+            return getSpeciesResult.Error;
         }
-        catch (Exception e)
+        var species = getSpeciesResult.Value;
+
+
+        var breedId = BreedId.Create(command.BreedId).Value;
+        var isBreedAttachSpecies = species.GetBreedById(breedId);
+        if (isBreedAttachSpecies.IsFailure)
+            return isBreedAttachSpecies.Error;
+        
+        var petWithBreed = await _petContract.IsPetHasBreed(breedId.Value, cancellationToken);
+        if (petWithBreed != null)
         {
-            _logger.LogError(e, "Fail to remove breed with id: {breedId} during transaction ", command.BreedId);
-            transaction.Rollback();
-            
-            var error = Error.Failure("species.failure",
-                "Error during delete breed in transaction");
+            var msg = "Breed with id: " + command.BreedId + 
+                      "cannot be removed. Pet with id:" + petWithBreed.Id + "has this species.";
+            _logger.LogError(msg);
+            var error = Errors.General.ValueIsInvalid(nameof(SpeciesId));
             return new ErrorList([error]);
         }
+        
+        species.RemoveBreed(isBreedAttachSpecies.Value);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        transaction.Commit();
+
+        return breedId.Value;
+
     }
+    
 }

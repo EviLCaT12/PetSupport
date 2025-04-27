@@ -22,37 +22,36 @@ public class CreateVolunteerHandler(
         CancellationToken cancellationToken = default)
     {
         var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        try
-        {
-            var createVolunteerValidationResult = await createVolunteerCommandValidator.ValidateAsync(
-            createVolunteerCommand,
-            cancellationToken);
-            if (createVolunteerValidationResult.IsValid == false)
-                return createVolunteerValidationResult.ToErrorList();
-            
-            var volunteerId = VolunteerId.NewVolunteerId();
-
-            var fioCreateResult = Fio
-                .Create(createVolunteerCommand.Fio.FirstName, createVolunteerCommand.Fio.LastName, createVolunteerCommand.Fio.SurName)
-                .Value;
         
-
-            var phoneNumberCreateResult = Phone.Create(createVolunteerCommand.PhoneNumber).Value;
-
-
-
-            var emailCreateResult = Email.Create(createVolunteerCommand.Email).Value;
-
-            var descriptionCreateResult = Description.Create(createVolunteerCommand.Description).Value;
-            
+        var createVolunteerValidationResult = await createVolunteerCommandValidator.ValidateAsync(
+        createVolunteerCommand,
+        cancellationToken);
+        if (createVolunteerValidationResult.IsValid == false)
+            return createVolunteerValidationResult.ToErrorList();
         
-            var validVolunteer = Volunteers.Domain.Entities.Volunteer.Create(
-                volunteerId,
-                fioCreateResult,
-                phoneNumberCreateResult,
-                emailCreateResult,
-                descriptionCreateResult
-            );
+        var volunteerId = VolunteerId.NewVolunteerId();
+
+        var fioCreateResult = Fio
+            .Create(createVolunteerCommand.Fio.FirstName, createVolunteerCommand.Fio.LastName, createVolunteerCommand.Fio.SurName)
+            .Value;
+    
+
+        var phoneNumberCreateResult = Phone.Create(createVolunteerCommand.PhoneNumber).Value;
+
+
+
+        var emailCreateResult = Email.Create(createVolunteerCommand.Email).Value;
+
+        var descriptionCreateResult = Description.Create(createVolunteerCommand.Description).Value;
+        
+    
+        var validVolunteer = Volunteers.Domain.Entities.Volunteer.Create(
+            volunteerId,
+            fioCreateResult,
+            phoneNumberCreateResult,
+            emailCreateResult,
+            descriptionCreateResult
+        );
         
         await volunteersRepository.AddAsync(validVolunteer.Value, cancellationToken);
 
@@ -62,18 +61,6 @@ public class CreateVolunteerHandler(
         logger.LogInformation("Created volunteer with ID: {volunteerId}", volunteerId);
         
         return validVolunteer.Value.Id.Value;
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e,
-                "Fail to add volunteer in transaction");
-            
-            transaction.Rollback();
-            
-            var error = Error.Failure("volunteer.failure", "Error during add volunteer transaction");
-
-            return new ErrorList([error]);
-        }
         
     }
 }

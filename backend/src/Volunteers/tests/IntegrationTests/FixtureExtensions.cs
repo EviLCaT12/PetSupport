@@ -1,5 +1,6 @@
 using System.Globalization;
 using AutoFixture;
+using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Application.Commands.AddPet;
 using PetFamily.Volunteers.Application.Commands.AddPetPhotos;
 using PetFamily.Volunteers.Application.Commands.Create;

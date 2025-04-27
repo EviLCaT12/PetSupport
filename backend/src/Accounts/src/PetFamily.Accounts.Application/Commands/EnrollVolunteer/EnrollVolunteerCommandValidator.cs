@@ -9,9 +9,9 @@ public class EnrollVolunteerCommandValidator : AbstractValidator<EnrollVolunteer
 {
     public EnrollVolunteerCommandValidator()
     {
+        RuleFor(c => c.UserId).Must(id => id != Guid.Empty).WithMessage("UserId cannot be empty");
         RuleFor(c => c.PhoneNumber).MustBeValueObject(Phone.Create);
         RuleFor(c => c.Description).MustBeValueObject(Description.Create);
-        RuleFor(c => c.Email).MustBeValueObject(Email.Create);
         RuleFor(c => c.Experience).MustBeValueObject(YearsOfExperience.Create);
     }
 }

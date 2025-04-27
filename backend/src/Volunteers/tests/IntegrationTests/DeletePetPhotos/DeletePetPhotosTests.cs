@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Core.Abstractions;
 using PetFamily.SharedKernel.SharedVO;
 using PetFamily.Volunteers.Application.Commands.DeletePetPhotos;
+using PetFamily.Volunteers.Domain.ValueObjects.PetVO;
+
 namespace IntegrationTests.DeletePetPhotos;
 
 public class DeletePetPhotosTests : VolunteerBaseTest
@@ -27,7 +29,7 @@ public class DeletePetPhotosTests : VolunteerBaseTest
         
         var photoToDelete = Photo.Create(FilePath.Create("photo.jpg", null).Value).Value;
         
-        pet!.AddPhotos([photoToDelete]);
+        volunteer.AddPetPhotos(PetId.Create(petId).Value, [photoToDelete]);
         await WriteContext.SaveChangesAsync(CancellationToken.None);
         
         var command = new DeletePetPhotosCommand(volunteerId, petId, [photoToDelete.PathToStorage.Path]);

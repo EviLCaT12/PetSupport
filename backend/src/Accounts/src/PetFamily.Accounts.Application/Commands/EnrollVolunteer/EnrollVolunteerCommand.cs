@@ -3,7 +3,7 @@ using PetFamily.Core.Abstractions;
 namespace PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 
 public record EnrollVolunteerCommand(
-    string Email,
+    Guid UserId,
     int Experience,
     string PhoneNumber,
     string Description
