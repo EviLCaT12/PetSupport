@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="EFCore.NamingConventions" Version="9.0.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PetFamily.Discussion.Application\PetFamily.Discussion.Application.csproj" />
+      <ProjectReference Include="..\PetFamily.Discussion.Contracts\PetFamily.Discussion.Contracts.csproj" />
+      <ProjectReference Include="..\PetFamily.Discussion.Domain\PetFamily.Discussion.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

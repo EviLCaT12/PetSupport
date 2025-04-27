@@ -23,7 +23,7 @@ public class DiscussionTests
         result.Value.Should().NotBeNull();
         result.Value.Id.Should().Be(_validId);
         result.Value.RelationId.Should().Be(_validRelationId);
-        result.Value.Users.Should().BeEquivalentTo(_validUsers);
+        result.Value.Members.Should().BeEquivalentTo(_validUsers);
         result.Value.Status.Should().Be(Status.Open);
     }
 
@@ -102,28 +102,12 @@ public class DiscussionTests
         var comment = new Message(MessageId.NewId(), userId, Text.Create("Test message").Value);
 
         // Act
-        var result = discussion.AddComment(comment, userId);
+        discussion.AddComment(comment);
 
         // Assert
-        result.IsSuccess.Should().BeTrue();
         discussion.Messages.Should().Contain(comment);
     }
-
-    [Fact]
-    public void AddComment_WithInvalidUser_ReturnsError()
-    {
-        // Arrange
-        var discussion = Discussion.Create(_validId, _validRelationId, _validUsers).Value;
-        var invalidUserId = Guid.NewGuid();
-        var comment = new Message(MessageId.NewId(), invalidUserId, Text.Create("Test message").Value);
-
-        // Act
-        var result = discussion.AddComment(comment, invalidUserId);
-
-        // Assert
-        result.IsFailure.Should().BeTrue();
-        discussion.Messages.Should().BeEmpty();
-    }
+    
 
     [Fact]
     public void DeleteComment_WithValidUserAndComment_RemovesComment()
@@ -132,32 +116,14 @@ public class DiscussionTests
         var discussion = Discussion.Create(_validId, _validRelationId, _validUsers).Value;
         var userId = _validUsers.First();
         var comment = new Message(MessageId.NewId(), userId, Text.Create("Test message").Value);
-        discussion.AddComment(comment, userId);
+        discussion.AddComment(comment);
 
         // Act
-        var result = discussion.DeleteComment(comment, userId);
+        var result = discussion.DeleteComment(comment);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
         discussion.Messages.Should().NotContain(comment);
-    }
-
-    [Fact]
-    public void DeleteComment_WithInvalidUser_ReturnsError()
-    {
-        // Arrange
-        var discussion = Discussion.Create(_validId, _validRelationId, _validUsers).Value;
-        var userId = _validUsers.First();
-        var invalidUserId = _validUsers.Last();
-        var comment = new Message(MessageId.NewId(), userId, Text.Create("Test message").Value);
-        discussion.AddComment(comment, userId);
-
-        // Act
-        var result = discussion.DeleteComment(comment, invalidUserId);
-
-        // Assert
-        result.IsFailure.Should().BeTrue();
-        discussion.Messages.Should().Contain(comment);
     }
 
     [Fact]
@@ -168,36 +134,17 @@ public class DiscussionTests
         var userId = _validUsers.First();
         var originalText = Text.Create("Original text").Value;
         var comment = new Message(MessageId.NewId(), userId, originalText);
-        discussion.AddComment(comment, userId);
+        discussion.AddComment(comment);
         
         var newText = Text.Create("New text").Value;
 
         // Act
-        var result = discussion.EditComment(comment, newText, userId);
+        var result = discussion.EditComment(comment, newText);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
     }
-
-    [Fact]
-    public void EditComment_WithInvalidUser_ReturnsError()
-    {
-        // Arrange
-        var discussion = Discussion.Create(_validId, _validRelationId, _validUsers).Value;
-        var userId = _validUsers.First();
-        var invalidUserId = _validUsers.Last();
-        var originalText = Text.Create("Original text").Value;
-        var comment = new Message(MessageId.NewId(), userId, originalText);
-        discussion.AddComment(comment, userId);
-        
-        var newText = Text.Create("New text").Value;
-
-        // Act
-        var result = discussion.EditComment(comment, newText, invalidUserId);
-
-        // Assert
-        result.IsFailure.Should().BeTrue();
-    }
+    
 
     [Fact]
     public void IsMessageInDiscussion_WithExistingMessage_ReturnsTrue()
@@ -206,7 +153,7 @@ public class DiscussionTests
         var discussion = Discussion.Create(_validId, _validRelationId, _validUsers).Value;
         var userId = _validUsers.First();
         var comment = new Message(MessageId.NewId(), userId, Text.Create("Test message").Value);
-        discussion.AddComment(comment, userId);
+        discussion.AddComment(comment);
 
         // Act
         var result = discussion.IsMessageInDiscussion(comment);

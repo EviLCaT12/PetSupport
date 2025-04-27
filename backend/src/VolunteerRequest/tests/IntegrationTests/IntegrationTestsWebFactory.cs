@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Contracts;
+using Contracts.Requests;
 using CSharpFunctionalExtensions;
 using DotNetEnv;
 using Microsoft.AspNetCore.Hosting;
@@ -88,7 +89,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     public void SetupSuccessCreateDiscussionForVolunteerRequest()
     {
         _discussionContractMock
-            .CreateDiscussionForVolunteerRequest(Arg.Any<Guid>(), Arg.Any<IEnumerable<Guid>>())
+            .CreateDiscussionForVolunteerRequest(Arg.Any<CreateDiscussionRequest>(), Arg.Any<CancellationToken>())
             .Returns(Guid.NewGuid());
     }
     
@@ -141,7 +142,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         _respawner = await Respawner.CreateAsync(_dbConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            SchemasToInclude = ["account", "volunteer_request"] //FIXME: Добавить позже discussion 
+            SchemasToInclude = ["account", "volunteer_request", "discussion"]
         });
     }
 

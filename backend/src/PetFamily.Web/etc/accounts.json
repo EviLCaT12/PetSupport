@@ -34,6 +34,13 @@
       "volunteer.request.all.submitted",
       "volunteer.request.all.admin",
       "volunteer.request.all.user"
+    ],
+    "Discussion": [
+      "discussion.close",
+      "discussion.message.chat",
+      "discussion.message.edit",
+      "discussion.message.delete",
+      "discussion.get"
     ]
   },
   "Roles": {
@@ -44,7 +51,11 @@
       "species.breeds.get",
       "volunteer.request.create",
       "volunteer.request.edit",
-      "volunteer.request.all.user"
+      "volunteer.request.all.user",
+      "discussion.close",
+      "discussion.message.chat",
+      "discussion.message.edit",
+      "discussion.message.delete"
     ],
     "Volunteer" : [     
       "volunteer.get",
@@ -62,6 +73,11 @@
       "volunteer.pets.help.change"
     ],
     "Admin": [
+      "discussion.close",
+      "discussion.message.chat",
+      "discussion.message.edit",
+      "discussion.message.delete",
+      "discussion.get",
       "volunteer.create",
       "volunteer.get",
       "volunteer.update.main.info",
@@ -76,6 +92,7 @@
       "volunteer.pets.main.photo.remove",
       "volunteer.pets.position.change",
       "volunteer.pets.help.change",
+      "volunteer.request.create",
       "volunteer.request.take.onReview",
       "volunteer.request.reject",
       "volunteer.request.revision",

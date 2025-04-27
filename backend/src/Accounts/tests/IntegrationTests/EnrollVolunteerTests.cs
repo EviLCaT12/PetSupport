@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PetFamily.Accounts.Application.Commands.EnrollVolunteer;
 using PetFamily.Accounts.Application.Commands.RegisterUser;
 using PetFamily.Accounts.Domain.Entities.AccountEntitites;
+using PetFamily.Accounts.Infrastructure.Contexts;
 using PetFamily.Core.Abstractions;
 using PetFamily.Core.Dto.Shared;
 using PetFamily.Volunteers.Contracts.Dto.VolunteerDto;
@@ -28,16 +29,22 @@ public class EnrollVolunteerTests : AccountBaseTests
         var exp = 0;
         var phone = "+7 (123) 123-12-12";
         
+        using var scope1 = Factory.Services.CreateScope();
+        using var scope2 = Factory.Services.CreateScope();
+        
         var commandForRegister = new RegisterUserCommand(email, name, fioDto ,password);
-        var register = Scope.ServiceProvider.GetRequiredService<ICommandHandler<RegisterUserCommand>>();
+        var register = scope1.ServiceProvider.GetRequiredService<ICommandHandler<RegisterUserCommand>>();
         await register.HandleAsync(commandForRegister, CancellationToken.None);
-
+        var context = scope1.ServiceProvider.GetRequiredService<WriteAccountsDbContext>();
+        var userId = await context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        
+        
         var commandForEnroll = new EnrollVolunteerCommand(
-            Guid.NewGuid(), 
+            userId!.Id, 
             exp,
             phone,
             description);
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<EnrollVolunteerCommand>>();
+        var sut = scope2.ServiceProvider.GetRequiredService<ICommandHandler<Guid, EnrollVolunteerCommand>>();
 
         //Act
         var result = await sut.HandleAsync(commandForEnroll, CancellationToken.None);
@@ -48,13 +55,14 @@ public class EnrollVolunteerTests : AccountBaseTests
         var userCount = WriteContext.Users.Where(u => u.Email == email);
         userCount.Count().Should().Be(1);
         
-        var userRole = await WriteContext.Users
+        var user = await WriteContext.Users
             .Include(user => user.Roles)
-            .FirstAsync();
-        userRole.Roles[0].Name.Should().Be(VolunteerAccount.Volunteer);
+            .FirstAsync(u => u.Id == userId.Id);
         
-        var participantAccount = WriteContext.ParticipantAccounts.First();
-        participantAccount.Should().BeNull();
+        user.Roles[0].Name.Should().Be(VolunteerAccount.Volunteer);
+        
+        var participantAccount = WriteContext.ParticipantAccounts;
+        participantAccount.Should().BeEmpty();
         
         var volunteerAccount = WriteContext.VolunteerAccounts.First();
         volunteerAccount.Should().NotBeNull();

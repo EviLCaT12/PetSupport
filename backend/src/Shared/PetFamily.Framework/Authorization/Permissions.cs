@@ -43,4 +43,14 @@ public static class Permissions
         public const string GetRequestsForCurrentAdmin = "volunteer.request.all.admin";
         public const string GetRequestsForCurrentUser = "volunteer.request.all.user";
     }
+
+    public static class Discussions
+    {
+        public const string CreateDiscussion = "discussion.create";
+        public const string CloseDiscussion = "discussion.close";
+        public const string ChatMessage = "discussion.message.chat";
+        public const string EditMessage = "discussion.message.edit";
+        public const string DeleteMessage = "discussion.message.delete";
+        public const string GetDiscussion = "discussion.get";
+    }
 }
