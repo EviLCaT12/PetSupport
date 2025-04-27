@@ -35,44 +35,35 @@ public class ChatMessageHandler : ICommandHandler<Guid, ChatMessageCommand>
     public async Task<Result<Guid, ErrorList>> HandleAsync(ChatMessageCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        try
+        
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
+        var discussion = await _discussionRepository.GetByIdAsync(discussionId, cancellationToken);
+        if (discussion is null)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
-            var discussion = await _discussionRepository.GetByIdAsync(discussionId, cancellationToken);
-            if (discussion is null)
-            {
-                _logger.LogWarning($"Discussion with id {discussionId} not found");
-                return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
-            }
-            
-            var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
-            if (isUserInDiscussion.IsFailure)
-                return isUserInDiscussion.Error.ToErrorList();
-
-            var messageId = MessageId.NewId();
-            var text = Text.Create(command.Text).Value;
-            var message = new Message(
-                messageId,
-                command.UserId,
-                text);
-            discussion.AddComment(message);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-
-            return messageId.Value;
+            _logger.LogWarning($"Discussion with id {discussionId} not found");
+            return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
         }
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Error during chat message");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        
+        var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
+        if (isUserInDiscussion.IsFailure)
+            return isUserInDiscussion.Error.ToErrorList();
+
+        var messageId = MessageId.NewId();
+        var text = Text.Create(command.Text).Value;
+        var message = new Message(
+            messageId,
+            command.UserId,
+            text);
+        discussion.AddComment(message);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+
+        return messageId.Value;
     }
 }

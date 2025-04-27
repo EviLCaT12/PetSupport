@@ -32,37 +32,28 @@ public class CloseHandler : ICommandHandler<CloseCommand>
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        try
-        {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
 
-            var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
-            var discussion = await _repository.GetByIdAsync(discussionId, cancellationToken);
-            if (discussion is null)
-            {
-                _logger.LogWarning($"Discussion with id {discussionId} not found");
-                return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
-            }
-            
-            var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
-            if (isUserInDiscussion.IsFailure)
-                return isUserInDiscussion.Error.ToErrorList();
-            
-            discussion.Close();
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-            
-            return Result.Success<ErrorList>();
-        }
-        catch (Exception e)
+        var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
+        var discussion = await _repository.GetByIdAsync(discussionId, cancellationToken);
+        if (discussion is null)
         {
-            transaction.Rollback();
-            _logger.LogError(e, "Error during close discussion");
-            return Errors.General.ErrorDuringTransaction();
+            _logger.LogWarning($"Discussion with id {discussionId} not found");
+            return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
         }
+        
+        var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
+        if (isUserInDiscussion.IsFailure)
+            return isUserInDiscussion.Error.ToErrorList();
+        
+        discussion.Close();
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+        
+        return Result.Success<ErrorList>();
     }
 }

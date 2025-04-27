@@ -12,7 +12,7 @@ public class AccountBaseTests : IClassFixture<IntegrationTestsWebFactory>, IAsyn
     protected readonly IServiceScope Scope;
     protected readonly IntegrationTestsWebFactory Factory;
     
-    protected AccountBaseTests(IntegrationTestsWebFactory factory)
+    public AccountBaseTests(IntegrationTestsWebFactory factory)
     {
         Factory = factory;
         Scope = factory.Services.CreateScope();
@@ -23,9 +23,9 @@ public class AccountBaseTests : IClassFixture<IntegrationTestsWebFactory>, IAsyn
 
     public Task InitializeAsync() => Task.CompletedTask;
 
-    public async Task DisposeAsync()
+    async Task IAsyncLifetime.DisposeAsync()
     {
-        Scope.Dispose();
         await Factory.ResetDatabaseAsync();
+        Scope.Dispose();
     }
 }

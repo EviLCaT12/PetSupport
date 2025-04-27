@@ -71,6 +71,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
+        
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<WriteDbContext>();
         await dbContext.Database.EnsureCreatedAsync();

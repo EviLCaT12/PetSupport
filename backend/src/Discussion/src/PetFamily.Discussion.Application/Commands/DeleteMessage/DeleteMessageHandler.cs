@@ -36,53 +36,44 @@ public class DeleteMessageHandler : ICommandHandler<DeleteMessageCommand>
     {
         var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
 
-        try
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+        
+        var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
+        var discussion = await _discussionRepository.GetByIdAsync(discussionId, cancellationToken);
+        if (discussion is null)
         {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-            
-            var discussionId = DiscussionsId.Create(command.DiscussionId).Value;
-            var discussion = await _discussionRepository.GetByIdAsync(discussionId, cancellationToken);
-            if (discussion is null)
-            {
-                _logger.LogWarning($"Discussion with id {discussionId} not found");
-                return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
-            }
-            
-            var messageId = MessageId.Create(command.MessageId).Value;
-            var message = await _messageRepository.GetByIdAsync(messageId, cancellationToken);
-            if (message is null)
-            {
-                _logger.LogWarning($"Message with id {messageId} not found");
-                return Errors.General.ValueNotFound(messageId.Value).ToErrorList();
-            }
-            
-            var isMessageInDiscussion = discussion.IsMessageInDiscussion(message);
-            if (isMessageInDiscussion.IsFailure)
-                return isMessageInDiscussion.Error.ToErrorList();
-            
-            var isMessageBelongToUser = discussion.IsCommentBelongToUser(message, command.UserId);
-            if (isMessageBelongToUser.IsFailure)
-                return isMessageBelongToUser.Error.ToErrorList();
-            
-            var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
-            if (isUserInDiscussion.IsFailure)
-                return isUserInDiscussion.Error.ToErrorList();
-
-            discussion.DeleteComment(message);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-
-            return Result.Success<ErrorList>();
+            _logger.LogWarning($"Discussion with id {discussionId} not found");
+            return Errors.General.ValueNotFound(discussionId.Value).ToErrorList();
         }
-        catch (Exception e)
+        
+        var messageId = MessageId.Create(command.MessageId).Value;
+        var message = await _messageRepository.GetByIdAsync(messageId, cancellationToken);
+        if (message is null)
         {
-            transaction.Rollback();
-            _logger.LogError(e, "Error during edit message");
-            return Errors.General.ErrorDuringTransaction();
+            _logger.LogWarning($"Message with id {messageId} not found");
+            return Errors.General.ValueNotFound(messageId.Value).ToErrorList();
         }
+        
+        var isMessageInDiscussion = discussion.IsMessageInDiscussion(message);
+        if (isMessageInDiscussion.IsFailure)
+            return isMessageInDiscussion.Error.ToErrorList();
+        
+        var isMessageBelongToUser = discussion.IsCommentBelongToUser(message, command.UserId);
+        if (isMessageBelongToUser.IsFailure)
+            return isMessageBelongToUser.Error.ToErrorList();
+        
+        var isUserInDiscussion = discussion.IsUserInDiscussion(command.UserId);
+        if (isUserInDiscussion.IsFailure)
+            return isUserInDiscussion.Error.ToErrorList();
+
+        discussion.DeleteComment(message);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+
+        return Result.Success<ErrorList>();
     }
 }

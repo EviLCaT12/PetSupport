@@ -31,37 +31,27 @@ public class CreateHandler : ICommandHandler<Guid, CreateCommand>
     public async Task<Result<Guid, ErrorList>> HandleAsync(CreateCommand command, CancellationToken cancellationToken)
     {
         var transaction =  await _unitOfWork.BeginTransactionAsync(cancellationToken);
-
-        try
-        {
-            var validationResult = await _validator.ValidateAsync(command, cancellationToken);
-            if (validationResult.IsValid == false)
-                return validationResult.ToErrorList();
-
-            var discussionId = DiscussionsId.NewId();
-
-            var discussion = Domain.Entities.Discussion.Create(
-                discussionId,
-                command.RelationId,
-                command.Members);
-
-            if (discussion.IsFailure)
-                return discussion.Error.ToErrorList();
-
-            await _repository.AddAsync(discussion.Value, cancellationToken);
-            
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            
-            transaction.Commit();
-
-            return discussionId.Value;
-        }
         
-        catch (Exception e)
-        {
-            transaction.Rollback();
-            _logger.LogError(e, "Error during create discussion");
-            return Errors.General.ErrorDuringTransaction();
-        }
+        var validationResult = await _validator.ValidateAsync(command, cancellationToken);
+        if (validationResult.IsValid == false)
+            return validationResult.ToErrorList();
+
+        var discussionId = DiscussionsId.NewId();
+
+        var discussion = Domain.Entities.Discussion.Create(
+            discussionId,
+            command.RelationId,
+            command.Members);
+
+        if (discussion.IsFailure)
+            return discussion.Error.ToErrorList();
+
+        await _repository.AddAsync(discussion.Value, cancellationToken);
+        
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
+
+        return discussionId.Value;
     }
 }

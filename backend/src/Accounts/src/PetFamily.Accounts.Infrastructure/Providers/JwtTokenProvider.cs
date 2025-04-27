@@ -69,6 +69,8 @@ public class JwtTokenProvider : ITokenProvider
 
     public async Task<Guid> GenerateRefreshToken(User user, Guid accessTokenJti, CancellationToken cancellationToken) 
     {
+        var transaction = await _unitOfWork.BeginTransactionAsync(cancellationToken);
+        
         var refreshSession = new RefreshSession
         {
             User = user,
@@ -80,6 +82,8 @@ public class JwtTokenProvider : ITokenProvider
         
         await _context.RefreshSessions.AddAsync(refreshSession, cancellationToken);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
+        transaction.Commit();
         
         return refreshSession.RefreshToken;
     }

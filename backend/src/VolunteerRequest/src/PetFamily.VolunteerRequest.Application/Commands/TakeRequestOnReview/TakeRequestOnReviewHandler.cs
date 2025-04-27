@@ -1,4 +1,5 @@
 using Contracts;
+using Contracts.Requests;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,9 +50,11 @@ public class TakeRequestOnReviewHandler : ICommandHandler<TakeRequestOnReviewCom
 
 
         var members = new List<Guid>() { request.UserId, command.AdminId };
-        var discussion = _contract.CreateDiscussionForVolunteerRequest(
-            request.Id.Value,
-            members);
+        
+        var createDiscussionRequest = new CreateDiscussionRequest(request.Id.Value, members);
+        var discussion = await _contract
+            .CreateDiscussionForVolunteerRequest(createDiscussionRequest, cancellationToken);
+
         if (discussion.IsFailure)
             return discussion.Error;
 
