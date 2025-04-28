@@ -1,4 +1,5 @@
 using FilesService.Endpoints;
+using FilesService.Middlewares;
 using Serilog;
 using Serilog.Events;
 
@@ -29,6 +30,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseExceptionMiddleware();
 
 app.MapEndpoints();
 

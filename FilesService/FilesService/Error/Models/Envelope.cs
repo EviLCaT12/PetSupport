@@ -15,7 +15,7 @@ public class Envelope
         TimeGenerated = DateTime.Now;
     }
 
-    public Envelope Ok(object? result = null) => new (result, null);
+    public static Envelope Ok(object? result = null) => new (result, null);
     
-    public Envelope Fail(ErrorList errors) => new (null, errors);
+    public static Envelope Fail(ErrorList errors) => new (null, errors);
 }
