@@ -1,4 +1,4 @@
-namespace FilesService.Error;
+namespace FilesService.Error.Models;
 
 public record Error
 {
