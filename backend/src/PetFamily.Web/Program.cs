@@ -18,6 +18,7 @@ using PetFamily.Species.Infrastructure;
 using PetFamily.Species.Presentation;
 using PetFamily.Volunteer.Api;
 using PetFamily.Volunteer.Infrastructure;
+using PetFamily.Volunteer.Infrastructure.DbContexts;
 using PetFamily.VolunteerRequest.Application;
 using PetFamily.VolunteerRequest.Infrastructure;
 using PetFamily.Volunteers.Application;
@@ -123,11 +124,10 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-//var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+var accountSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
-//await accountSeeder.SeedAsync();
+await accountSeeder.SeedAsync();
 
-//await app.ApplyMigration(); 
 
 app.UseExceptionMiddleware();
 

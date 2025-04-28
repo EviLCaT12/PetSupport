@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <UserSecretsId>ed892293-d408-42b0-aa1c-1db221ee6162</UserSecretsId>
+        <UserSecretsId>39dab01d-b4f7-4a4a-a575-11b59d06241e</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -42,7 +42,7 @@
       <ProjectReference Include="..\Volunteers\src\PetFamily.Volunteers.Infrastructure\PetFamily.Volunteers.Infrastructure.csproj" />
       <ProjectReference Include="..\Volunteers\src\PetFamily.Volunteers.Presentation\PetFamily.Volunteers.Presentation.csproj" />
     </ItemGroup>
-
+ 
     <ItemGroup>
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
