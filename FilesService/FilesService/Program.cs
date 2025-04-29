@@ -1,4 +1,6 @@
+using Amazon.S3;
 using FilesService.Endpoints;
+using FilesService.Infrastructure;
 using FilesService.Middlewares;
 using Serilog;
 using Serilog.Events;
@@ -17,6 +19,8 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Services.AddSerilog();
 
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddEndpointsApiExplorer();
@@ -24,10 +28,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddEndpoints();
 
 
+
+builder.Services.AddInfrastructure();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
 }
 
@@ -36,4 +45,6 @@ app.UseExceptionMiddleware();
 app.MapEndpoints();
 
 app.UseHttpsRedirection();
+
+app.Run();
 

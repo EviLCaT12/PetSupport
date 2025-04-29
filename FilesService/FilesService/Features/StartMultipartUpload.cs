@@ -1,37 +1,37 @@
 using FilesService.Endpoints;
 using FilesService.Error.Models;
 using FilesService.Infrastructure;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace FilesService.Features;
 
-public static class UploadPresignedUrl
+public class StartMultipartUpload
 {
     public sealed class EndPoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned", Handler);
+            app.MapPost("files/multipart", Handler);
         }
     }
 
-    private record UploadPresignedUrlRequest(string ContentType);
+    private record StartMultipartUploadRequest(string ContentType);
     
     private static async Task<IResult> Handler(
-        UploadPresignedUrlRequest request,
+        StartMultipartUploadRequest request,
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
         var key = Guid.NewGuid();
         
-        var presignedUrl = await fileProvider.UploadPresignedUrlAsync(request.ContentType, key);
-        if (string.IsNullOrEmpty(presignedUrl))
-            return Results.BadRequest(Errors.FileProviderErrors.EmptyPresignedUrl());
+        var response = await fileProvider.GetInitialMuplipartUploadPresignedUrlAsync(
+            request.ContentType,
+            key,
+            cancellationToken);
         
         return Results.Ok(new
         {
             key,
-            presignedUrl
+            uploadId = response?.UploadId
         });
     }
 }
