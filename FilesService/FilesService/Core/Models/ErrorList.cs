@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace FilesService.Error.Models;
+namespace FilesService.Core.Models;
 
 public class ErrorList(IEnumerable<Error> errors) : IEnumerable<Error>
 {

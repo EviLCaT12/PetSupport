@@ -1,4 +1,4 @@
-namespace FilesService.Error.Models;
+namespace FilesService.Core.Models;
 
 public class Envelope
 {

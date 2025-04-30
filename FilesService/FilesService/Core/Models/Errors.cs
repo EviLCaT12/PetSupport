@@ -1,4 +1,4 @@
-namespace FilesService.Error.Models;
+namespace FilesService.Core.Models;
 
 public static class Errors
 {
@@ -9,5 +9,11 @@ public static class Errors
             return Error.Failure("presigned.url.error", "Provider returned an empty URL.");
         }
         
+    }
+
+    public static class Files
+    {
+        public static Error FailRemove() =>
+            Error.Failure("file.remove", "Fail to remove file.");
     }
 }

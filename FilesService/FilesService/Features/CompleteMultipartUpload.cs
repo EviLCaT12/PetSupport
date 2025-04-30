@@ -1,6 +1,7 @@
+using FilesService.Core;
 using FilesService.Endpoints;
-using FilesService.Error.Models;
 using FilesService.Infrastructure;
+using FilesService.MongoDataAccess;
 
 namespace FilesService.Features;
 
@@ -10,7 +11,7 @@ public class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/complete-mupltipart", Handler);
+            app.MapPost("files/{key}/complete-mupltipart", Handler);
         }
     }
 
@@ -19,8 +20,9 @@ public class CompleteMultipartUpload
     private record CompleteMultipartUploadRequest(string UploadId, List<PartETagInfo> Parts);
     
     private static async Task<IResult> Handler(
-        Guid key,
+        string key,
         CompleteMultipartUploadRequest request,
+        IFileRepository repository,
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
@@ -30,6 +32,18 @@ public class CompleteMultipartUpload
             request.UploadId,
             request.Parts,
             cancellationToken);
+        
+        var fileMetaData = await fileProvider.GetObjectMetaDataAsync(key, cancellationToken);
+
+        var fileData = new FileData
+        {
+            StoragePath = key,
+            FileSize = response.ContentLength,
+            ContentType = fileMetaData.Headers.ContentType,
+            UploadDate = DateTime.UtcNow
+        };
+        
+        await repository.AddAsync(fileData, cancellationToken);
         
         return Results.Ok(new
         {

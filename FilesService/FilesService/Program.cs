@@ -2,6 +2,8 @@ using Amazon.S3;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
 using FilesService.Middlewares;
+using FilesService.MongoDataAccess;
+using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
 
@@ -27,7 +29,11 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddEndpoints();
 
+builder.Services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
 
+builder.Services.AddScoped<FileMongoDbContext>();
+
+builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 builder.Services.AddInfrastructure();
 

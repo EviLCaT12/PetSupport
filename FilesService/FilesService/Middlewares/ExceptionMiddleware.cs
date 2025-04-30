@@ -1,4 +1,4 @@
-using FilesService.Error.Models;
+using FilesService.Core.Models;
 
 namespace FilesService.Middlewares;
 
@@ -23,7 +23,7 @@ public class ExceptionMiddleware
         {
             _logger.LogError(e, e.Message);
             
-            var error = Error.Models.Error.Failure("server.error", e.Message);
+            var error = Error.Failure("server.error", e.Message);
             
             var envelope = Envelope.Fail(error.ToErrorList());
             

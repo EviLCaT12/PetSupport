@@ -1,5 +1,4 @@
 using FilesService.Endpoints;
-using FilesService.Error.Models;
 using FilesService.Infrastructure;
 
 namespace FilesService.Features;
@@ -21,7 +20,7 @@ public class StartMultipartUpload
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
-        var key = Guid.NewGuid();
+        var key = $"{request.ContentType}/{Guid.NewGuid()}";
         
         var response = await fileProvider.GetInitialMuplipartUploadPresignedUrlAsync(
             request.ContentType,

@@ -1,5 +1,5 @@
+using FilesService.Core.Models;
 using FilesService.Endpoints;
-using FilesService.Error.Models;
 using FilesService.Infrastructure;
 
 namespace FilesService.Features;
@@ -10,12 +10,12 @@ public static class GetPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("files/{key:guid}/presigned", Handler);
+            app.MapGet("files/{key}/presigned", Handler);
         }
     }
     
     private static async Task<IResult> Handler(
-        Guid key,
+        string key,
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {

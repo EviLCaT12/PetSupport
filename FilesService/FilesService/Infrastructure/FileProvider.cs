@@ -13,14 +13,14 @@ public class FileProvider : IFileProvider
         _s3Client = s3Client;
     }
     
-    public async Task<string> UploadPresignedUrlAsync(string contentType, Guid key)
+    public async Task<string> UploadPresignedUrlAsync(string contentType, string key)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = "photos",
             ContentType = contentType,
             Expires = DateTime.Now.AddMinutes(15),
-            Key = key.ToString(),
+            Key = key,
             Protocol = Protocol.HTTP,
             Verb = HttpVerb.PUT
         };
@@ -33,12 +33,12 @@ public class FileProvider : IFileProvider
     public async Task<string> UploadPartPresignedUrlAsync(
         string uploadId,
         int partNumber,
-        Guid key)
+        string key)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = "photos",
-            Key = key.ToString(),
+            Key = key,
             Expires = DateTime.Now.AddMinutes(15),
             Protocol = Protocol.HTTP,
             Verb = HttpVerb.PUT,
@@ -53,14 +53,14 @@ public class FileProvider : IFileProvider
 
     public async Task<InitiateMultipartUploadResponse?> GetInitialMuplipartUploadPresignedUrlAsync(
         string contentType, 
-        Guid key,
+        string key,
         CancellationToken cancellationToken = default)
     {
         var request = new InitiateMultipartUploadRequest
         {
             BucketName = "photos",
             ContentType = contentType,
-            Key = key.ToString(),
+            Key = key
         };
         
         var response = await _s3Client.InitiateMultipartUploadAsync(request, cancellationToken);
@@ -68,13 +68,13 @@ public class FileProvider : IFileProvider
         return response;
     }
 
-    public async Task<string> DeletePresignedUrlAsync(Guid key)
+    public async Task<string> DeletePresignedUrlAsync(string key)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = "photos",
             Expires = DateTime.Now.AddMinutes(15),
-            Key = key.ToString(),
+            Key = key,
             Protocol = Protocol.HTTP,
             Verb = HttpVerb.DELETE
         };
@@ -84,13 +84,13 @@ public class FileProvider : IFileProvider
         return response;
     }
 
-    public async Task<string> GetPresignedUrlAsync(Guid key)
+    public async Task<string> GetPresignedUrlAsync(string key)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = "photos",
             Expires = DateTime.Now.AddMinutes(15),
-            Key = key.ToString(),
+            Key = key,
             Protocol = Protocol.HTTP,
             Verb = HttpVerb.GET
         };
@@ -101,7 +101,7 @@ public class FileProvider : IFileProvider
     }
     
     public async Task< CompleteMultipartUploadResponse?> CompleteMultipartUploadAsync(
-        Guid key,
+        string key,
         string uploadId,
         List<CompleteMultipartUpload.PartETagInfo> parts,
         CancellationToken cancellationToken = default)
@@ -109,12 +109,26 @@ public class FileProvider : IFileProvider
         var request = new CompleteMultipartUploadRequest
         {
             BucketName = "photos",
-            Key = key.ToString(),
+            Key = key,
             UploadId = uploadId,
             PartETags = parts.Select(p => new PartETag { PartNumber = p.PartNumber, ETag = p.ETag }).ToList(),
         };
         
         var response = await _s3Client.CompleteMultipartUploadAsync(request, cancellationToken);
+        
+        return response;
+    }
+
+    public async Task< GetObjectMetadataResponse?> GetObjectMetaDataAsync(string key, 
+        CancellationToken cancellationToken = default)
+    {
+        var request = new GetObjectMetadataRequest
+        {
+            BucketName = "photos",
+            Key = key
+        };
+        
+        var response = await _s3Client.GetObjectMetadataAsync(request, cancellationToken);
         
         return response;
     }

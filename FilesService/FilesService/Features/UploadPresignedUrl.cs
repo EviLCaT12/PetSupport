@@ -1,5 +1,5 @@
+using FilesService.Core.Models;
 using FilesService.Endpoints;
-using FilesService.Error.Models;
 using FilesService.Infrastructure;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
@@ -22,7 +22,7 @@ public static class UploadPresignedUrl
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
-        var key = Guid.NewGuid();
+        var key = $"{request.ContentType}/{Guid.NewGuid()}";
         
         var presignedUrl = await fileProvider.UploadPresignedUrlAsync(request.ContentType, key);
         if (string.IsNullOrEmpty(presignedUrl))

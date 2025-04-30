@@ -1,5 +1,5 @@
+using FilesService.Core.Models;
 using FilesService.Endpoints;
-using FilesService.Error.Models;
 using FilesService.Infrastructure;
 
 namespace FilesService.Features;
@@ -10,19 +10,18 @@ public class UploadPresignedPartUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned-part", Handler);
+            app.MapPost("files/{key}/presigned-part", Handler);
         }
     }
 
     private record UploadPresignedPartUrlRequest(string UploadId, int PartNumber);
     
     private static async Task<IResult> Handler(
+        string key,
         UploadPresignedPartUrlRequest request,
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
-        var key = Guid.NewGuid();
-        
         var presignedUrl = await fileProvider.UploadPartPresignedUrlAsync(
             request.UploadId,
             request.PartNumber,
