@@ -29,13 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddEndpoints();
 
-builder.Services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
-
-builder.Services.AddScoped<FileMongoDbContext>();
-
-builder.Services.AddScoped<IFileRepository, FileRepository>();
-
-builder.Services.AddInfrastructure();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
