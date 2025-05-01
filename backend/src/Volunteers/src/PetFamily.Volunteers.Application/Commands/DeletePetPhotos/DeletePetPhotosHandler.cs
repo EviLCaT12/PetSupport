@@ -20,20 +20,17 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand>
    private readonly ILogger<DeletePetPhotosHandler> _logger;
    private readonly IVolunteersRepository _volunteersRepository;
    private readonly IValidator<DeletePetPhotosCommand> _validator;
-   private readonly IFileProvider _fileProvider;
    private readonly IUnitOfWork _unitOfWork;
 
    public DeletePetPhotosHandler(
       ILogger<DeletePetPhotosHandler> logger,
       IVolunteersRepository volunteersRepository,
       IValidator<DeletePetPhotosCommand> validator,
-      IFileProvider fileProvider,
       [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork)
    {
       _logger = logger;
       _volunteersRepository = volunteersRepository;
       _validator = validator;
-      _fileProvider = fileProvider;
       _unitOfWork = unitOfWork;
    }
 
@@ -64,29 +61,15 @@ public class DeletePetPhotosHandler : ICommandHandler<DeletePetPhotosCommand>
          _logger.LogError("Failed to get pet with id: {id}", petId);
          return getPetResult.Error;
       }
+      
+      //Fixme: добавить вызов файл сервису
+      var photo = Photo.Create(FileId.NewFileId(), "png").Value;
 
-      List<Photo> photos = [];
-      List<FileInfo> fileDatas = [];
-      foreach (var photoName in command.PhotoNames)
-      {
-         var filePath = FilePath.Create(photoName, null).Value;
-         
-         var petPhoto = Photo.Create(filePath).Value;
-         photos.Add(petPhoto);
-         
-         var fileData = new FileInfo(filePath, BUCKET_NAME);
-         fileDatas.Add(fileData);
-      }
-
-      var deleteResult = volunteer.Value.DeletePetPhotos(petId, photos);
+      var deleteResult = volunteer.Value.DeletePetPhotos(petId, [photo]);
       if (deleteResult.IsFailure)
          return deleteResult.Error;
       
       await _unitOfWork.SaveChangesAsync(cancellationToken);
-      
-      var removePhotosResult = await _fileProvider.RemoveFilesAsync(fileDatas, cancellationToken);
-      if (removePhotosResult.IsFailure)
-         return removePhotosResult.Error;
       
       transaction.Commit();
 

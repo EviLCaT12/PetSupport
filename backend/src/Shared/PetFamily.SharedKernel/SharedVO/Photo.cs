@@ -8,26 +8,29 @@ public record Photo
 {
     //ef core
     public Photo() { }
-    private Photo(FilePath pathToStorage)
-    {
-        PathToStorage = pathToStorage;
-    }
+    private Photo(FileId fileId) => Id = fileId;
     
     [JsonConstructor]
-    private Photo(FilePath pathToStorage, bool isMain)
+    private Photo(FileId fileId, bool isMain)
     {
-        PathToStorage = pathToStorage;
+        Id = fileId;
         IsMain = isMain;
     }
-    public FilePath PathToStorage { get; }
 
+    public FileId Id { get; init; }
+    
+    public static readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png"};
+    
     public bool IsMain { get; private set; }
     
     public static int CountMainPhoto = 0;
 
-    public static Result<Photo, ErrorList> Create(FilePath photoFilePath)
+    public static Result<Photo, ErrorList> Create(FileId fileId, string fileType)
     {
-        return new Photo(photoFilePath);
+        if (AllowedExtensions.Contains(fileType) == false)
+            return Errors.General.ValueIsInvalid(nameof(fileType)).ToErrorList();
+        
+        return new Photo(fileId);
     }
 
     public UnitResult<ErrorList> SetMain()
@@ -35,7 +38,7 @@ public record Photo
         if (IsMain)
         {
             var error = Error.Error.Failure("invalid.pet.operation",
-                $"This photo {PathToStorage.Path} is already set to main.");
+                $"This photo {Id} is already set to main.");
             return new ErrorList([error]);
         }
         
@@ -49,11 +52,16 @@ public record Photo
         if (IsMain == false)
         {
             var error = Error.Error.Failure("invalid.pet.operation",
-                $"This photo {PathToStorage.Path} is already not a main photo.");
+                $"This photo {Id} is already not a main photo.");
             return new ErrorList([error]);
         }
         
         IsMain = false;
         return Result.Success<ErrorList>();
+    }
+
+    public Photo Copy()
+    {
+        return new Photo(Id);
     }
 }

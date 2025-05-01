@@ -360,9 +360,9 @@ public class Volunteer : SoftDeletableEntity<VolunteerId>
         return Result.Success<ErrorList>();
     }
 
-    public Result<Photo, ErrorList> GetPetPhoto(Pet pet, FilePath photoPath)
+    public Result<Photo, ErrorList> GetPetPhoto(Pet pet, FileId fileId)
     {
-        var result = pet.GetPhotoByPath(photoPath);
+        var result = pet.GetPhotoById(fileId);
         if (result.IsFailure)
             return result.Error;
 

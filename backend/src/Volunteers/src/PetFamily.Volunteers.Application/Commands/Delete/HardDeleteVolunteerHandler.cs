@@ -18,20 +18,17 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
     private readonly IVolunteersRepository _repository;
     private readonly ILogger<HardDeleteVolunteerHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public HardDeleteVolunteerHandler(
         IValidator<DeleteVolunteerCommand> validator,
         IVolunteersRepository repository,
         ILogger<HardDeleteVolunteerHandler> logger,
-        [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork,
-        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
+        [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork)
     {
         _validator = validator;
         _repository = repository;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _messageQueue = messageQueue;
     }
     
     public async Task<Result<Guid, ErrorList>> HandleAsync(
@@ -51,17 +48,9 @@ public class HardDeleteVolunteerHandler : ICommandHandler<Guid, DeleteVolunteerC
             return existedVolunteer.Error; 
         }
 
-        _repository.Delete(existedVolunteer.Value, cancellationToken);
-
-        var allPets = existedVolunteer.Value.AllOwnedPets;
-        List<FileInfo> fileInfos = [];
-        foreach (var pet in allPets)
-        {
-            fileInfos.AddRange(pet.PhotoList
-                .Select(photo => new FileInfo(photo.PathToStorage, BUCKETNAME)));
-        }
         
-        await _messageQueue.WriteAsync(fileInfos, cancellationToken);
+        //FIXME: Удалить фотки животных при удалении волонтера обращением в файлсервису
+        _repository.Delete(existedVolunteer.Value, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         

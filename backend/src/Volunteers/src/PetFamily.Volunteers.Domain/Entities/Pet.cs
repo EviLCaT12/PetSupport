@@ -172,7 +172,7 @@ public class Pet : SoftDeletableEntity<PetId>
             var removeResult = _photos.Remove(photo);
             if (removeResult == false)
             {
-                var error = Error.NotFound("value.not.found", $"Photo {photo.PathToStorage.Path} was not found");
+                var error = Error.NotFound("value.not.found", $"Photo {photo.Id} was not found");
                 return new ErrorList([error]);
             }
         }
@@ -185,15 +185,15 @@ public class Pet : SoftDeletableEntity<PetId>
         if (Photo.CountMainPhoto > 0)
         {
             var error = Error.Failure("invalid.pet.operation", 
-                $"Fail to set main to photo {photo.PathToStorage.Path}. Main Photo has already been set.");
+                $"Fail to set main to photo {photo.Id}. Main Photo has already been set.");
             return new ErrorList([error]);
         }
     
         var newPetPhotoList = new List<Photo>();
         newPetPhotoList.AddRange(_photos);
         newPetPhotoList.Remove(photo);
-        
-        var newPhoto = Photo.Create(photo.PathToStorage).Value;
+
+        var newPhoto = photo.Copy();
         var result = newPhoto.SetMain();
         if (result.IsFailure)
             return result.Error;
@@ -211,7 +211,7 @@ public class Pet : SoftDeletableEntity<PetId>
         if (Photo.CountMainPhoto == 0)
         {
             var error = Error.Failure("invalid.pet.operation", 
-                $"Fail to remove main from photo {photo.PathToStorage.Path}. Main Photo hasn`t already been set.");
+                $"Fail to remove main from photo {photo.Id}. Main Photo hasn`t already been set.");
             return new ErrorList([error]);
         }
     
@@ -229,9 +229,9 @@ public class Pet : SoftDeletableEntity<PetId>
         return Result.Success<ErrorList>();
     }
     
-    internal Result<Photo, ErrorList> GetPhotoByPath(FilePath path)
+    internal Result<Photo, ErrorList> GetPhotoById(FileId fileId)
     {
-        var photo = _photos.FirstOrDefault(p => p.PathToStorage == path);
+        var photo = _photos.FirstOrDefault(p => p.Id == fileId);
         if (photo == null)
         {
             var error = Errors.General.ValueNotFound();

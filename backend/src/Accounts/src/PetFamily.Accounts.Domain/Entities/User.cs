@@ -29,6 +29,8 @@ public class User : IdentityUser<Guid>
     
     public VolunteerAccount? VolunteerAccount { get; set; }
     
+    public Photo? Avatar { get; set; }
+    
     public static Result<User, ErrorList> CreateParticipant(
         string userName,
         string email,
