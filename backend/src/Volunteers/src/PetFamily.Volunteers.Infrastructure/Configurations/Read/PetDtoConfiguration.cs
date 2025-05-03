@@ -21,7 +21,7 @@ public class PetDtoConfiguration : IEntityTypeConfiguration<PetDto>
                 json => JsonSerializer.Deserialize<IEnumerable<Photo>>(json, JsonSerializerOptions.Default)!
                     .Select(photo => new PhotoDto
                     {
-                        PathToStorage = photo.PathToStorage.Path
+                        Id = photo.Id.Id
                     })
                     .ToArray());
         

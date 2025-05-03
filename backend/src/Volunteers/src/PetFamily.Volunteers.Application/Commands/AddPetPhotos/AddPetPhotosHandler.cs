@@ -22,24 +22,18 @@ public class AddPetPhotosHandler : ICommandHandler<AddPetPhotosCommand>
     private readonly ILogger<AddPetPhotosHandler> _logger;
     private readonly IVolunteersRepository _volunteersRepository;
     private readonly IValidator<AddPetPhotosCommand> _validator;
-    private readonly IFileProvider _fileProvider;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public AddPetPhotosHandler(
         ILogger<AddPetPhotosHandler> logger,
         IVolunteersRepository volunteersRepository,
         IValidator<AddPetPhotosCommand> validator,
-        IFileProvider fileProvider,
-        [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork,
-        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
+        [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork)
     {
         _logger = logger;
         _volunteersRepository = volunteersRepository;
         _validator = validator;
-        _fileProvider = fileProvider;
         _unitOfWork = unitOfWork;
-        _messageQueue = messageQueue;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(AddPetPhotosCommand command, CancellationToken cancellationToken)
     {
@@ -66,35 +60,14 @@ public class AddPetPhotosHandler : ICommandHandler<AddPetPhotosCommand>
             return getPetResult.Error;
         }
 
-        List<Photo> petPhotos = [];
-        List<FileData> filesData = [];
-        foreach (var photo in command.Photos)
-        {
-            var extension = Path.GetExtension(photo.FileName);
-            var path = Guid.NewGuid();
-            var filePath = FilePath.Create(path.ToString(), extension).Value;
-
-            var petPhoto = Photo.Create(filePath).Value;
-            petPhotos.Add(petPhoto);
-            
-            var fileInfo = new FileInfo(filePath, BUCKET_NAME);
-            var fileData = new FileData(photo.Stream, fileInfo);
-            filesData.Add(fileData);
-        }
+        //FIXME заменить на обращение к файл сервис по готовности
+        var photo = Photo.Create(FileId.NewFileId(), "png").Value;
+        
         
         var volunteer = getVolunteerResult.Value;
-        volunteer.AddPetPhotos(petId, petPhotos);
+        volunteer.AddPetPhotos(petId, [photo]);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-
-        var uploadPhotosResult = await _fileProvider.UploadFilesAsync(filesData, cancellationToken);
-        if (uploadPhotosResult.IsFailure)
-        {
-            await _messageQueue.WriteAsync(filesData.Select(f => f.Info), cancellationToken);
-            return uploadPhotosResult.Error;
-        }
-            
         
         transaction.Commit();
 

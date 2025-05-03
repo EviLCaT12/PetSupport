@@ -21,20 +21,17 @@ public class RemovePetMainPhotoHandler : ICommandHandler<PetMainPhotoCommand>
     private readonly ILogger<SetPetMainPhotoHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IVolunteersRepository _repository;
-    private readonly IFileProvider _provider;
     private readonly IValidator<PetMainPhotoCommand> _validator;
 
     public RemovePetMainPhotoHandler(
         ILogger<SetPetMainPhotoHandler> logger,
         [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork,
         IVolunteersRepository repository,
-        IFileProvider provider,
         IValidator<PetMainPhotoCommand> validator)
     {
         _logger = logger;
         _unitOfWork = unitOfWork;
         _repository = repository;
-        _provider = provider;
         _validator = validator;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(PetMainPhotoCommand command, CancellationToken cancellationToken)
@@ -55,13 +52,10 @@ public class RemovePetMainPhotoHandler : ICommandHandler<PetMainPhotoCommand>
         if (pet.IsFailure)
             return pet.Error;
 
-        var filePath = FilePath.Create(command.FullPath, null).Value;
-        var fileInfo = new FileInfo(filePath, BUCKET_NAME);
-        var isPhotoExist = await _provider.GetFilePresignedUrl(fileInfo, cancellationToken);
-        if (isPhotoExist.IsFailure)
-            return isPhotoExist.Error;
+        var photoId = FileId.NewFileId();
+        var isPhotoExist = true; //FIXME Требуется вызов файл сервиса
 
-        var petPhoto = volunteer.Value.GetPetPhoto(pet.Value, filePath).Value;
+        var petPhoto = volunteer.Value.GetPetPhoto(pet.Value, photoId).Value;
 
         var removeMainPhotoResult = volunteer.Value.RemovePetMainPhoto(pet.Value, petPhoto);
         if (removeMainPhotoResult.IsFailure)

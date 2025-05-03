@@ -17,18 +17,15 @@ public class HardDeletePetHandler : ICommandHandler<DeletePetCommand>
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<SoftDeletePetHandler> _logger;
     private readonly IVolunteersRepository _repository;
-    private readonly IMessageQueue<IEnumerable<FileInfo>> _messageQueue;
 
     public HardDeletePetHandler(
         [FromKeyedServices(ModuleKey.Volunteer)] IUnitOfWork unitOfWork,
         ILogger<SoftDeletePetHandler> logger,
-        IVolunteersRepository repository,
-        IMessageQueue<IEnumerable<FileInfo>> messageQueue)
+        IVolunteersRepository repository)
     {
         _unitOfWork = unitOfWork;
         _logger = logger;
         _repository = repository;
-        _messageQueue = messageQueue;
     }
     public async Task<UnitResult<ErrorList>> HandleAsync(DeletePetCommand command, CancellationToken cancellationToken)
     {
@@ -43,13 +40,8 @@ public class HardDeletePetHandler : ICommandHandler<DeletePetCommand>
         if (pet.IsFailure)
             return pet.Error;
         
+        //FIXME удалять фотки петов обращением в файл сервис
         volunteer.Value.HardDeletePet(pet.Value);
-
-        var fileInfos = pet.Value.PhotoList
-            .Select(photo => photo.PathToStorage)
-            .Select(fileInfo => new FileInfo(fileInfo, BUCKETNAME));
-        
-        await _messageQueue.WriteAsync(fileInfos, cancellationToken);
         
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         transaction.Commit();
