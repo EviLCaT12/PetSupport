@@ -25,7 +25,7 @@ public interface IFileProvider
     
     Task<string> DeletePresignedUrlAsync(string key);
     
-    Task<string> GetPresignedUrlAsync(string key);
+    Task<string?> GetPresignedUrlAsync(string key);
 
     Task<GetObjectMetadataResponse?> GetObjectMetaDataAsync(string key, CancellationToken cancellationToken = default);
 }

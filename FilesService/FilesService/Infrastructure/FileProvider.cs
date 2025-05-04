@@ -84,7 +84,7 @@ public class FileProvider : IFileProvider
         return response;
     }
 
-    public async Task<string> GetPresignedUrlAsync(string key)
+    public async Task<string?> GetPresignedUrlAsync(string key)
     {
         var request = new GetPreSignedUrlRequest
         {

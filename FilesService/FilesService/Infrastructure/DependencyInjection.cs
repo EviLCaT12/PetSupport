@@ -1,6 +1,8 @@
 using Amazon.S3;
 using FilesService.Infrastructure.Options;
 using FilesService.MongoDataAccess;
+using Hangfire;
+using Hangfire.PostgreSql;
 using MongoDB.Driver;
 
 namespace FilesService.Infrastructure;
@@ -14,7 +16,8 @@ public static class DependencyInjection
             .AddS3Storage(configuration)
             .AddMongoDb(configuration)
             .AddDbContext()
-            .AddRepositories();
+            .AddRepositories()
+            .AddHangfire(configuration);
         
         return services;
     }
@@ -63,6 +66,24 @@ public static class DependencyInjection
     {
         services.AddScoped<IFileRepository, FileRepository>();
         
+        return services;
+    }
+
+    private static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddHangfire(conf => conf
+            .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UsePostgreSqlStorage(c => 
+                c.UseNpgsqlConnection(configuration.GetConnectionString("HangFireConnection")))
+        );
+
+        services.AddHangfireServer(serverOptions =>
+        {
+            serverOptions.ServerName = "Hangfire.Postgres server";
+        });
+
         return services;
     }
 }

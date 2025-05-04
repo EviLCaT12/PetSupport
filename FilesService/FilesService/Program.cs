@@ -1,9 +1,8 @@
-using Amazon.S3;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
 using FilesService.Middlewares;
-using FilesService.MongoDataAccess;
-using MongoDB.Driver;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Serilog;
 using Serilog.Events;
 
@@ -29,6 +28,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddEndpoints();
 
+
+
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
@@ -39,6 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.MapOpenApi();
 }
+
+app.UseHangfireDashboard();
 
 app.UseExceptionMiddleware();
 

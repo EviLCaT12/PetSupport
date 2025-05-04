@@ -1,7 +1,9 @@
 using FilesService.Core;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
+using FilesService.Jobs;
 using FilesService.MongoDataAccess;
+using Hangfire;
 
 namespace FilesService.Features;
 
@@ -26,6 +28,11 @@ public class CompleteMultipartUpload
         IFileProvider fileProvider,
         CancellationToken cancellationToken = default)
     {
+        var fileId = Guid.NewGuid();
+        
+        BackgroundJob.Schedule<ConfirmConsistencyJob>(job => 
+            job.Execute(fileId, key),
+            TimeSpan.FromHours(24));
         
         var response = await fileProvider.CompleteMultipartUploadAsync(
             key,
@@ -37,6 +44,7 @@ public class CompleteMultipartUpload
 
         var fileData = new FileData
         {
+            Id = fileId,
             StoragePath = key,
             FileSize = response.ContentLength,
             ContentType = fileMetaData.Headers.ContentType,
