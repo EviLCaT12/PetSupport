@@ -1,6 +1,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Features;
 using CompleteMultipartUploadRequest = Amazon.S3.Model.CompleteMultipartUploadRequest;
 

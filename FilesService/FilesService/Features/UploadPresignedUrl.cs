@@ -1,4 +1,5 @@
 using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Core;
 using FilesService.Core.Models;
 using FilesService.Endpoints;
@@ -16,7 +17,7 @@ public static class UploadPresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/presigned", Handler);
+            app.MapPost("files/upload-presigned", Handler);
         }
     }
     

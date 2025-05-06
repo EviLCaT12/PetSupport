@@ -1,4 +1,5 @@
 using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
 

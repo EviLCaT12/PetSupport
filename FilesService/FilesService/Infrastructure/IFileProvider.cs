@@ -1,5 +1,6 @@
 using Amazon.S3.Model;
 using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Features;
 
 namespace FilesService.Infrastructure;
