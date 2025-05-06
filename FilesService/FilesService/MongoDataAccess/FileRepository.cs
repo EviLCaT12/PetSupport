@@ -21,7 +21,7 @@ public class FileRepository : IFileRepository
         return file.Id;
     }
 
-    public async Task<IReadOnlyCollection<FileData>> GetAsync(IEnumerable<Guid> fileIds,
+    public async Task<IReadOnlyCollection<FileData>?> GetAsync(IEnumerable<Guid> fileIds,
         CancellationToken cancellationToken = default)
     {
         return await _context.Files.Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);

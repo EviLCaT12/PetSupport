@@ -10,6 +10,8 @@
     <ItemGroup>
         <PackageReference Include="AWSSDK.S3" Version="3.7.416.16" />
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.6.0" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1"/>
         <PackageReference Include="MongoDB.Driver" Version="3.3.0" />
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
