@@ -13,8 +13,6 @@ public static class DeletePresignedUrl
             app.MapDelete("files/{key}/presigned", Handler);
         }
     }
-
-    private record GetPresignedUrlRequest(string ContentType);
     
     private static async Task<IResult> Handler(
         string key,

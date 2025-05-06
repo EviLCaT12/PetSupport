@@ -4,7 +4,7 @@ using PetFamily.SharedKernel.Error;
 
 namespace PetFamily.SharedKernel.SharedVO;
 
-public record Photo
+public class Photo : ValueObject
 {
     //ef core
     public Photo() { }
@@ -63,5 +63,10 @@ public record Photo
     public Photo Copy()
     {
         return new Photo(Id);
+    }
+
+    protected override IEnumerable<IComparable> GetEqualityComponents()
+    {
+        yield return Id;
     }
 }

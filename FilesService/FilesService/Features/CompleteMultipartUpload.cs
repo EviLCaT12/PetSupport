@@ -1,3 +1,4 @@
+using FileService.Contracts;
 using FilesService.Core;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
@@ -16,10 +17,6 @@ public class CompleteMultipartUpload
             app.MapPost("files/{key}/complete-mupltipart", Handler);
         }
     }
-
-    public record PartETagInfo(int PartNumber, string ETag);
-    
-    private record CompleteMultipartUploadRequest(string UploadId, List<PartETagInfo> Parts);
     
     private static async Task<IResult> Handler(
         string key,

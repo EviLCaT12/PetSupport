@@ -1,3 +1,4 @@
+using FileService.Contracts;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
 
@@ -13,7 +14,7 @@ public class StartMultipartUpload
         }
     }
 
-    private record StartMultipartUploadRequest(string ContentType);
+    
     
     private static async Task<IResult> Handler(
         StartMultipartUploadRequest request,

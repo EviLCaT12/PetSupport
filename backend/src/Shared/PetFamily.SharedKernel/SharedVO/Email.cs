@@ -12,7 +12,6 @@ public class Email : ValueObject
     {
         Value = value;
     }
-
     public static Result<Email, Error.Error> Create(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
@@ -29,7 +28,6 @@ public class Email : ValueObject
         return validEmail;
 
     }
-
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Value;

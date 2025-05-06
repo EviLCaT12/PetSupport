@@ -13,8 +13,8 @@ using PetFamily.Accounts.Infrastructure.Contexts;
 namespace PetFamily.Accounts.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteAccountsDbContext))]
-    [Migration("20250427033249_ghjghj")]
-    partial class ghjghj
+    [Migration("20250506054636_Accounts_Init")]
+    partial class Accounts_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -365,6 +365,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("access_failed_count");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text")
+                        .HasColumnName("user_photo");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text")
@@ -408,10 +412,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
-
-                    b.Property<string>("Photo")
-                        .HasColumnType("text")
-                        .HasColumnName("user_photo");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")

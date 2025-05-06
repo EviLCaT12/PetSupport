@@ -362,6 +362,10 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("access_failed_count");
 
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text")
+                        .HasColumnName("user_photo");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text")
@@ -405,10 +409,6 @@ namespace PetFamily.Accounts.Infrastructure.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
-
-                    b.Property<string>("Photo")
-                        .HasColumnType("text")
-                        .HasColumnName("user_photo");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")

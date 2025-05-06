@@ -13,8 +13,8 @@ using PetFamily.Discussion.Infrastructure.Contexts;
 namespace PetFamily.Discussion.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteDbContext))]
-    [Migration("20250425070704_dfgdfg")]
-    partial class dfgdfg
+    [Migration("20250506054652_Discussion_Init")]
+    partial class Discussion_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

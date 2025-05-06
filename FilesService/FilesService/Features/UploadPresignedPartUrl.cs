@@ -1,3 +1,4 @@
+using FileService.Contracts;
 using FilesService.Core.Models;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
@@ -14,7 +15,7 @@ public class UploadPresignedPartUrl
         }
     }
 
-    private record UploadPresignedPartUrlRequest(string UploadId, int PartNumber);
+    
     
     private static async Task<IResult> Handler(
         string key,

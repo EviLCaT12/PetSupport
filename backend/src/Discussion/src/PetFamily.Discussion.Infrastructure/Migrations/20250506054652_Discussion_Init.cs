@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PetFamily.Discussion.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class dryfghbjkn : Migration
+    public partial class Discussion_Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace PetFamily.Discussion.Infrastructure.Migrations
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     is_edited = table.Column<bool>(type: "boolean", nullable: false),
-                    text_value = table.Column<string>(type: "text", nullable: false)
+                    text = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
