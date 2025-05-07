@@ -1,4 +1,6 @@
 using Amazon.S3.Model;
+using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Features;
 
 namespace FilesService.Infrastructure;
@@ -17,15 +19,14 @@ public interface IFileProvider
         string key,
         CancellationToken cancellationToken);
 
-    Task<CompleteMultipartUploadResponse?> CompleteMultipartUploadAsync(
-        string key,
+    Task<CompleteMultipartUploadResponse?> CompleteMultipartUploadAsync(string key,
         string uploadId,
-        List<CompleteMultipartUpload.PartETagInfo> parts,
+        List<PartETagInfo> parts,
         CancellationToken cancellationToken = default);
     
     Task<string> DeletePresignedUrlAsync(string key);
     
-    Task<string?> GetPresignedUrlAsync(string key);
+    Task<string?> GetPresignedUrlAsync(string storagePath);
 
     Task<GetObjectMetadataResponse?> GetObjectMetaDataAsync(string key, CancellationToken cancellationToken = default);
 }

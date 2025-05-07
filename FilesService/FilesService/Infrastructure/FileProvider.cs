@@ -1,6 +1,9 @@
 using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Features;
+using CompleteMultipartUploadRequest = Amazon.S3.Model.CompleteMultipartUploadRequest;
 
 namespace FilesService.Infrastructure;
 
@@ -84,13 +87,13 @@ public class FileProvider : IFileProvider
         return response;
     }
 
-    public async Task<string?> GetPresignedUrlAsync(string key)
+    public async Task<string?> GetPresignedUrlAsync(string storagePath)
     {
         var request = new GetPreSignedUrlRequest
         {
             BucketName = "photos",
             Expires = DateTime.Now.AddMinutes(15),
-            Key = key,
+            Key = storagePath,
             Protocol = Protocol.HTTP,
             Verb = HttpVerb.GET
         };
@@ -100,10 +103,9 @@ public class FileProvider : IFileProvider
         return response;
     }
     
-    public async Task< CompleteMultipartUploadResponse?> CompleteMultipartUploadAsync(
-        string key,
+    public async Task<CompleteMultipartUploadResponse?> CompleteMultipartUploadAsync(string key,
         string uploadId,
-        List<CompleteMultipartUpload.PartETagInfo> parts,
+        List<PartETagInfo> parts,
         CancellationToken cancellationToken = default)
     {
         var request = new CompleteMultipartUploadRequest

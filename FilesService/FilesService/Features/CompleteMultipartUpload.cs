@@ -1,3 +1,5 @@
+using FileService.Contracts;
+using FileService.Contracts.Requests;
 using FilesService.Core;
 using FilesService.Endpoints;
 using FilesService.Infrastructure;
@@ -13,16 +15,11 @@ public class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key}/complete-mupltipart", Handler);
+            app.MapPost("files/complete-mupltipart", Handler);
         }
     }
-
-    public record PartETagInfo(int PartNumber, string ETag);
-    
-    private record CompleteMultipartUploadRequest(string UploadId, List<PartETagInfo> Parts);
     
     private static async Task<IResult> Handler(
-        string key,
         CompleteMultipartUploadRequest request,
         IFileRepository repository,
         IFileProvider fileProvider,
@@ -31,21 +28,21 @@ public class CompleteMultipartUpload
         var fileId = Guid.NewGuid();
         
         BackgroundJob.Schedule<ConfirmConsistencyJob>(job => 
-            job.Execute(fileId, key),
+            job.Execute(fileId, request.Key),
             TimeSpan.FromHours(24));
         
         var response = await fileProvider.CompleteMultipartUploadAsync(
-            key,
+            request.Key,
             request.UploadId,
             request.Parts,
             cancellationToken);
         
-        var fileMetaData = await fileProvider.GetObjectMetaDataAsync(key, cancellationToken);
+        var fileMetaData = await fileProvider.GetObjectMetaDataAsync(request.Key, cancellationToken);
 
         var fileData = new FileData
         {
             Id = fileId,
-            StoragePath = key,
+            StoragePath = request.Key,
             FileSize = response.ContentLength,
             ContentType = fileMetaData.Headers.ContentType,
             UploadDate = DateTime.UtcNow
@@ -55,7 +52,7 @@ public class CompleteMultipartUpload
         
         return Results.Ok(new
         {
-            key,
+            request.Key,
             location = response?.Location
         });
     }

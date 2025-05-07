@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>FileService.Contract</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>EvilCaT12</Authors>
+        <Company>EviLCaT12INC</Company>
+        <PackageDescription>FileService.Contract</PackageDescription>
+        <RepositoryUrl>https://github.com/EviLCaT12/PetSupport</RepositoryUrl>
+    </PropertyGroup>
+
+</Project>

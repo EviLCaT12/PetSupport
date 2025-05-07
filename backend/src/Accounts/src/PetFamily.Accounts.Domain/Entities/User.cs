@@ -19,8 +19,6 @@ public class User : IdentityUser<Guid>
     
     public Fio FullName { get; set; } = null!;
     
-    public Photo? Photo { get; set; } = null!;
-    
     public IReadOnlyList<SocialWeb>? SocialWebs { get; set; } = [];
     
     public AdminAccount? AdminAccount { get; set; }

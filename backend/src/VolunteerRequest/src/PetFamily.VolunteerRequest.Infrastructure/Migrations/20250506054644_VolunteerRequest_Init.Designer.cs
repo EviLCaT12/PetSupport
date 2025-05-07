@@ -13,8 +13,8 @@ using PetFamily.VolunteerRequest.Infrastructure.DbContexts;
 namespace PetFamily.VolunteerRequest.Infrastructure.Migrations
 {
     [DbContext(typeof(WriteContext))]
-    [Migration("20250410122122_jhbvc")]
-    partial class jhbvc
+    [Migration("20250506054644_VolunteerRequest_Init")]
+    partial class VolunteerRequest_Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,4 +1,5 @@
 using System.Text;
+using FileService.Communication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
@@ -119,8 +120,6 @@ builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProv
 builder.Services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
 
 builder.Services.AddAuthorization();
-
-
 
 var app = builder.Build();
 

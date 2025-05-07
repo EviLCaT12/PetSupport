@@ -62,7 +62,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
                 dto => SocialWeb.Create(dto.Link, dto.Name).Value)
             .HasColumnName("social_webs");
         
-        builder.Property(u => u.Photo)
+        builder.Property(u => u.Avatar)
             .HasConversion(
                 photo => JsonSerializer.Serialize(photo, JsonSerializerOptions.Default),
                 json => JsonSerializer.Deserialize<Photo>(json, JsonSerializerOptions.Default)!)

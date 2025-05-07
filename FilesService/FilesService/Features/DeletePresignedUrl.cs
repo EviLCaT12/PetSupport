@@ -10,11 +10,9 @@ public static class DeletePresignedUrl
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapDelete("files/{key}/presigned", Handler);
+            app.MapDelete("files/delete-presigned", Handler);
         }
     }
-
-    private record GetPresignedUrlRequest(string ContentType);
     
     private static async Task<IResult> Handler(
         string key,
