@@ -14,8 +14,6 @@ public class StartMultipartUpload
             app.MapPost("files/multipart", Handler);
         }
     }
-
-    
     
     private static async Task<IResult> Handler(
         StartMultipartUploadRequest request,

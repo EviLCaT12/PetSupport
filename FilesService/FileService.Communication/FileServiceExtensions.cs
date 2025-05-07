@@ -7,15 +7,11 @@ namespace FileService.Communication;
 public static class FileServiceExtensions
 {
     public static IServiceCollection AddFileHttpCommunication(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services, string url)
     {
-        services.Configure<FileServiceOptions>(configuration.GetSection(FileServiceOptions.FILE_SERVICE));
-        
-        services.AddHttpClient<FileHttpClient>((sp, config) =>
+        services.AddHttpClient<IFileService ,FileHttpClient>((sp, config) =>
         {
-            var options = sp.GetRequiredService<IOptions<FileServiceOptions>>().Value;
-            
-            config.BaseAddress = new Uri(options.Url);
+            config.BaseAddress = new Uri(url);
         });
         
         return services;

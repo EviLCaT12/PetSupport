@@ -6,7 +6,7 @@ using FileService.Contracts.Responses;
 
 namespace FileService.Communication;
 
-public class FileHttpClient(HttpClient httpClient)
+public class FileHttpClient(HttpClient httpClient) : IFileService
 {
     public async Task<Result<IReadOnlyList<FileResponse>, string>> GetFilesPresignedUrls(
         GetFilesPresignedUrlRequest request, CancellationToken cancellationToken)
@@ -21,9 +21,10 @@ public class FileHttpClient(HttpClient httpClient)
         return fileResponses?.ToList() ?? [];
     }
 
-    public async Task<Result<string>> DeletePresignedUrl(string key, CancellationToken cancellationToken)
+    public async Task<Result<string>> DeletePresignedUrl(
+        DeletePresignedUrlRequest request, CancellationToken cancellationToken)
     {
-        var response = await httpClient.PostAsJsonAsync("files/delete-presigned", key ,cancellationToken);
+        var response = await httpClient.PostAsJsonAsync("files/delete-presigned", request ,cancellationToken);
         
         if (response.IsSuccessStatusCode == false)
             return "Fail to delete presigned url";
@@ -33,7 +34,7 @@ public class FileHttpClient(HttpClient httpClient)
         return fileResponse;
     }
 
-    public async Task<Result<UploadPresignedPartUrlResponse, string>> UploadPresignedUrlResponse(
+    public async Task<Result<UploadPresignedPartUrlResponse, string>> UploadPresignedUrl(
         UploadPresignedUrlRequest request, CancellationToken cancellationToken)
     {
         var response = await httpClient.PostAsJsonAsync("files/upload-presigned", request, cancellationToken);
